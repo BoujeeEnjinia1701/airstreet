@@ -1,0 +1,17 @@
+# Card metadata consumed by https://designmolecule.com
+name: AirStreet
+slug: airstreet
+area: Smart Cities
+status: concept          # concept | design | prototype | tested | released
+shortlisted: false
+pitch: >-
+  A street-level air quality node measuring PM2.5 and NO2, calibrated on CalRig, for neighborhood-scale pollution maps.
+problem: >-
+  Regulatory air monitors are few and far apart, missing the streets where people breathe traffic pollution.
+budget_usd: 180
+difficulty: 3  # 1 easiest, 5 hardest
+hero_image: media/hero.png
+licenses:
+  hardware: CERN-OHL-S-2.0
+  software: MIT
+tags: [smart-cities, open-hardware, cern-ohl-s]
