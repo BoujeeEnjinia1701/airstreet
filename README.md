@@ -2,7 +2,7 @@
 
 ![TRL 3](https://img.shields.io/badge/TRL-3%20of%209-0F766E) ![Hardware: CERN-OHL-S-2.0](https://img.shields.io/badge/hardware-CERN--OHL--S--2.0-111827) ![Software: MIT](https://img.shields.io/badge/software-MIT-111827)
 
-**Area:** Smart Cities · **TRL:** 3 of 9 (proof of concept on paper) · **Prototype budget:** about $180 USD for the sensor head · **Difficulty:** 3 of 5
+**Area:** Smart Cities · **TRL:** 3 of 9 (proof of concept on paper) · **Prototype budget:** about $285 USD for the sensor head · **Difficulty:** 3 of 5
 
 A street-level air quality node measuring PM2.5 and NO2, with particles checked on CalRig and NO2 calibrated against a reference station, for neighborhood-scale pollution maps.
 
@@ -47,7 +47,7 @@ Monitoring misses the streets where exposure is highest. Reference-grade mapping
 
 ## What sparked the idea
 
-It came out of a September 2026 review of Design Molecule's applied research areas against the open projects already in the lab. It depends on CalRig for credible data. The real-world trigger is the evidence that pollution varies within single city blocks ([Apte et al., 2017](https://pubs.acs.org/doi/10.1021/acs.est.7b00891)) together with the finding that low-cost sensors become useful only after correction against reference data ([Barkjohn et al., 2021](https://amt.copernicus.org/articles/14/4617/2021/)).
+The starting point was the inquest into the death of Ella Adoo Kissi-Debrah, a nine-year-old who lived near the busy South Circular Road in Lewisham, south-east London, and died in 2013. In December 2020 the coroner found that she died of asthma contributed to by exposure to excessive air pollution, and that nitrogen dioxide in Lewisham exceeded EU and UK legal limits ([CIEH, 2020](https://www.cieh.org/ehn/environmental-protection/2020/december/ella-adoo-kissi-debrah-verdict-shows-human-cost-of-air-pollution/)). His Prevention of Future Deaths report of 20 April 2021 also raised low public awareness of air quality information ([Courts and Tribunals Judiciary](https://www.judiciary.uk/prevention-of-future-death-reports/ella-kissi-debrah/); [IAQM](https://iaqm.co.uk/prevention-of-future-deaths-report-published-following-2013-death-of-ella-abdoo-kissi-debrah/)). The case turns on NO2 beside one busy road, which is the scale AirStreet is built to measure, and on making that information visible to the people who live there.
 
 ## Problem
 
@@ -57,16 +57,16 @@ Regulatory air monitors are few and far apart, missing the streets where people 
 
 A street-level air quality node measuring PM2.5 and NO2, with particles checked on CalRig and NO2 calibrated against a reference station, for neighborhood-scale pollution maps. The sensor pod and radiation shield hang below a FieldNode core on a street light pole, with inlets 3.0 m above the sidewalk, and send one record every 5 min over LoRaWAN. PM, temperature and humidity are checked on CalRig; **NO2 is calibrated by field collocation with a reference station** for at least 14 days before deployment and at least every 6 months, because CalRig does not cover NO2.
 
-Calculated performance (TRL 3, [AST-CAL-001](docs/04-calcs/01-sizing.md)): a 48 mW design sensor load, within FieldNode's 100 mW design allowance, and 11.9 days without sun; 0.60 % radio duty cycle even at SF12; hourly NO2 error of about 3.9 ppb and PM2.5 within ±5 µg/m³ or ±30 % up to 80 % RH. Three requirements are not met: the annual NO2 uncertainty (about 4.2 µg/m³) is too large to resolve the WHO guideline of 10 µg/m³; the node weighs 3.65 kg and presents 0.138 m² to the street, over 3.5 kg and 0.12 m²; and the sensor head costs $283.00 in parts ($409.00 with the FieldNode core), over the $180 budget and the $280 proposed. Only pollutant levels, temperature and humidity leave the device; no images or audio.
+Calculated performance (TRL 3, [AST-CAL-001](docs/04-calcs/01-sizing.md)): an 87 mW design sensor load with a 60 s particle run, within FieldNode's 100 mW design allowance, and 6.6 days without sun; records every 5 min through a private gateway and every 15 min on The Things Network; 0.60 % radio duty cycle even at SF12; hourly NO2 error of about 3.9 ppb and PM2.5 within ±5 µg/m³ or ±30 % up to 80 % RH. With FieldNode's back plate left off, the node weighs 3.26 kg and presents 0.126 m² to the street, and the sensor head costs $285.00 in parts ($411.00 with the FieldNode core), exactly the budget. No requirement is unmet on paper; five are at risk. The annual NO2 uncertainty (about 4.2 µg/m³) is too large to resolve the WHO guideline of 10 µg/m³, so AirStreet ranks streets and checks the EU limit, and the WHO question is kept as research. Decisions are recorded in [AST-DDR-001](docs/decisions/0001-trl2-review-decisions.md) and [AST-DDR-002](docs/decisions/0002-recommendations-accepted.md). Only pollutant levels, temperature and humidity leave the device; no images or audio.
 
 Full design precis: [docs/02-concept.md](docs/02-concept.md). Requirements: [docs/03-requirements.md](docs/03-requirements.md).
 
 ## Key components
 
-1. FieldNode core (enclosure, LiFePO4 cell, MPPT charger, LoRaWAN radio)
+1. FieldNode core (enclosure, LiFePO4 cell, MPPT charger, LoRaWAN radio), bolted to the rail without its back plate
 2. FieldNode 6 W panel hood
-3. Band clamps and mounting rail (no drilling)
-4. Sensor pod with insect mesh and drip lid
+3. Band clamps, mounting rail and adapter bars (no drilling)
+4. Sensor pod with insect mesh and drip lid, exchanged whole for service
 5. Optical PM2.5 sensor (Sensirion SPS30 class)
 6. Electrochemical NO2 sensor (Alphasense NO2-B43F class, ozone filtered)
 7. NO2 potentiostat front end and 16-bit ADC
@@ -105,4 +105,4 @@ Controlled documents follow the portfolio [documentation standard](.kit/STANDARD
 - **Hardware** (CAD, drawings, BOM, electronics): [CERN-OHL-S v2](LICENSE)
 - **Software** (firmware, scripts, notebooks): [MIT](LICENSE-SOFTWARE)
 
-A project of the [Design Molecule](https://designmolecule.com) lab. Smart cities set.
+A project of the [Design Molecule](https://designmolecule.com) lab.

@@ -1,4 +1,4 @@
-"""AirStreet general arrangement sheet AST-DWG-001, Rev P1 (TRL 3).
+"""AirStreet general arrangement sheet AST-DWG-001, Rev P2 (TRL 3).
 
 Run from the repo root:  python cad/src/sheets.py
 Writes cad/drawings/AST-DWG-001.svg, .pdf and .png from the parametric model in
@@ -94,10 +94,11 @@ def main():
     asm = assembly(with_pole=True)
     views = safe_project_views(asm, work)
     bb = asm.bounding_box()
-    s = Sheet(project="AirStreet", title="General arrangement", dwg_no="AST-DWG-001", rev="P1",
+    s = Sheet(project="AirStreet", title="General arrangement", dwg_no="AST-DWG-001", rev="P2",
               author="Amish Chadha", date=DATE, scale=None, theme="technical",
               material="FieldNode core per FND; bought-in parts per bom/bom.csv. PRELIMINARY, NOT FOR FABRICATION",
-              revisions=[("P1", "Preliminary GA for TRL 3 (from cad/src/model.py)", DATE, "AC")])
+              revisions=[("P1", "Preliminary GA for TRL 3 (from cad/src/model.py)", DATE, "AC"),
+                         ("P2", "DDR-002: FieldNode back plate left off, adapter bars; notes", DATE, "AC")])
     s.add_ortho(views)
     k = s.scale
     c = ortho_cells(s, views)
@@ -157,14 +158,14 @@ def main():
     so, si, stk, pitch, n = P["shield"]
     s.add_notes("Main dimensions and interfaces (mm)", [
         f"Pole {P['pole_range'][0]:.0f} to {P['pole_range'][1]:.0f} OD (design {P['pole_od']:.0f}); two 12.7 stainless band clamps, V-saddles",
-        f"Rail {P['rail'][0]:.0f} x {P['rail'][1]:.0f} aluminum, {D['rail_len']:.0f} long; FieldNode back plate bolted to it",
+        f"Rail {P['rail'][0]:.0f} x {P['rail'][1]:.0f} x {D['rail_len']:.0f}; enclosure on it, no back plate; adapters {P['adapter'][0]:.0f} x {P['adapter'][1]:.0f} x {P['adapter'][2]:.0f}",
         f"FieldNode core {ew:.0f} x {ed:.0f} x {eh:.0f}, underside {z0:,.0f}; 6 W panel at {P['tilt']:.0f} deg",
         f"Pod {W:.0f} x {Dp:.0f} x {H:.0f}, open underneath behind mesh; drip lid +{P['lid'][0]:.0f} each side",
         f"Inlet plane {P['inlet_z']:,.0f} above sidewalk, chain line in front view (EU 1,500 to 4,000)",
         f"Shield {n} plates {so:.0f} OD at {pitch:.0f} pitch; T and RH probe at {D['th_z']:,.0f}",
         "M12 port A (switched 5 V): SPS30 and SHT45; port B (5 V held on): NO2 front end",
         f"FieldNode whip at x = {P['ant_x']:.0f}, {D['whip_clear']:.0f} clear of the pod lid",
-        f"Mass 3.65 kg, frontal area 0.14 m² (AST-CAL-001; R13 not met)",
+        "Mass 3.26 kg, frontal area 0.126 m² (AST-CAL-001 v0.2; R13 met on paper)",
         "Third-angle; front view from the street (-Y); pole on the Z axis",
     ], x=276, y=158, width=146)
     out = s.save(ROOT / "cad" / "drawings" / "AST-DWG-001")

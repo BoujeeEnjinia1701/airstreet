@@ -8,11 +8,13 @@ Exports STEP and STL into cad/step and cad/stl:
 
 Axes: the street light pole is the Z axis (x = y = 0), Z is up with the sidewalk at z = 0,
 and the node faces the street (-Y). The FieldNode core (FND, shared component) is modeled as
-its interface envelope only: back plate, enclosure, bottom-face penetrations at the FieldNode
-positions, antenna whip and the 6 W panel at its FieldNode tilt, all taken from FieldNode's
-cad/src/model.py PARAMS (enclosure 150 x 90 x 200 mm, back plate 180 x 320 x 3 mm, panel
-290 x 200 x 17 mm at 40 deg). AirStreet replaces FieldNode's V-blocks and 40 to 60 mm clamps with
-its own rail, saddles and 80 to 200 mm band clamps. Main dimensions and interfaces only; not
+its interface envelope only: enclosure, bottom-face penetrations at the FieldNode positions,
+antenna whip and the 6 W panel at its FieldNode tilt, all taken from FieldNode's cad/src/model.py
+PARAMS (enclosure 150 x 90 x 200 mm, panel 290 x 200 x 17 mm at 40 deg). AirStreet replaces
+FieldNode's V-blocks and 40 to 60 mm clamps with its own rail, saddles and 80 to 200 mm band
+clamps. Per AST-DDR-002 (R13) FieldNode's 180 x 320 x 3 mm back plate is left off: the enclosure
+bolts straight to the rail and the panel bracket feet bolt to two adapter bars across the rail
+(set "fnd_plate": True to model the plate instead). Main dimensions and interfaces only; not
 fabrication detail; not for fabrication. The same PARAMS feed docs/04-calcs/sizing.py
 (AST-CAL-001), the drawing AST-DWG-001 (cad/src/sheets.py) and cad/src/concept_media.py.
 """
@@ -33,6 +35,8 @@ PARAMS = {
     # 1 FieldNode core (FND model PARAMS): enclosure W x D x H, lid depth, bottom height, back plate
     "enc": (150.0, 90.0, 200.0), "lid_d": 12.0, "enc_z0": 3230.0,
     "plate": (180.0, 320.0, 3.0), "plate_drop": 40.0,
+    # DDR-002: FieldNode back plate left off; two flat-bar adapters (L x W x t) carry the bracket feet
+    "fnd_plate": False, "adapter": (180.0, 25.0, 3.0),
     "port_x": (-52.0, -22.0), "gland_x": (8.0, 34.0), "ant_x": 58.0,
     "m12_d": (16.0, 22.0), "m16_d": (20.0, 24.0), "whip": (10.0, 190.0),
     # 2 FieldNode panel: size, tilt, center (in front of the plate rear face, above enc_z0); bracket bar
@@ -57,7 +61,7 @@ PARAMS = {
 BOM = {  # model key: (BOM line, name)
     "fieldnode": (1, "FieldNode core (enclosure, cell, radio)"),
     "panel": (2, "FieldNode 6 W panel hood"),
-    "mount": (3, "Band clamps, saddles, rail and shield arm"),
+    "mount": (3, "Band clamps, saddles, rail, adapters and shield arm"),
     "pod": (4, "Sensor pod with mesh and drip lid"),
     "pm": (5, "Optical PM sensor (SPS30 class)"),
     "no2": (6, "Electrochemical NO2 sensor (B4 class)"),
@@ -76,7 +80,8 @@ def derived(p=PARAMS):
     rail_back = -(R + st)
     rail_front = rail_back - rt
     pw, pl, pt = p["plate"]
-    plate_front = rail_front - pt
+    plate_front = rail_front - pt if p["fnd_plate"] else rail_front
+    bracket_front = plate_front if p["fnd_plate"] else rail_front - p["adapter"][2]
     ew, ed, eh = p["enc"]
     enc_front = plate_front - ed
     z0 = p["enc_z0"]
@@ -93,7 +98,7 @@ def derived(p=PARAMS):
     sh_cap = sh_bot + n * pitch
     panel_top = pcz + half * math.sin(t) + p["panel"][2] / 2 * math.cos(t)
     return {
-        "R": R, "rail_back": rail_back, "rail_front": rail_front, "plate_front": plate_front,
+        "R": R, "rail_back": rail_back, "rail_front": rail_front, "plate_front": plate_front, "bracket_front": bracket_front,
         "enc_front": enc_front, "enc_yc": (plate_front + enc_front) / 2, "enc_top": z0 + eh,
         "plate_bot": z0 - p["plate_drop"], "plate_top": z0 - p["plate_drop"] + pl,
         "panel_cy": pcy, "panel_cz": pcz, "panel_top": panel_top,
@@ -180,11 +185,17 @@ def build_parts(p=PARAMS):
     arm = box((x_arm0 + x_arm1) / 2, D["pod_yc"], p["arm_z"] + at / 2, x_arm1 - x_arm0, aw, at)
     gusset = box(rw / 2 + 5, (D["rail_front"] + D["pod_yc"] - aw / 2) / 2, p["arm_z"] + at / 2,
                  10, D["rail_front"] - D["pod_yc"] + aw / 2, at)
-    parts["mount"] = saddles + rail + bands + arm + gusset
+    mount = saddles + rail + bands + arm + gusset
+    if not p["fnd_plate"]:  # DDR-002: adapter bars across the rail at the bracket foot heights
+        al, aw_, at_ = p["adapter"]
+        for dz in (p["post_foot_dz"], p["strut_foot_dz"] + 5.0):
+            mount = mount + box(0, D["rail_front"] - at_ / 2, p["enc_z0"] + dz, al, at_, aw_)
+    parts["mount"] = mount
 
-    # 1 FieldNode core envelope: back plate, enclosure with lid line, bottom-face penetrations, whip
+    # 1 FieldNode core envelope: enclosure with lid line, bottom-face penetrations, whip (back plate
+    # only when "fnd_plate" is set; left off per DDR-002)
     pw, pl, pt = p["plate"]
-    plate = box(0, D["rail_front"] - pt / 2, (D["plate_bot"] + D["plate_top"]) / 2, pw, pt, pl)
+    plate = box(0, D["rail_front"] - pt / 2, (D["plate_bot"] + D["plate_top"]) / 2, pw, pt, pl) if p["fnd_plate"] else None
     ew, ed, eh = p["enc"]
     z0 = p["enc_z0"]
     body = box(0, D["plate_front"] - (ed - p["lid_d"]) / 2, z0 + eh / 2, ew, ed - p["lid_d"], eh)
@@ -194,9 +205,10 @@ def build_parts(p=PARAMS):
                 + [zcyl(x, yc, z0 - 9, p["m16_d"][1] / 2, 18) for x in p["gland_x"]]
                 + [zcyl(p["ant_x"], yc, z0 - 8, 7, 16)])
     whip = zcyl(p["ant_x"], yc, z0 - 16 - p["whip"][1] / 2, p["whip"][0] / 2, p["whip"][1])
-    parts["fieldnode"] = plate + body + lid + pens + whip
+    core = body + lid + pens + whip
+    parts["fieldnode"] = plate + core if plate is not None else core
 
-    # 2 FieldNode panel on its flat-bar bracket (posts and struts from the back plate)
+    # 2 FieldNode panel on its flat-bar bracket (posts and struts from the adapter bars, or the back plate)
     t = math.radians(p["tilt"])
     pcy, pcz = D["panel_cy"], D["panel_cz"]
     panel = b.Pos(0, pcy, pcz) * b.Rot(p["tilt"], 0, 0) * b.Box(*p["panel"])
@@ -210,7 +222,7 @@ def build_parts(p=PARAMS):
         x = sx * p["bracket_x"]
         for s, dz in ((p["post_ly"], p["post_foot_dz"]), (p["strut_ly"], p["strut_foot_dz"])):
             uy, uz = under(s)
-            m = bar((x, D["plate_front"] - bt_ / 2, z0 + dz), (x, uy, uz), bw_, bt_)
+            m = bar((x, D["bracket_front"] - bt_ / 2, z0 + dz), (x, uy, uz), bw_, bt_)
             brk = m if brk is None else brk + m
     parts["panel"] = panel + brk
 

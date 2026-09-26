@@ -1,4 +1,4 @@
-"""AirStreet sizing calculations, AST-CAL-001 v0.1 (TRL 3).
+"""AirStreet sizing calculations, AST-CAL-001 v0.2 (TRL 3, decisions of AST-DDR-002 applied).
 
 Run from the repo root:  python docs/04-calcs/sizing.py
 Prints every number quoted in docs/04-calcs/01-sizing.md. Each line carries a tag such as
@@ -27,13 +27,14 @@ def tag(t, text):
     print(f"[{t}] {text}")
 
 
-print("AirStreet sizing, AST-CAL-001 v0.1")
+print("AirStreet sizing, AST-CAL-001 v0.2")
 
 # ------------------------------------------------------------------ assumptions
 # Sensors (SPS30 values from the Sensirion SPS30 datasheet, 07/2023; others assumed)
 V5 = 5.0
 I_SPS_TYP, I_SPS_MAX = 0.055, 0.065   # A in measurement mode (datasheet typ, max)
-T_RUN, T_REC = 30.0, 300.0            # s PM run per record, s between records (DDR-001 D8)
+T_RUN, T_REC = 60.0, 300.0            # s PM run per record (DDR-002: 60 s), s between records (DDR-001 D8)
+T_REC_TTN = 900.0                     # s between uplinks on The Things Network (DDR-002)
 I_AFE = 1.5e-3                        # A at 5 V, potentiostat and ADC held on continuously (assumed)
 P_TH = 0.01e-3                        # W, SHT45 one reading per record (negligible, assumed)
 MARGIN = 1.2                          # design margin on the port load
@@ -48,6 +49,7 @@ COLD, EOL = 4.03 / 5.75, 4.60 / 5.75  # capacity ratios at -20 degC and end of l
 E_STORED_WORST, E_STORED_HOT = 7.75, 0.8   # Wh/day stored: worst month; hot clear day without shield
 FND_ALLOW, FND_CEIL = 100.0, 115.0    # mW: FND design value (proposed) and 5-day ceiling
 FND_MASS, FND_VBLOCK = 2.41, 0.20     # kg: FieldNode as built; V-blocks and small clamps not used here
+A_LIMIT = 0.15                        # m2 frontal area limit, relaxed from 0.12 (DDR-002)
 
 # ------------------------------------------------------------------ A. Power and energy (R9)
 duty = T_RUN / T_REC
@@ -85,8 +87,8 @@ tag("A6", f"Autonomy without sun: {aut:.1f} days; {aut * COLD:.1f} days at -20 d
 tag("A7", f"Worst month: {E_STORED_WORST:.2f} Wh stored against {e_day:.2f} Wh drawn, ratio {E_STORED_WORST / e_day:.1f}")
 deficit = e_day - E_STORED_HOT
 tag("A8", f"Hot clear day without the FieldNode sun shield: {E_STORED_HOT:.1f} Wh stored, deficit {deficit:.2f} Wh/day; a full cell covers {E_USABLE / deficit:.0f} such days in a row")
-p_run60 = (V5 * I_SPS_MAX * 60 / T_REC * 1e3 + p_afe) * MARGIN
-tag("A9", f"Option: 60 s PM run (for clean air, where the SPS30 needs up to 30 s to its first reading): design load {p_run60:.1f} mW")
+p_run30 = (V5 * I_SPS_MAX * 30 / T_REC * 1e3 + p_afe + P_TH * 1e3) * MARGIN
+tag("A9", f"PM run {T_RUN:.0f} s (DDR-002; the SPS30 needs up to 30 s to its first reading in clean air); the TRL 3 v0.1 30 s run gave {p_run30:.1f} mW")
 OUT["R9"] = (f"Design load {p_design:.1f} mW at the ports; {e_day:.2f} Wh/day drawn against {E_STORED_WORST:.2f} Wh stored in the worst month; "
              f"{aut:.1f} days without sun", "115 mW or less; energy neutral at FieldNode design sun hours", "Met on paper")
 
@@ -96,12 +98,17 @@ tag("B1", f"Record: PM1, PM2.5, PM10, WE, AE, T, RH, status (2 bytes each), coun
 for sf in (7, 8, 9, 10, 12):
     tag("B2", f"SF{sf}: {t_air[sf] * 1e3:.0f} ms per uplink; {t_air[sf] * recs:.1f} s/day; {t_air[sf] / T_REC * 100:.3f} % of each 5 min")
 tag("B3", f"EU868 1 % sub-band limit: met at every SF (worst SF12, {t_air[12] / T_REC * 100:.2f} %)")
-tag("B4", f"The Things Network fair use (30 s/day): met only at SF7 ({t_air[7] * recs:.1f} s); SF8 {t_air[8] * recs:.1f} s, SF9 {t_air[9] * recs:.1f} s")
+tag("B4", f"The Things Network fair use (30 s/day) at 5 min: met only at SF7 ({t_air[7] * recs:.1f} s); SF8 {t_air[8] * recs:.1f} s, SF9 {t_air[9] * recs:.1f} s")
+recs_ttn = 86400 / T_REC_TTN
+ttn_ok = [sf for sf in (7, 8, 9, 10, 11, 12) if t_air[sf] * recs_ttn <= 30.0]
+tag("B8", f"DDR-002 rule, 5 min on the private TwinKit gateway and 15 min on TTN: at 15 min SF8 {t_air[8] * recs_ttn:.1f} s/day, SF9 {t_air[9] * recs_ttn:.1f} s/day, "
+    f"SF10 {t_air[10] * recs_ttn:.1f} s/day; fair use met up to SF{max(ttn_ok)}")
 tag("B5", f"US915 400 ms dwell limit: SF9 {t_air[9] * 1e3:.0f} ms passes, SF10 {t_air[10] * 1e3:.0f} ms fails")
 store = payload * recs * 7 / 1e3
 tag("B6", f"7 days of store and forward: {store:.1f} kB against 16 MB FieldNode flash")
 tag("B7", "Hourly mean ready when the last record of the hour arrives: within one record interval (5 min) plus server time")
-OUT["R8"] = (f"5 min records; hourly mean within about 5 min; 7 days = {store:.1f} kB of 16 MB", "5 min; hourly within 15 min; 7 days", "Met on paper")
+OUT["R8"] = (f"5 min records (15 min on TTN, fair use met up to SF{max(ttn_ok)}); hourly mean within one interval; 7 days = {store:.1f} kB of 16 MB",
+             "5 min on a private gateway, 15 min on TTN; hourly within 15 min; 7 days", "Met on paper")
 OUT["R10"] = (f"{t_air[9] / T_REC * 100:.3f} % at SF9, {t_air[12] / T_REC * 100:.2f} % at SF12", "Below 1 % per EU868 sub-band", "Met on paper")
 
 # ------------------------------------------------------------------ C. NO2 error budget (R2, R3, R4)
@@ -130,7 +137,7 @@ band = 1.2816 * s_year * UG
 tag("C5", f"90 % one-sided classification against 40 ug/m3: decisive below {40 - band:.1f} or above {40 + band:.1f} ug/m3; streets in between cannot be classified (R4)")
 tag("C6", f"Transfer bias needed for R3 at 2 ug/m3 with the other terms unchanged: {math.sqrt(max((2 / UG) ** 2 - s_drift ** 2 - s_int ** 2 - s_rand_yr ** 2, 0)):.2f} ppb")
 OUT["R2"] = (f"Hourly MAE about {mae:.1f} ppb (budget of assumed terms)", "5 ppb or less hourly MAE, 0 to 200 ppb", "At risk")
-OUT["R3"] = (f"Annual uncertainty {s_year * UG:.1f} ug/m3 (1 sigma)", "2 ug/m3 or less at 10 ug/m3", "Not met")
+OUT["R3"] = (f"Annual uncertainty {s_year * UG:.1f} ug/m3 (1 sigma); kept as a research question", "Withdrawn as a requirement (DDR-002)", "Withdrawn")
 OUT["R4"] = (f"Decisive outside {40 - band:.1f} to {40 + band:.1f} ug/m3", "Classify vs 40 ug/m3 with 90 % confidence", "At risk")
 
 # ------------------------------------------------------------------ D. Radiation shield (R5)
@@ -232,7 +239,7 @@ def silhouette(shapes, axis, px=2.0):
 node = list(parts.values())
 a_front = silhouette(node, "y")
 a_side = silhouette(node, "x")
-tag("F3", f"Projected area from the model: {a_front:.3f} m2 seen from the street, {a_side:.3f} m2 seen along the street (R13 limit 0.12 m2)")
+tag("F3", f"Projected area from the model: {a_front:.3f} m2 seen from the street, {a_side:.3f} m2 seen along the street (R13 limit {A_LIMIT} m2, relaxed from 0.12)")
 RHO = {"asa": 1.07e-6, "al": 2.70e-6, "ss": 7.90e-6}   # kg/mm3
 W, Dp, H = P["pod"]
 pod_m = parts["pod"].volume * RHO["asa"]
@@ -245,16 +252,17 @@ saddle_m = 2 * 0.030                  # printed ASA V-saddles (from the model en
 clamp_m = 2 * 0.065                   # 12.7 mm stainless worm-drive clamps for up to 200 mm (assumed)
 bought = {"SPS30": 0.0263, "NO2 sensor": 0.015, "front end and ADC": 0.025, "T and RH probe": 0.010,
           "cables and plugs": 2 * 0.040 + 0.020, "fasteners, mesh, desiccant": 0.050}
-fnd_m = FND_MASS - FND_VBLOCK
-mass = {"FieldNode core as used": fnd_m, "rail": rail_m, "shield arm": arm_m, "saddles": saddle_m, "band clamps": clamp_m,
+plate_m = P["plate"][0] * P["plate"][1] * P["plate"][2] * RHO["al"]
+adapt_m = 0.0 if P["fnd_plate"] else 2 * P["adapter"][0] * P["adapter"][1] * P["adapter"][2] * RHO["al"]
+fnd_m = FND_MASS - FND_VBLOCK - (0.0 if P["fnd_plate"] else plate_m)
+mass = {"FieldNode core as used": fnd_m, "rail": rail_m, "adapter bars": adapt_m, "shield arm": arm_m, "saddles": saddle_m, "band clamps": clamp_m,
         "sensor pod": pod_m, "radiation shield": shield_m, "bought sensor-head parts": sum(bought.values())}
 m_tot = sum(mass.values())
 tag("F4", "Mass: " + "; ".join(f"{k} {v:.2f} kg" for k, v in mass.items()))
 tag("F5", f"Total on the pole {m_tot:.2f} kg against 3.5 kg (R13); sensor head and mount alone {m_tot - fnd_m:.2f} kg")
-plate_m = P["plate"][0] * P["plate"][1] * P["plate"][2] * RHO["al"]
-tag("F6", f"Option: fix the FieldNode enclosure and bracket straight to the AirStreet rail and leave off its back plate ({plate_m:.2f} kg): {m_tot - plate_m:.2f} kg")
+tag("F6", f"DDR-002: FieldNode back plate ({plate_m:.2f} kg) left off, enclosure bolted to the rail, bracket feet on two adapter bars ({adapt_m:.2f} kg); with the plate the node would be {m_tot + plate_m - adapt_m:.2f} kg")
 OUT["R11"] = (f"80 to 200 mm poles, band clamps; inlet {P['inlet_z'] / 1e3:.1f} m", "80 to 200 mm, no drilling, inlets 1.5 to 4 m", "Met by design")
-OUT["R13"] = (f"{m_tot:.2f} kg; {a_front:.3f} m2 frontal", "3.5 kg or less; 0.12 m2 or less", "Not met" if m_tot > 3.5 else "Met on paper")
+OUT["R13"] = (f"{m_tot:.2f} kg; {a_front:.3f} m2 frontal", f"3.5 kg or less; {A_LIMIT} m2 or less", "Not met" if (m_tot > 3.5 or a_front > A_LIMIT) else "Met on paper")
 
 # ------------------------------------------------------------------ G. Wind and mounting
 V_W, RHO_AIR, CD = 35.0, 1.225, 1.2
@@ -281,16 +289,17 @@ z_rail = P["rail"][0] * P["rail"][1] ** 2 / 6
 tag("G5", f"Rail below the lower clamp: {f_low:.1f} N on pod and shield, {m_rail:.2f} N m, stress {m_rail * 1e3 / z_rail:.1f} MPa in the 40 x 5 mm bar")
 
 # ------------------------------------------------------------------ H. Service and environment (R12, R16)
-steps = {"place and secure ladder or platform": 5, "open drip lid (4 screws)": 1.5, "swap SPS30 (plug-in lead)": 2,
-         "swap NO2 sensor on its socket": 2, "close lid, check seals": 1.5, "confirm an uplink": 2}
+steps = {"place and secure ladder or platform": 5, "unplug two M12 plugs and the probe lead": 1.5,
+         "release pod (two captive screws to the rail)": 1.5, "fit pre-collocated pod": 2, "reconnect and check glands": 1.5,
+         "confirm an uplink": 2}                  # DDR-002: exchange a pre-collocated pod, no sensor swaps at the pole
 t_serv = sum(steps.values())
 tag("H1", "Service steps (min): " + "; ".join(f"{k} {v:g}" for k, v in steps.items()) + f"; total {t_serv:.0f} min against 15 min")
-tag("H2", "A new NO2 sensor has no field calibration until it has been collocated; a pre-collocated spare pod avoids this")
+tag("H2", "The exchange pod arrives with its NO2 collocation and CalRig record, so no recollocation is needed at the pole; the returned pod is serviced and collocated at the reference site")
 tag("H3", "FieldNode is rated for -20 to +45 degC ambient (FND-REQ-001 R2) and reaches 58.7 to 73.3 degC inside at 45 degC; AirStreet R12 asks -10 to 50 degC")
 tag("H4", "SPS30 datasheet: recommended 10 to 40 degC and 20 to 80 % RH; absolute -10 to 60 degC and 0 to 95 % RH")
-OUT["R12"] = ("FieldNode rated to 45 degC ambient; SPS30 recommended range 20 to 80 % RH; condensation and insects unverified",
-              "Outdoors, -10 to 50 degC; mesh, drip lid, IP65 core", "At risk")
-OUT["R16"] = (f"About {t_serv:.0f} min estimated; recollocation needed after an NO2 swap", "15 min at the pole with hand tools", "At risk")
+OUT["R12"] = ("FieldNode sun shield required above 45 degC ambient (not yet designed in FieldNode); SPS30 recommended range 20 to 80 % RH; condensation and insects unverified",
+              "Outdoors, -10 to 50 degC; FieldNode sun shield above 45 degC; mesh, drip lid, IP65 core", "At risk")
+OUT["R16"] = (f"About {t_serv:.0f} min for a pod exchange; no recollocation at the pole", "Pre-collocated pod exchanged in 15 min at the pole with hand tools", "Met on paper" if t_serv <= 15 else "At risk")
 
 # ------------------------------------------------------------------ I. Cost (R15)
 rows = list(csv.DictReader((ROOT / "bom" / "bom.csv").open()))
@@ -298,11 +307,10 @@ tot = sum(float(r["qty"]) * float(r["unit_cost_usd"]) for r in rows)
 fnd_cost = sum(float(r["qty"]) * float(r["unit_cost_usd"]) for r in rows if r["item"].startswith(("1 ", "2 ")))
 head = tot - fnd_cost
 budget = float(yaml.safe_load((ROOT / "project.yaml").read_text())["budget_usd"])
-PROPOSED = 280.0
 tag("I1", f"BOM {len(rows)} lines, all priced: ${tot:.2f} per node; FieldNode core ${fnd_cost:.2f} (costed in FND); sensor head ${head:.2f}")
-tag("I2", f"Sensor head against budget_usd ${budget:.0f}: over by ${head - budget:.2f}; against the proposed ${PROPOSED:.0f} (awaiting Amish): {'over' if head > PROPOSED else 'under'} by ${abs(head - PROPOSED):.2f}")
+tag("I2", f"Sensor head against budget_usd ${budget:.0f} (DDR-002): {'over' if head > budget else 'within'} by ${abs(head - budget):.2f}")
 tag("I3", "Replacement NO2 sensor about every 2 years (estimate) and collocation time are running costs, not in the BOM")
-OUT["R15"] = (f"Sensor head ${head:.2f}; ${tot:.2f} with the FieldNode core", f"Sensor head ${budget:.0f} or less (budget_usd); ${PROPOSED:.0f} proposed", "Not met")
+OUT["R15"] = (f"Sensor head ${head:.2f}; ${tot:.2f} with the FieldNode core", f"Sensor head ${budget:.0f} or less (budget_usd)", "Not met" if head > budget else "Met on paper")
 
 # ------------------------------------------------------------------ by design
 OUT["R6"] = ("CalRig for T, RH and PM; 14-day NO2 collocation and every 6 months (DDR-001 D3)", "Stated method per node", "Met by design")

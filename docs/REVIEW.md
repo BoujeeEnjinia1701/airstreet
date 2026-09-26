@@ -31,18 +31,18 @@ Requirements not met or at risk:
 - **R3 (NO2 near the WHO guideline) not met:** expected hourly error is about the size of the guideline level; AirStreet can rank streets and check the EU 40 µg/m³ limit (R4) but cannot confirm WHO guideline compliance.
 - **At risk:** R2 (NO2 accuracy and seasonal drift unverified), R5 (radiation shield error in low wind), R12 (condensation and insects in the pod), R16 (sensor swap at height within 15 min).
 
-### Proposed, awaiting Amish
+### Proposed, awaiting Amish (status updated 2026-09-25, see AST-DDR-002)
 
-1. **Budget.** Options: (a) budget covers the sensor head only, with the FieldNode core costed in FieldNode, and rises to about $280; (b) raise `budget_usd` to about $400 for the whole node; (c) keep $180 with a cheaper PM sensor and a three-electrode NO2 sensor, at a clear loss of NO2 accuracy. Recommendation: (a). `project.yaml` is unchanged.
-2. **Pitch wording.** The pitch says "calibrated on CalRig", but CalRig covers only temperature, humidity, CO2 and particles. Proposed: "A street-level air quality node measuring PM2.5 and NO2, with particles checked on CalRig and NO2 calibrated against a reference station, for neighborhood-scale pollution maps." Recommendation: adopt. `project.yaml` and the README intro are unchanged until Amish decides.
-3. **NO2 calibration method.** Field collocation with a regulatory reference station for at least 14 days before deployment, at least every 6 months after, and one permanently collocated anchor node; multiple linear regression first, random forest later. Alternative: collocation only at deployment. Recommendation: the full plan.
-4. **NO2 sensor.** Alphasense NO2-B43F class (four electrodes, ozone filter) versus a cheaper three-electrode sensor. Recommendation: B43F class.
-5. **NO2 front end.** Buy an ISB class board for the first units versus an open two-channel potentiostat (saves about $35). Recommendation: buy first, study the open design at TRL 3.
-6. **PM sensor.** Sensirion SPS30 class versus a Plantower PMS5003 class sensor (about $25 cheaper). Recommendation: SPS30 class.
-7. **Inlet height.** About 3.0 m (proposed) versus about 2.5 m, both within the EU 1.5 to 4 m range. Recommendation: 3.0 m.
-8. **Reporting.** One record every 5 min, PM sensor run 30 s per record, raw signals sent. Recommendation: adopt.
-9. **Open data.** Publish calibrated hourly data, with calibration version, to an open platform such as OpenAQ. Recommendation: yes, subject to the partner's agreement.
-10. **First partner, city and reference station** for co-design and collocation.
+1. **Budget.** Options: (a) budget covers the sensor head only, with the FieldNode core costed in FieldNode, and rises to about $280; (b) raise `budget_usd` to about $400 for the whole node; (c) keep $180 with a cheaper PM sensor and a three-electrode NO2 sensor, at a clear loss of NO2 accuracy. Recommendation: (a). `project.yaml` is unchanged. **Decided by Amish, 2026-09-25: go with recommendation** (AST-DDR-002).
+2. **Pitch wording.** The pitch says "calibrated on CalRig", but CalRig covers only temperature, humidity, CO2 and particles. Proposed: "A street-level air quality node measuring PM2.5 and NO2, with particles checked on CalRig and NO2 calibrated against a reference station, for neighborhood-scale pollution maps." Recommendation: adopt. `project.yaml` and the README intro are unchanged until Amish decides. **Decided by Amish, 2026-09-25: go with recommendation** (AST-DDR-002).
+3. **NO2 calibration method.** Field collocation with a regulatory reference station for at least 14 days before deployment, at least every 6 months after, and one permanently collocated anchor node; multiple linear regression first, random forest later. Alternative: collocation only at deployment. Recommendation: the full plan. **Decided by Amish, 2026-09-25: go with recommendation** (AST-DDR-002).
+4. **NO2 sensor.** Alphasense NO2-B43F class (four electrodes, ozone filter) versus a cheaper three-electrode sensor. Recommendation: B43F class. **Decided by Amish, 2026-09-25: go with recommendation** (AST-DDR-002).
+5. **NO2 front end.** Buy an ISB class board for the first units versus an open two-channel potentiostat (saves about $35). Recommendation: buy first, study the open design at TRL 3. **Decided by Amish, 2026-09-25: go with recommendation** (AST-DDR-002).
+6. **PM sensor.** Sensirion SPS30 class versus a Plantower PMS5003 class sensor (about $25 cheaper). Recommendation: SPS30 class. **Decided by Amish, 2026-09-25: go with recommendation** (AST-DDR-002).
+7. **Inlet height.** About 3.0 m (proposed) versus about 2.5 m, both within the EU 1.5 to 4 m range. Recommendation: 3.0 m. **Decided by Amish, 2026-09-25: go with recommendation** (AST-DDR-002).
+8. **Reporting.** One record every 5 min, PM sensor run 30 s per record, raw signals sent. Recommendation: adopt. **Decided by Amish, 2026-09-25: go with recommendation** (AST-DDR-002).
+9. **Open data.** Publish calibrated hourly data, with calibration version, to an open platform such as OpenAQ. Recommendation: yes, subject to the partner's agreement. **Decided by Amish, 2026-09-25: go with recommendation** (AST-DDR-002).
+10. **First partner, city and reference station** for co-design and collocation. Still proposed, awaiting Amish (no recommendation).
 
 ### Safety concerns
 
@@ -99,18 +99,18 @@ Key numbers: 247 ms per uplink at SF9 (1.81 s at SF12, not the 1.3 s of TRL 2); 
 
 ### Decisions recorded (AST-DDR-001)
 
-Adopted as recommended for TRL 3 under Amish's 2026-09-25 instruction, open for his review: D1 budget covers the sensor head only, FieldNode core costed in FieldNode (R15 redefined; the $280 figure is recorded only and `budget_usd` stays $180); D2 pitch reworded and applied to `project.yaml` and `README.md`; D3 full NO2 collocation plan; D4 NO2-B43F class sensor; D5 buy an ISB class front end first; D6 SPS30 class PM sensor; D7 inlets at 3.0 m; D8 5 min records, 30 s PM run, raw signals; D9 open data subject to the partner's agreement.
+Adopted as recommended for TRL 3 under Amish's 2026-09-25 instruction, open for his review (now decided by Amish, 2026-09-25: go with recommendation, see AST-DDR-002): D1 budget covers the sensor head only, FieldNode core costed in FieldNode (R15 redefined; the $280 figure is recorded only and `budget_usd` stays $180); D2 pitch reworded and applied to `project.yaml` and `README.md`; D3 full NO2 collocation plan; D4 NO2-B43F class sensor; D5 buy an ISB class front end first; D6 SPS30 class PM sensor; D7 inlets at 3.0 m; D8 5 min records, 30 s PM run, raw signals; D9 open data subject to the partner's agreement.
 
-### Still awaiting Amish
+### Still awaiting Amish (status updated 2026-09-25, see AST-DDR-002)
 
-1. **O1, first partner, city and reference station.** No recommendation was made.
-2. **Budget figure.** `budget_usd` is $180; $280 is recommended (D1); the sensor head is now $283.00. Options: accept about $285; find $3 (for example quantity pricing on the SPS30, $57.48 at 25 or more); or the open front end at about $25 instead of $60 once designed. Recommendation: set about $285 for now and revisit the open front end later.
-3. **New, mass and area (R13).** Options: (a) leave off FieldNode's 0.47 kg back plate and fix its enclosure and bracket to the AirStreet rail (3.19 kg, area slightly lower), which changes the FieldNode mounting interface; (b) relax R13 to 4.0 kg and 0.15 m²; (c) both. Recommendation: (a), agreed with FieldNode, plus relaxing the area limit to 0.15 m², since the panel alone is set by FieldNode. Not applied.
-4. **New, WHO guideline (R3).** Options: drop R3 and state plainly that AirStreet ranks streets and checks the EU limit only; or keep R3 as a research goal needing an anchor node at every site. Recommendation: drop it as a requirement and keep it as an open research question. Not applied.
-5. **New, PM run length.** The SPS30 needs up to 30 s to a first reading in clean air. Options: keep 30 s; or run 60 s (design load 87.0 mW, still inside 100 mW). Recommendation: 60 s. Not applied.
-6. **New, fair use on The Things Network.** At 5 min, only SF7 fits the 30 s/day policy. Options: 5 min on private gateways only; or 15 min on TTN at SF8 and slower. Recommendation: 5 min on the TwinKit gateway, 15 min on TTN. Not applied.
-7. **New, R12 temperature range.** FieldNode is rated to 45 °C ambient. Options: cap R12 at 45 °C; or require FieldNode's proposed sun shield at hot sites. Recommendation: require the shield at sites above 45 °C, consistent with FieldNode's own recommendation. Not applied.
-8. **New, service unit (R16).** Recommendation: exchange a pre-collocated pod rather than individual sensors at the pole. Not applied.
+1. **O1, first partner, city and reference station.** No recommendation was made. Still proposed, awaiting Amish.
+2. **Budget figure.** `budget_usd` is $180; $280 is recommended (D1); the sensor head is now $283.00. Options: accept about $285; find $3 (for example quantity pricing on the SPS30, $57.48 at 25 or more); or the open front end at about $25 instead of $60 once designed. Recommendation: set about $285 for now and revisit the open front end later. **Decided by Amish, 2026-09-25: go with recommendation** (AST-DDR-002).
+3. **New, mass and area (R13).** Options: (a) leave off FieldNode's 0.47 kg back plate and fix its enclosure and bracket to the AirStreet rail (3.19 kg, area slightly lower), which changes the FieldNode mounting interface; (b) relax R13 to 4.0 kg and 0.15 m²; (c) both. Recommendation: (a), agreed with FieldNode, plus relaxing the area limit to 0.15 m², since the panel alone is set by FieldNode. Not applied. **Decided by Amish, 2026-09-25: go with recommendation** (AST-DDR-002).
+4. **New, WHO guideline (R3).** Options: drop R3 and state plainly that AirStreet ranks streets and checks the EU limit only; or keep R3 as a research goal needing an anchor node at every site. Recommendation: drop it as a requirement and keep it as an open research question. Not applied. **Decided by Amish, 2026-09-25: go with recommendation** (AST-DDR-002).
+5. **New, PM run length.** The SPS30 needs up to 30 s to a first reading in clean air. Options: keep 30 s; or run 60 s (design load 87.0 mW, still inside 100 mW). Recommendation: 60 s. Not applied. **Decided by Amish, 2026-09-25: go with recommendation** (AST-DDR-002).
+6. **New, fair use on The Things Network.** At 5 min, only SF7 fits the 30 s/day policy. Options: 5 min on private gateways only; or 15 min on TTN at SF8 and slower. Recommendation: 5 min on the TwinKit gateway, 15 min on TTN. Not applied. **Decided by Amish, 2026-09-25: go with recommendation** (AST-DDR-002).
+7. **New, R12 temperature range.** FieldNode is rated to 45 °C ambient. Options: cap R12 at 45 °C; or require FieldNode's proposed sun shield at hot sites. Recommendation: require the shield at sites above 45 °C, consistent with FieldNode's own recommendation. Not applied. **Decided by Amish, 2026-09-25: go with recommendation** (AST-DDR-002).
+8. **New, service unit (R16).** Recommendation: exchange a pre-collocated pod rather than individual sensors at the pole. Not applied. **Decided by Amish, 2026-09-25: go with recommendation** (AST-DDR-002).
 
 ### Cross-repo consistency
 
@@ -137,3 +137,51 @@ Adopted as recommended for TRL 3 under Amish's 2026-09-25 instruction, open for 
 ### Recommended next step
 
 TRL 4 is on hold by Amish's instruction; this repo stops at TRL 3. Amish's review is needed on AST-DDR-001 and on items 1 to 8 above. For the record only, TRL 4 would need: a bench-built sensor head on a FieldNode core; a lab test report (TST, `environment: lab`) covering port power draw, SPS30 start-up in clean air, shield error under a lamp and fan, CalRig checks of the SPS30 and SHT45, and NO2 zero and noise with the chosen front end; and build log entries. Field collocation belongs to TRL 5. None of this has been started.
+
+## Session 2026-09-25: recommendations accepted
+
+On 2026-09-25 Amish wrote: "i accept all your recommendations, go with them across all repos." Every AirStreet item with a recommendation is now decided by Amish, 2026-09-25: go with recommendation, and is recorded in `docs/decisions/0002-recommendations-accepted.md` (AST-DDR-002). Items without a recommendation stay open.
+
+### Decisions applied and what changed
+
+| Item | Decision | Before | After |
+| --- | --- | --- | --- |
+| D1 to D9 (AST-DDR-001) | As recommended | Adopted for TRL 3, open for review | Decided; AST-DDR-001 v0.2 |
+| Budget | About $285 for the sensor head | `budget_usd` $180 | `budget_usd` $285; sensor head $283.00 to $285.00 (adapter bars +$2); R15 met with no margin |
+| R13 mass and area | Leave off FieldNode's back plate, enclosure to the rail; area limit 0.15 m² | 3.65 kg, 0.138 m² against 3.5 kg, 0.12 m² | 3.26 kg, 0.126 m² against 3.5 kg, 0.15 m²; model, STEP, STL, AST-DWG-001 Rev P2, BOM line 3 |
+| R3 WHO guideline | Drop as a requirement, keep as research | Not met (4.2 µg/m³ against 2) | Withdrawn; research question |
+| PM run | 60 s per record | 30 s; 48.0 mW design load; 11.9 days without sun | 60 s; 87.0 mW; 6.6 days (4.6 days at -20 °C) |
+| TTN fair use | 5 min on the TwinKit gateway, 15 min on TTN | 5 min fits TTN only at SF7 | 15 min on TTN fits up to SF9 (23.7 s/day); R8 restated |
+| R12 heat | FieldNode sun shield required above 45 °C | Target -10 to 50 °C without a rule | Shield required above 45 °C; still at risk until FieldNode designs it |
+| R16 service | Exchange a pre-collocated pod | Sensor swap, 14 min, recollocation needed | Pod exchange, about 14 min; met on paper |
+
+Documents revised with the change "Recommendations accepted by Amish (DDR-002)": AST-PRB-001 v0.4, AST-PRC-001 v0.4, AST-REQ-001 v0.4, AST-CAL-001 v0.2 (script rerun, `results.csv` regenerated), AST-DDR-001 v0.2 and the new AST-DDR-002 v0.1. `project.yaml` (`budget_usd`, evidence list), `README.md` (budget, performance paragraph, components, new "What sparked the idea"), `bom/bom.csv` and `bom/bom-notes.md` updated. All media, the drawing and the PDFs were regenerated; temporary `_views` folders deleted.
+
+### Requirement status now (AST-CAL-001 v0.2)
+
+- **Not met:** none (was R3, R13 and R15).
+- **At risk (5):** R1 PM2.5 above 85 % RH; R2 NO2 hourly error rests on assumed terms; R4 EU limit decisive only outside 34.6 to 45.4 µg/m³; R5 shield error in low wind; R12 FieldNode sun shield not yet designed, humidity, condensation and insects.
+- **Met on paper (6):** R8, R9, R10, R13, R15 (no margin), R16.
+- **Met by design (4):** R6, R7, R11, R14.
+- **Withdrawn (1):** R3, kept as a research question.
+
+The 60 s PM run leaves 13 mW under FieldNode's 100 mW design value, and autonomy at -20 °C (4.6 days) is below the 5 days FieldNode's own R6 asks of its core. AirStreet has no autonomy requirement, so this is noted, not a failure.
+
+### Still awaiting Amish
+
+1. **O1, first partner, city and reference station** for co-design and collocation. No recommendation was made.
+
+### Cross-repo actions (not made here)
+
+- **FieldNode:** accept an enclosure bolted to the AirStreet rail without its back plate, with the panel bracket feet on two AirStreet adapter bars (R13); design and supply the sun shield for sites above 45 °C (R12); keep port B's 5 V rail on continuously for the NO2 bias; allow a 5 min interval on a private gateway alongside its 15 min TTN default.
+- **TwinKit:** serve as AirStreet's default private gateway for 5 min records.
+- **CalRig:** take the assembled pod across two bays if it is checked whole.
+
+### Other changes
+
+- "What sparked the idea" in `README.md` now cites the Ella Adoo Kissi-Debrah inquest (coroner's finding, December 2020; Prevention of Future Deaths report, 20 April 2021), verified by fetching the judiciary, CIEH and IAQM pages. The previous text about a portfolio review was removed. `docs/01-problem.md` did not attribute the idea to a review.
+- All generated files (docs PDFs, drawing, concept media) were rebuilt; none shows the old personal domain.
+
+### TRL
+
+TRL 4 remains on hold by Amish's instruction. Decisions that need TRL 4 or later work are decided but on hold: buying the ISB class front end (D5), field collocation (D3), publishing open data (D9), the open two-channel front end (budget item), the firmware reporting rule, and spare pods. `trl: 3` and `trl_target: 3` are unchanged.

@@ -3,7 +3,7 @@ doc_id: AST-PRB-001
 title: AirStreet problem statement
 project: AirStreet
 doc_type: Problem statement
-version: "0.3"
+version: "0.4"
 status: Draft
 date: '2026-09-25'
 author: Amish Chadha
@@ -21,6 +21,10 @@ revisions:
   date: '2026-09-25'
   author: Amish Chadha
   change: TRL 3 update; constraints and open questions reflect AST-DDR-001 and AST-CAL-001
+- version: "0.4"
+  date: '2026-09-25'
+  author: Amish Chadha
+  change: Recommendations accepted by Amish (DDR-002)
 ---
 
 # AirStreet problem statement
@@ -49,14 +53,14 @@ AirStreet addresses one specific gap: an open, pole-mounted node that measures P
 
 ## Operating environment
 
-- Mounted on a street light or signal pole, inlets 3.0 m above the sidewalk (AST-DDR-001 D7, adopted for TRL 3 work, open for Amish's review), on the street side and within a few meters of the kerb.
-- Outdoor, in sun, rain, dust and traffic spray; temperate to hot humid climates (about -10 to 50 °C, 10 to 100 % RH, estimate to be confirmed with partners). FieldNode is rated to 45 °C ambient and the SPS30 particle sensor is recommended for 20 to 80 % RH, so the hottest and most humid sites are at risk (AST-CAL-001).
+- Mounted on a street light or signal pole, inlets 3.0 m above the sidewalk (AST-DDR-001 D7, decided by Amish on 2026-09-25), on the street side and within a few meters of the kerb.
+- Outdoor, in sun, rain, dust and traffic spray; temperate to hot humid climates (about -10 to 50 °C, 10 to 100 % RH, estimate to be confirmed with partners). FieldNode is rated to 45 °C ambient, so sites hotter than that need FieldNode's sun shield (AST-DDR-002); the SPS30 particle sensor is recommended for 20 to 80 % RH, so the most humid sites remain at risk (AST-CAL-001).
 - No mains power: runs on the FieldNode solar and battery core.
-- Data over LoRaWAN to a community or municipal gateway (for example the lab's TwinKit gateway) or a public network.
+- Data over LoRaWAN: every 5 min through a private gateway (the lab's TwinKit gateway by default), or every 15 min on The Things Network, whose fair-use policy a 5 min interval would exceed (AST-DDR-002).
 
 ## Constraints
 
-- Garage-buildable prototype. The $180 `budget_usd` covers the AirStreet sensor head; the FieldNode core is costed in FieldNode (AST-DDR-001 D1). A rise to about $280 is recommended and awaiting Amish. The sensor head costs $283.00 at TRL 3 prices, over both figures (see [03-requirements.md](03-requirements.md)).
+- Garage-buildable prototype. The $285 `budget_usd` covers the AirStreet sensor head; the FieldNode core is costed in FieldNode (AST-DDR-001 D1 and AST-DDR-002). The sensor head costs $285.00 at TRL 3 prices, within the budget with no margin (see [03-requirements.md](03-requirements.md)).
 - Built on FieldNode, the lab's shared outdoor core, with its power budget and sensor port pinout.
 - Temperature, humidity and particle checks on CalRig. CalRig does not cover NO2, so NO2 must be calibrated by field collocation with a reference station.
 - Levels only: no images, audio or personal data collected or sent.
@@ -81,8 +85,8 @@ What is missing is an open, documented node design that pairs these sensors with
 ## Open questions
 
 - Which city and partner first, and which reference station can host a collocation? Proposed, awaiting Amish (AST-DDR-001 O1).
-- Inlet height: 3.0 m is adopted for TRL 3 work, open for Amish's review; partners may still prefer a lower inlet, closer to the breathing zone.
-- Is NO2 accuracy of about 4 to 5 ppb hourly, which cannot resolve the WHO annual guideline but can rank streets, useful enough for the first partner's questions? To be tested with users.
+- Inlet height: 3.0 m is decided (AST-DDR-001 D7); partners may still ask for a lower inlet, closer to the breathing zone, which would reopen that decision.
+- Is NO2 accuracy of about 4 to 5 ppb hourly, which cannot resolve the WHO annual guideline but can rank streets, useful enough for the first partner's questions? To be tested with users. Resolving the WHO guideline is no longer a requirement; it is kept as a research question (AST-DDR-002).
 
 ## User research and co-design
 
