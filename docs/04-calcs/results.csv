@@ -1,0 +1,17 @@
+id,value,target,status
+R1,Within the bound up to 80 % RH on paper; outside it above that,+/-5 ug/m3 or +/-30 % hourly after humidity correction,At risk
+R2,Hourly MAE about 3.9 ppb (budget of assumed terms),"5 ppb or less hourly MAE, 0 to 200 ppb",At risk
+R3,Annual uncertainty 4.2 ug/m3 (1 sigma),2 ug/m3 or less at 10 ug/m3,Not met
+R4,Decisive outside 34.6 to 45.4 ug/m3,Classify vs 40 ug/m3 with 90 % confidence,At risk
+R5,"SHT45 +/-0.1 degC, +/-1 % RH typical; shield error 0.43 to 0.89 K at 1 m/s","+/-0.5 degC, +/-3 % RH; radiation error 1 degC or less",At risk
+R6,"CalRig for T, RH and PM; 14-day NO2 collocation and every 6 months (DDR-001 D3)",Stated method per node,Met by design
+R7,"Raw WE, AE, PM, T, RH and a calibration version tag",Raw signals kept,Met by design
+R8,5 min records; hourly mean within about 5 min; 7 days = 40.3 kB of 16 MB,5 min; hourly within 15 min; 7 days,Met on paper
+R9,Design load 48.0 mW at the ports; 1.29 Wh/day drawn against 7.75 Wh stored in the worst month; 11.9 days without sun,115 mW or less; energy neutral at FieldNode design sun hours,Met on paper
+R10,"0.082 % at SF9, 0.60 % at SF12",Below 1 % per EU868 sub-band,Met on paper
+R11,"80 to 200 mm poles, band clamps; inlet 3.0 m","80 to 200 mm, no drilling, inlets 1.5 to 4 m",Met by design
+R12,FieldNode rated to 45 degC ambient; SPS30 recommended range 20 to 80 % RH; condensation and insects unverified,"Outdoors, -10 to 50 degC; mesh, drip lid, IP65 core",At risk
+R13,3.65 kg; 0.138 m2 frontal,3.5 kg or less; 0.12 m2 or less,Not met
+R14,"Levels, T and RH only","No images, audio or identifiers",Met by design
+R15,Sensor head $283.00; $409.00 with the FieldNode core,Sensor head $180 or less (budget_usd); $280 proposed,Not met
+R16,About 14 min estimated; recollocation needed after an NO2 swap,15 min at the pole with hand tools,At risk

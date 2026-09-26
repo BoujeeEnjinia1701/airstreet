@@ -1,14 +1,14 @@
 # AirStreet
 
-![TRL 2](https://img.shields.io/badge/TRL-2%20of%209-0F766E) ![Hardware: CERN-OHL-S-2.0](https://img.shields.io/badge/hardware-CERN--OHL--S--2.0-111827) ![Software: MIT](https://img.shields.io/badge/software-MIT-111827)
+![TRL 3](https://img.shields.io/badge/TRL-3%20of%209-0F766E) ![Hardware: CERN-OHL-S-2.0](https://img.shields.io/badge/hardware-CERN--OHL--S--2.0-111827) ![Software: MIT](https://img.shields.io/badge/software-MIT-111827)
 
-**Area:** Smart Cities · **TRL:** 2 of 9 (concept formulated) · **Prototype budget:** about $180 USD · **Difficulty:** 3 of 5
+**Area:** Smart Cities · **TRL:** 3 of 9 (proof of concept on paper) · **Prototype budget:** about $180 USD for the sensor head · **Difficulty:** 3 of 5
 
-A street-level air quality node measuring PM2.5 and NO2, calibrated on CalRig, for neighborhood-scale pollution maps.
+A street-level air quality node measuring PM2.5 and NO2, with particles checked on CalRig and NO2 calibrated against a reference station, for neighborhood-scale pollution maps.
 
 ![AirStreet concept](media/hero.png)
 
-[Interactive 3D model](media/viewer.html) · [Concept blueprint (PDF)](media/concept-blueprint.pdf) · [Review note](docs/REVIEW.md)
+[Interactive 3D model](media/viewer.html) · [Concept blueprint (PDF)](media/concept-blueprint.pdf) · [General arrangement AST-DWG-001 (PDF)](cad/drawings/AST-DWG-001.pdf) · [Sizing calculations](docs/04-calcs/01-sizing.md) · [Review note](docs/REVIEW.md)
 
 ## Concept rationale
 
@@ -55,9 +55,9 @@ Regulatory air monitors are few and far apart, missing the streets where people 
 
 ## Concept
 
-A street-level air quality node measuring PM2.5 and NO2 for neighborhood-scale pollution maps. The sensor pod and radiation shield hang below a FieldNode core on a street light pole, inlets about 3.0 m above the sidewalk (proposed), and send one record every 5 min over LoRaWAN. PM, temperature and humidity are checked on CalRig; **NO2 is calibrated by field collocation with a reference station** for at least 14 days before deployment and at least every 6 months, because CalRig does not cover NO2.
+A street-level air quality node measuring PM2.5 and NO2, with particles checked on CalRig and NO2 calibrated against a reference station, for neighborhood-scale pollution maps. The sensor pod and radiation shield hang below a FieldNode core on a street light pole, with inlets 3.0 m above the sidewalk, and send one record every 5 min over LoRaWAN. PM, temperature and humidity are checked on CalRig; **NO2 is calibrated by field collocation with a reference station** for at least 14 days before deployment and at least every 6 months, because CalRig does not cover NO2.
 
-Estimated performance (TRL 2, to be checked at TRL 3): about 45 mW average sensor power, within FieldNode's 115 mW allowance; about 3.0 kg on the pole; about $391 in parts including the FieldNode core, or about $265 for the sensor head alone. Not met: the $180 budget, and resolving NO2 near the WHO annual guideline of 10 µg/m³ (expected hourly error about 5 ppb, or 9.4 µg/m³). Only pollutant levels, temperature and humidity leave the device; no images or audio.
+Calculated performance (TRL 3, [AST-CAL-001](docs/04-calcs/01-sizing.md)): a 48 mW design sensor load, within FieldNode's 100 mW design allowance, and 11.9 days without sun; 0.60 % radio duty cycle even at SF12; hourly NO2 error of about 3.9 ppb and PM2.5 within ±5 µg/m³ or ±30 % up to 80 % RH. Three requirements are not met: the annual NO2 uncertainty (about 4.2 µg/m³) is too large to resolve the WHO guideline of 10 µg/m³; the node weighs 3.65 kg and presents 0.138 m² to the street, over 3.5 kg and 0.12 m²; and the sensor head costs $283.00 in parts ($409.00 with the FieldNode core), over the $180 budget and the $280 proposed. Only pollutant levels, temperature and humidity leave the device; no images or audio.
 
 Full design precis: [docs/02-concept.md](docs/02-concept.md). Requirements: [docs/03-requirements.md](docs/03-requirements.md).
 
@@ -72,9 +72,9 @@ Full design precis: [docs/02-concept.md](docs/02-concept.md). Requirements: [doc
 7. NO2 potentiostat front end and 16-bit ADC
 8. Multi-plate radiation shield
 9. Temperature and humidity sensor (Sensirion SHT45 class)
-10. Sensor cables with M12 plugs
+10. Sensor cables with M12 plugs (0.5 m)
 
-The working bill of materials is in [bom/bom.csv](bom/bom.csv).
+The priced bill of materials is in [bom/bom.csv](bom/bom.csv); the parametric model is `cad/src/model.py`, with STEP and STL exports in `cad/step/` and `cad/stl/`.
 
 ## Safety
 
