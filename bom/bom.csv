@@ -1,6 +1,12 @@
 item,qty,spec,supplier,unit_cost_usd,make_buy,notes
-Optical PM2.5 sensor,,,,,,
-Electrochemical NO2 sensor,,,,,,
-Temperature and humidity sensor,,,,,,
-FieldNode core,,,,,,
-Radiation shield,,,,,,
+"1 FieldNode core (enclosure, cell, radio)",1,"FieldNode: IP65 enclosure, LiFePO4 3.2 V 6 Ah cell, MPPT board, STM32WL LoRaWAN, two M12 sensor ports",Built from FieldNode BOM,126.00,make,Indicative; parts total from the FieldNode README; shared component
+2 FieldNode 6 W panel hood,1,6 W panel on tilt bracket as sun and rain hood,Included in line 1,0.00,make,Cost counted in line 1
+3 Band clamps and mounting rail,1,"Two stainless band clamps for 80 to 200 mm poles, 520 mm aluminum flat bar rail with shield arm",Hardware store,14.00,buy,Indicative price; longer rail than the FieldNode kit
+4 Sensor pod with mesh and drip lid,1,"3D-printed ASA shell about 170 x 110 x 95 mm, open underneath, stainless insect mesh, overhanging lid",Self,10.00,make,Material cost only
+5 Optical PM sensor (SPS30 class),1,"Sensirion SPS30 class laser scattering sensor, PM1 to PM10, I2C",Electronics distributor,45.00,buy,Indicative price; proposed choice awaiting Amish
+6 Electrochemical NO2 sensor (B4 class),1,"Alphasense NO2-B43F class four-electrode sensor with ozone filter",Alphasense distributor,90.00,buy,Indicative estimate; proposed choice awaiting Amish; replace about every 2 years (estimate)
+7 NO2 front end and 16-bit ADC,1,"Four-electrode potentiostat board (Alphasense ISB class or open two-channel design) and ADS1115 class ADC",Alphasense distributor or self,60.00,buy,Indicative estimate; open design option about $25 (awaiting Amish)
+8 Multi-plate radiation shield,1,"Eight 120 mm printed ASA plates on three M5 stainless rods, white",Self,10.00,make,Material cost only
+9 Temperature and humidity sensor,1,"Sensirion SHT45 class on a small probe board, I2C",Electronics distributor,12.00,buy,Indicative price
+10 Sensor cables M12,2,"1 m shielded cable with M12 plug and gland",Electronics distributor,8.00,buy,Indicative price
+11 Fasteners and consumables,1,"Stainless screws, desiccant sachet, conformal coating, cable ties",Self,8.00,buy,Indicative price; not modeled
