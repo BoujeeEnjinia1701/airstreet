@@ -185,3 +185,24 @@ The 60 s PM run leaves 13 mW under FieldNode's 100 mW design value, and autonomy
 ### TRL
 
 TRL 4 remains on hold by Amish's instruction. Decisions that need TRL 4 or later work are decided but on hold: buying the ISB class front end (D5), field collocation (D3), publishing open data (D9), the open two-channel front end (budget item), the firmware reporting rule, and spare pods. `trl: 3` and `trl_target: 3` are unchanged.
+
+## Session 2026-09-26: product appearance model and photoreal renders
+
+Amish chose AirStreet on 2026-09-26 for the first batch of product renders. This session adds an appearance model for photoreal renders. It changes no design parameter, requirement, calculation or BOM line.
+
+### What was done
+
+- `cad/src/product_model.py` (new): `product_parts()` returns 66 parts (45 shell, 20 internal, 1 context), each with a colour, a render material, its BOM line, a group and an explode offset; `TITLE` and `RENDER_VIEWS` (hero on the pole, exploded, and a detail view without the pole). It imports `PARAMS`, `derived()` and `build_parts()` from `cad/src/model.py`, so every main dimension and interface is unchanged: pole axis, 3.0 m inlet plane, rail, saddles, 375 mm clamp spacing, adapter bars, FieldNode envelope, ports, whip, 40 deg panel, pod, sensors, front end, shield and arm.
+- Appearance detail added: filleted FieldNode enclosure with parting line, gasket, side ribs, lid screws, lid label and a lit green status light; M12 sockets with knurled plugs and cables; blanked glands; whip antenna with a swivel knuckle; aluminium panel frame with cell grid and junction box; filleted pod with side ribs, lid screws, cable glands, stainless mesh and a label strip; dished shield plates with spacers, stainless rods and acorn nuts; worm housings and screws on the band clamps; slotted rail; cable clips on the shield arm; the FieldNode board and LiFePO4 cell inside; a short section of 140 mm pole as context.
+- `README.md`: the hero image now points to `media/render-hero.png`, with a link to `media/render-exploded.png`. The render files are produced separately.
+
+### Differences from model.py (Proposed, awaiting Amish)
+
+1. **Clear service window in the pod's street face.** Not in `model.py` or the BOM; added so the renders show the PM sensor, NO2 sensor and front end. A window lets sun heat the pod and adds a seal. Recommendation: keep the window in the renders only and keep the pod opaque ASA in the design; if Amish wants it in the design, use UV-stabilized polycarbonate and add it to BOM line 4.
+2. **Radiation shield plates drawn with a 6 mm downturned lip and rod spacers.** `model.py` has flat rings. The lip and spacers are the usual multi-plate shield form and keep the 120 mm OD, 56 mm ID, 13 mm pitch and eight plates. Recommendation: adopt the lipped plate as the reference form at the next design update; the shield error in AST-CAL-001 does not depend on it.
+3. **FieldNode interior (power and radio board, LiFePO4 cell in a cradle).** Illustrative envelopes only, placed for the exploded view; FieldNode's own model governs them. Recommendation: accept as illustration, no change to FieldNode.
+4. **Label wording on the FieldNode lid** ("AirStreet", "PM2.5 + NO2 STREET NODE", "RAW SIGNALS, OPEN CALIBRATION", band "FIELDNODE CORE") and the pod strip ("INLET BELOW · PM · NO2"). Naming and wording are Amish's call. Recommendation: keep; the wording matches the pitch and does not claim certification.
+
+### TRL
+
+Appearance only: no tolerances, fabrication detail, PCB layouts or TRL 4 work. `trl: 3` and `trl_target: 3` are unchanged, and TRL 4 remains on hold.
