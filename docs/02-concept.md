@@ -3,9 +3,9 @@ doc_id: AST-PRC-001
 title: AirStreet design precis
 project: AirStreet
 doc_type: Design precis
-version: "0.5"
+version: "0.6"
 status: Draft
-date: '2026-09-30'
+date: '2026-10-01'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -29,6 +29,10 @@ revisions:
   date: '2026-09-30'
   author: Amish Chadha
   change: Design made constructable (AST-DDR-003); mount, pod, shield, mass, area and cost figures updated
+- version: "0.6"
+  date: '2026-10-01'
+  author: Amish Chadha
+  change: Budget treated as a value-engineering target
 ---
 
 
@@ -38,7 +42,7 @@ revisions:
 
 AirStreet is a pole-mounted node that measures PM2.5 and NO2 at street level for neighborhood-scale pollution maps. A small sensor pod and a radiation shield hang below a FieldNode core on a street light pole, with the inlet plane 3.0 m above the sidewalk. Temperature, humidity and particle readings are checked on CalRig. CalRig does not cover NO2, so each NO2 sensor is calibrated by field collocation with a reference station before deployment and at intervals afterward. The node sends raw signals, so calibrations can be improved and reapplied later. Amish accepted the recommended design choices on 2026-09-25 ([AST-DDR-001](decisions/0001-trl2-review-decisions.md), [AST-DDR-002](decisions/0002-recommendations-accepted.md)).
 
-The TRL 3 calculations ([AST-CAL-001](04-calcs/01-sizing.md) v0.3) confirm the power and radio budget: an 87.0 mW design sensor load with a 60 s particle run, inside FieldNode's 100 mW design allowance, 6.6 days without sun, and 0.60 % duty cycle even at SF12. On 2026-09-30 the design was made constructable ([AST-DDR-003](decisions/0003-design-for-construction.md)) and an illustrated prototype build plan was written ([AST-BLD-001](05-build-plan.md)). The buildable node weighs 3.84 kg and presents 0.143 m² to the street, so it misses R13's 3.5 kg while meeting its 0.15 m² area limit, and the sensor head costs $303.00 in parts against the $285 budget (R15); both are proposed to Amish with options in the design decisions register ([AST-DEC-001](06-design-decisions.md)). The node costs $434.00 with the FieldNode core. Resolving NO2 at the WHO guideline of 10 µg/m³ is no longer a requirement: an annual mean carries about 4.2 µg/m³ of uncertainty, so AirStreet ranks streets and checks the EU limit, and the WHO question stays open as research.
+The TRL 3 calculations ([AST-CAL-001](04-calcs/01-sizing.md) v0.3) confirm the power and radio budget: an 87.0 mW design sensor load with a 60 s particle run, inside FieldNode's 100 mW design allowance, 6.6 days without sun, and 0.60 % duty cycle even at SF12. On 2026-09-30 the design was made constructable ([AST-DDR-003](decisions/0003-design-for-construction.md)) and an illustrated prototype build plan was written ([AST-BLD-001](05-build-plan.md)). The buildable node weighs 3.84 kg and presents 0.143 m² to the street, so it misses R13's 3.5 kg while meeting its 0.15 m² area limit, and the sensor head costs $303.00 in parts against the $285 value-engineering target, $18.00 over (R15); the mass is proposed to Amish with options in the design decisions register ([AST-DEC-001](06-design-decisions.md)). The node costs $434.00 with the FieldNode core. Resolving NO2 at the WHO guideline of 10 µg/m³ is no longer a requirement: an annual mean carries about 4.2 µg/m³ of uncertainty, so AirStreet ranks streets and checks the EU limit, and the WHO question stays open as research.
 
 ![Figure 1. AirStreet on a street light pole, with a 1.75 m person for scale.](../media/hero.png)
 
@@ -86,7 +90,7 @@ Figure 3. Exploded view with BOM numbers.
 
 Amish accepted every recommendation below on 2026-09-25 (AST-DDR-001 D1 to D9 and AST-DDR-002). Purchasing, collocation and publication of data are TRL 4 and later work and are on hold.
 
-- **Build on FieldNode.** AirStreet designs only the sensor head, its mount and the calibration route. Power, radio and enclosure fixes found in other deployments carry over. The FieldNode core is costed in FieldNode, and AirStreet's budget covers the sensor head (D1).
+- **Build on FieldNode.** AirStreet designs only the sensor head, its mount and the calibration route. Power, radio and enclosure fixes found in other deployments carry over. The FieldNode core is costed in FieldNode, and AirStreet's value-engineering target covers the sensor head (D1).
 - **Two calibration routes, stated plainly.** CalRig checks temperature, humidity and particle response in a chamber. NO2 is calibrated by field collocation with a regulatory reference station (chemiluminescence), because field calibration corrects temperature, humidity and cross-sensitivity effects that laboratory calibration misses ([Zimmerman et al., 2018](https://amt.copernicus.org/articles/11/291/2018/)). This follows the approach of the US EPA NO2 sensor protocols, which include field evaluation alongside regulatory monitors ([US EPA](https://www.epa.gov/air-sensor-toolbox/air-sensor-performance-targets-and-testing-protocols)).
 - **Collocation plan (D3).** Each node sits beside a reference station for at least 14 days before deployment, covering a range of temperature, humidity and NO2. At least one anchor node stays at the reference site permanently to track seasonal drift, and every node returns for collocation at least every 6 months. The first model is a multiple linear regression on WE, AE, temperature and humidity, with a random forest model as an option once enough data exist.
 - **Send raw signals (D8).** Raw WE and AE voltages and raw PM values let the city or community reprocess data when a better model or a new collocation becomes available.
@@ -121,7 +125,7 @@ Table 2. Key numbers.
 | Mass on the pole | 3.84 kg | FieldNode 1.89 kg as used (no back plate), sensor head and mount 1.95 kg (R13 not met; proposed to Amish, AST-DDR-003 A1) |
 | Frontal area | 0.143 m² | Rasterized from the model; limit 0.15 m² (met on paper) |
 | Wind at 35 m/s | 128 N, 428 N·m at the pole base | Clamp slip factor 24; the pole check is the owner's |
-| Parts cost | Sensor head $303.00; $434.00 with the FieldNode core | $18.00 over the $285 `budget_usd` (R15 not met; proposed to Amish, AST-DDR-003 A2) |
+| Parts cost | Sensor head $303.00; $434.00 with the FieldNode core | $18.00 over the $285 value-engineering target (`budget_usd`; R15 over the target) |
 | Service | About 14 min for a pod exchange | Against 15 min (R16 met on paper) |
 
 ![Figure 4. Measurement and data flow.](../media/flow.png)

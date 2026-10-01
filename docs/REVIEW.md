@@ -246,13 +246,13 @@ On 2026-09-30 Amish approved the FieldNode build plan as the format for every re
 ### Key results
 
 - Mass 3.84 kg on the pole (4.00 kg with FieldNode's sun shield): **R13 not met** (3.5 kg). Frontal area 0.143 m², met.
-- Sensor head $303.00 against the $285 `budget_usd`: **R15 not met**. FieldNode core as used $131.00; whole node $434.00.
+- Sensor head $303.00 against the $285 value-engineering target (`budget_usd`): **R15 over the target by $18.00**. FieldNode core as used $131.00; whole node $434.00.
 - Wind 128 N and 428 N·m at the pole base in a 35 m/s gust; clamp slip factor 24; cross arm 4.5 MPa; rail 16.4 MPa.
-- Requirement status: 2 not met (R13, R15), 5 at risk (R1, R2, R4, R5, R12), 4 met on paper, 4 met by design, R3 withdrawn.
+- Requirement status: 1 not met (R13), 1 over the value-engineering target (R15), 5 at risk (R1, R2, R4, R5, R12), 4 met on paper, 4 met by design, R3 withdrawn.
 
 ### Proposed, awaiting Amish
 
-All open decisions, with options and recommendations, are in the design decisions register (AST-DEC-001). New this session: acceptance of the design changes as a whole; the R13 mass limit (recommend lightening at TRL 4 and a 4.0 kg limit); the R15 budget (recommend $305 for the prototype, with the open front end as the route back under $285); the 15 mm whip clearance (recommend accept and check at TRL 4); FieldNode's agreement to the adapter plates.
+All open decisions, with options and recommendations, are in the design decisions register (AST-DEC-001). New this session: acceptance of the design changes as a whole; the R13 mass limit (recommend lightening at TRL 4 and a 4.0 kg limit); the R15 cost, now a value-engineering note (the open front end is the route back under the $285 target); the 15 mm whip clearance (recommend accept and check at TRL 4); FieldNode's agreement to the adapter plates.
 
 ### Safety
 

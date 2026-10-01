@@ -3,9 +3,9 @@ doc_id: AST-REQ-001
 title: AirStreet requirements
 project: AirStreet
 doc_type: Requirements
-version: "0.5"
+version: "0.6"
 status: Draft
-date: '2026-09-30'
+date: '2026-10-01'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -29,11 +29,15 @@ revisions:
   date: '2026-09-30'
   author: Amish Chadha
   change: Status from AST-CAL-001 v0.3 after the design was made constructable (AST-DDR-003); R13 and R15 not met, proposed to Amish
+- version: "0.6"
+  date: '2026-10-01'
+  author: Amish Chadha
+  change: Budget treated as a value-engineering target
 ---
 
 # AirStreet requirements
 
-These requirements are checked by calculation in [AST-CAL-001](04-calcs/01-sizing.md) v0.3. Targets remain proposals for review with the first co-design partner. On 2026-09-25 Amish accepted the recommendations in [AST-DDR-001](decisions/0001-trl2-review-decisions.md) and [AST-DDR-002](decisions/0002-recommendations-accepted.md). As a result R3 is withdrawn and kept as a research question, R8, R12, R13, R15 and R16 are restated, and R15 uses the $285 `budget_usd`. On 2026-09-30 the design was made constructable ([AST-DDR-003](decisions/0003-design-for-construction.md)), which raised the mass and the sensor-head cost: two requirements are **not met** (R13 mass, R15 cost), both proposed to Amish with options; five are at risk, four are met on paper, four are met by design and one is withdrawn.
+These requirements are checked by calculation in [AST-CAL-001](04-calcs/01-sizing.md) v0.3. Targets remain proposals for review with the first co-design partner. On 2026-09-25 Amish accepted the recommendations in [AST-DDR-001](decisions/0001-trl2-review-decisions.md) and [AST-DDR-002](decisions/0002-recommendations-accepted.md). As a result R3 is withdrawn and kept as a research question, R8, R12, R13, R15 and R16 are restated, and R15 uses the $285 `budget_usd`. On 2026-09-30 the design was made constructable ([AST-DDR-003](decisions/0003-design-for-construction.md)), which raised the mass and the sensor-head cost: R13 (mass) is **not met** and is proposed to Amish with options, R15 (cost) is **over the value-engineering target** by $18.00, five are at risk, four are met on paper, four are met by design and one is withdrawn.
 
 Table 1. Requirements.
 
@@ -53,7 +57,7 @@ Table 1. Requirements.
 | R12 | Survive outdoors | Pod inlets face down behind insect mesh with drip lid; electronics in the FieldNode IP65 enclosure; -10 to 50 °C, with FieldNode's sun shield required at sites where ambient exceeds 45 °C | Design review, later field trial | At risk: the FieldNode sun shield is now designed (FND-DDR-003) and fixes to AirStreet's adapter plates (AST-DDR-003); SPS30 recommended range 20 to 80 % RH; condensation and insects unverified |
 | R13 | Light and compact on the pole | Mass 3.5 kg or less; frontal area 0.15 m² or less (relaxed from 0.12 m², AST-DDR-002) | Constructable model | **Not met**: 3.84 kg (4.00 kg with FieldNode's sun shield) against 3.5 kg; frontal area 0.143 m², met. The constructable FieldNode core and the parts that make AirStreet buildable add 0.58 kg (AST-DDR-003, A1: proposed, awaiting Amish) |
 | R14 | Collect levels only | No images, audio or personal identifiers collected or sent | Design review | Met by design |
-| R15 | Low cost | AirStreet sensor-head parts $285 or less per node (`budget_usd`); FieldNode core excluded and costed in FieldNode | Priced BOM (AST-CAL-001 I) | **Not met**: sensor head $303.00, $18.00 over; $434.00 with the FieldNode core (AST-DDR-003, A2: proposed, awaiting Amish) |
+| R15 | Low cost | AirStreet sensor-head parts at or under the $285 value-engineering target per node (`budget_usd`, a hypothetical control target); FieldNode core excluded and costed in FieldNode | Priced BOM (AST-CAL-001 I) | **Over the value-engineering target by $18.00**: sensor head $303.00; $434.00 with the FieldNode core (AST-DDR-003) |
 | R16 | Serviceable in the field | Pre-collocated sensor pod exchanged in 15 min at the pole with hand tools; no sensor-level swaps at the pole (AST-DDR-002) | Design review | Met on paper: about 14 min for a pod exchange; the exchanged pod is serviced and recollocated at the reference site |
 
 ## Assumptions
