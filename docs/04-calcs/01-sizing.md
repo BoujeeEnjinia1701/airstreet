@@ -3,9 +3,9 @@ doc_id: AST-CAL-001
 title: AirStreet sizing calculations
 project: AirStreet
 doc_type: Calculation
-version: "0.2"
+version: "0.3"
 status: Draft
-date: '2026-09-25'
+date: '2026-09-30'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -17,17 +17,21 @@ revisions:
   date: '2026-09-25'
   author: Amish Chadha
   change: Recommendations accepted by Amish (DDR-002)
+- version: "0.3"
+  date: '2026-09-30'
+  author: Amish Chadha
+  change: Design made constructable (AST-DDR-003); mass, area, mounting loads and cost recalculated; R13 and R15 now not met
 ---
 
 # AirStreet sizing calculations
 
-Version 0.2 applies the decisions Amish accepted on 2026-09-25 (AST-DDR-002). On paper, AirStreet now meets ten of its sixteen requirements (six by calculation, four by design), has five at risk and misses none; R3 is withdrawn. Leaving FieldNode's back plate off brings the node to 3.26 kg and 0.126 m², inside R13's 3.5 kg and relaxed 0.15 m². The sensor head costs $285.00, exactly the new $285 `budget_usd` (R15). The 60 s particle run raises the design sensor load from 48.0 to 87.0 mW, still inside FieldNode's 100 mW design allowance, and cuts autonomy without sun from 11.9 to 6.6 days. An annual NO2 mean still carries about 4.2 µg/m³ of uncertainty (1σ), so resolving the WHO guideline is kept as a research question rather than a requirement. Every number in this note is printed by `docs/04-calcs/sizing.py`; the tag in brackets, for example [A3], is the line of that script's output that carries it.
+Version 0.3 follows the constructable design of AST-DDR-003 (2026-09-30), which made every part of the node buildable and moved onto FieldNode's own constructable core. On paper AirStreet now meets eight of its sixteen requirements (four by calculation, four by design), has five at risk and misses two; R3 stays withdrawn. The node weighs 3.84 kg on the pole against R13's 3.5 kg, and the sensor head costs $303.00 against the $285 `budget_usd`, so R13 and R15 are not met; both are proposed to Amish in AST-DDR-003 (A1, A2). The frontal area, 0.143 m², stays inside 0.15 m², and every new mounting part carries its load with a large margin. Power, airtime, the NO2 error budget, the shield and the humidity results are unchanged from v0.2: the 60 s particle run gives an 87.0 mW design sensor load inside FieldNode's 100 mW allowance and 6.6 days without sun, and an annual NO2 mean carries about 4.2 µg/m³ of uncertainty (1σ). Every number in this note is printed by `docs/04-calcs/sizing.py`; the tag in brackets, for example [A3], is the line of that script's output that carries it.
 
 > **Safety:** These are first-principles estimates for a paper proof of concept. They do not show that the node is safe to mount on any particular pole, and they are not a substitute for the pole owner's structural check, for electrical checks on the FieldNode cell or for field collocation of the sensors. AirStreet data are indicative, not a regulatory measurement or health advice. See AST-PRC-001, Safety.
 
 ## Scope and method
 
-The note checks every requirement in AST-REQ-001 v0.4 against the design in AST-PRC-001 v0.4 and the parametric model `cad/src/model.py`. The script imports the model's `PARAMS`, derived dimensions and part solids, so the pod, shield, rail, clamp positions and projected areas used here are those in the STEP files and in drawing AST-DWG-001. It reads `bom/bom.csv` and `budget_usd` in `project.yaml`. FieldNode figures are taken from FND-CAL-001 v0.1 in the FieldNode repo. Run it from the repo root with `python docs/04-calcs/sizing.py`; it also writes `docs/04-calcs/results.csv`.
+The note checks every requirement in AST-REQ-001 v0.5 against the design in AST-PRC-001 v0.5 and the parametric model `cad/src/model.py`, which builds the FieldNode core from FieldNode's own model (vendored as `cad/src/fieldnode_core.py`). The script imports the model's `PARAMS`, derived dimensions and part solids, so the pod, shield, rail, clamp positions and projected areas used here are those in the STEP files and in drawing AST-DWG-001. It reads `bom/bom.csv` and `budget_usd` in `project.yaml`. FieldNode figures are taken from FND-CAL-001 (v0.1 for power and energy, v0.3 for mass) in the FieldNode repo. Run it from the repo root with `python docs/04-calcs/sizing.py`; it also writes `docs/04-calcs/results.csv`.
 
 The design case is a 140 mm street light pole with the inlet plane 3.0 m above the sidewalk (AST-DDR-001 D7), one record every 5 min with a 60 s PM run (D8 and DDR-002), LoRaWAN at SF9 in EU868 through a private gateway (15 min on The Things Network), FieldNode's back plate left off (DDR-002), and ambient -10 to 50 °C.
 
@@ -100,49 +104,51 @@ The design case is a 140 mm street light pole with the inlet plane 3.0 m above t
 
 ## F. Geometry, area and mass (R11, R13)
 
-- **Fit.** Inlet plane 3,000 mm above the sidewalk, inside the EU 1,500 to 4,000 mm range; band clamps fit 80 to 200 mm poles; no drilling [F1]. R11 is met by design.
-- **Layout.** The FieldNode whip clears the pod lid by 23 mm, the clamps are 375 mm apart, the node is 706 mm tall and it stands 176 mm out from the pole face [F2]. The pod is offset to -X so that the whip, on FieldNode's bottom face at x = 58 mm, hangs beside it.
-- **Area.** Rasterizing the model gives 0.126 m² seen from the street and 0.045 m² along it, against the relaxed 0.15 m² [F3] (0.138 m² in v0.1, with the back plate).
-- **Mass.** FieldNode core as used 1.74 kg, rail 0.31 kg, adapter bars 0.07 kg, shield arm 0.10 kg, saddles 0.06 kg, band clamps 0.13 kg, pod 0.36 kg, shield 0.26 kg and bought sensor-head parts 0.23 kg [F4]: 3.26 kg on the pole against 3.5 kg; the sensor head and mount alone are 1.52 kg [F5]. R13 is met on paper on both mass and area.
-- **Back plate.** Under DDR-002 FieldNode's 0.47 kg back plate is left off, its enclosure bolts to the rail and its panel bracket feet bolt to two adapter bars of 0.07 kg; with the plate the node would be 3.65 kg [F6]. The 3.19 kg quoted in v0.1 left out the adapter bars. This changes the FieldNode mounting interface and needs FieldNode's agreement.
+- **Fit.** Inlet plane 3,000 mm above the sidewalk, inside the EU 1,500 to 4,000 mm range; 140° V-saddles and bands cut to length fit 80 to 200 mm poles; no drilling [F1]. R11 is met by design.
+- **Layout.** FieldNode's whip clears the pod's drip lid by 15 mm (23 mm in v0.2, before FieldNode's antenna moved 28 mm toward the pod and the pod moved 20 mm away), the clamps are 375 mm apart, the node is 706 mm tall and it stands 173 mm out from the pole face [F2].
+- **Area.** Rasterizing the model gives 0.143 m² seen from the street and 0.055 m² along it, against 0.15 m² [F3] (0.126 m² in v0.2). FieldNode's constructable bracket, the adapter plates and the cross arm add to the outline. R13's area limit is met on paper.
+- **Mass.** FieldNode core as used 1.89 kg (FieldNode's base node of 2.45 kg less its back plate, V-blocks and bands, 0.56 kg); rail 0.24 kg; adapter plates 0.27 kg; cross arm 0.19 kg; V-saddles 0.18 kg (printed solid; less at 40 % infill); pod shell and floor 0.37 kg; shield plates, cap and spacers 0.27 kg; bands 0.10 kg; shield rods 0.06 kg; sensors, front end, probe, cables, glands, inserts and fixings 0.29 kg [F4]. In all 3.84 kg on the pole against 3.5 kg, and 4.00 kg with FieldNode's sun shield at a hot site; the sensor head and mount are 1.95 kg [F5]. **R13 is not met** on mass.
+- **Why it rose.** FieldNode's constructable core is 0.15 kg heavier as AirStreet uses it, and the parts that make AirStreet buildable (adapter plates in place of adapter bars, the cross arm in place of the short shield arm, larger saddles, the separate pod floor, spacers and fixings) add the rest [F6]. Options are in AST-DDR-003, A1.
+- **Bands.** Each band runs 487 mm round the 140 mm design pole and its saddle, 326 mm round an 80 mm pole and 664 mm round a 200 mm pole, plus about 100 mm for the housing and tail [F7].
 
 ## G. Wind and mounting
 
-- **Load.** A 35 m/s gust gives 750 Pa and 114 N on the node at about 3.33 m, or 379 N·m at the pole base [G1]. The pole's capacity is for its owner to confirm.
-- **Clamps.** The downward load of 72 N (weight and wind on the tilted panel) compares with 1,885 N of friction from two bands, a factor of 26 [G2]. Twist about the pole from wind on the offset shield is 2.33 N·m against 132 N·m [G4]. Both rest on the assumed 1,000 N band preload.
-- **Arm and rail.** The shield arm carries 11.7 N and 2.44 N·m, 4.6 MPa in the 20 x 8 mm bar [G3]; the rail below the lower clamp carries 26.2 N and 2.69 N·m, 16.1 MPa in the 40 x 5 mm bar [G5], both far below the roughly 170 MPa yield of 6063 aluminum.
+- **Load.** A 35 m/s gust gives 750 Pa and 128 N on the node at about 3.33 m, or 428 N·m at the pole base [G1]. The pole's capacity is for its owner to confirm.
+- **Clamps.** The downward load of 78 N (weight and wind on the tilted panel) compares with 1,885 N of friction from two bands, a factor of 24 [G2]. Twist about the pole from wind on the offset shield is 2.42 N·m against 132 N·m [G5]. Both rest on the assumed 1,000 N band preload.
+- **Cross arm.** The 30 x 30 x 3 mm angle carries the shield (0.34 kg, 12.1 N of wind) 200 mm to the right of the rail and the pod (0.46 kg) 90 mm to the left: 0.67 N·m vertical and 2.42 N·m horizontal at the rail, 4.5 MPa [G3]. Its two M5 bolts each take about 67 N in the gust [G4].
+- **Rail and pod.** The rail at the lower clamp carries 26.6 N and 2.73 N·m, 16.4 MPa in the 40 x 5 mm bar [G6]. Each of the pod's two hanging screws takes about 11 N in the gust, far below what an M5 heat-set insert in ASA holds; the insert pull-out is to be checked at TRL 4 [G7]. Every stress is far below the roughly 150 MPa yield of 6063 aluminium.
 
 ## H. Service and environment (R12, R16)
 
 - **Service time.** Under DDR-002 the pod is exchanged whole: ladder 5 min, unplug two M12 plugs and the probe lead 1.5 min, release the pod 1.5 min, fit the pre-collocated pod 2 min, reconnect and check glands 1.5 min, uplink check 2 min: about 14 min against 15 min [H1]. The exchange pod arrives with its collocation and CalRig record, and the returned pod is serviced and recollocated at the reference site [H2]. R16 is met on paper, with a small margin.
-- **Temperature range.** FieldNode is rated for -20 to +45 °C ambient and reaches 58.7 to 73.3 °C inside at 45 °C, while AirStreet's R12 asks for -10 to 50 °C [H3]. The SPS30's recommended range is 10 to 40 °C and 20 to 80 % RH, with absolute limits of -10 to 60 °C and 0 to 95 % RH [H4]. Under DDR-002 FieldNode's sun shield is required at sites above 45 °C, so R12 now asks for it there; the shield is not yet designed in FieldNode. R12 stays at risk; condensation and insects in the pod remain unverified.
+- **Temperature range.** FieldNode is rated for -20 to +45 °C ambient and reaches 58.7 to 73.3 °C inside at 45 °C, while AirStreet's R12 asks for -10 to 50 °C [H3]. The SPS30's recommended range is 10 to 40 °C and 20 to 80 % RH, with absolute limits of -10 to 60 °C and 0 to 95 % RH [H4]. Under DDR-002 FieldNode's sun shield is required at sites above 45 °C, so R12 asks for it there; FieldNode has now designed it (FND-DDR-003), and it fixes to AirStreet's adapter plates (AST-DDR-003). R12 stays at risk; condensation and insects in the pod remain unverified.
 
 ## I. Cost (R15)
 
-- **Totals.** The BOM has 11 lines, all priced: $411.00 per node, of which the FieldNode core is $126.00 (costed in FieldNode, AST-DDR-001 D1) and the sensor head $285.00 [I1]. The two adapter bars add about $2 to line 3.
-- **Against the budget.** The sensor head is within the $285 `budget_usd` set under DDR-002, with no margin [I2]. R15 is met on paper; any price rise breaks it. The main change from TRL 2 is the SPS30, now $60.50 at a checked retail price instead of $45.
+- **Totals.** The BOM has 11 lines, all priced: $434.00 per node, of which the FieldNode core is $131.00 (FieldNode's $139.00 less its unused $8.00 pole mounting kit; costed in FieldNode, AST-DDR-001 D1) and the sensor head $303.00 [I1].
+- **Against the budget.** The sensor head is $18.00 over the $285 `budget_usd` [I2]. **R15 is not met.** The rise from $285.00 is in line 3 (band stock, adapter plates and cross arm, +$4), line 8 (spacers, +$1), line 9 (probe tube, +$1), line 10 (probe lead with its M8 plug, +$4) and line 11 (inserts, glands, probe socket, terminal block and fixings, +$8). Options are in AST-DDR-003, A2.
 - **Running costs.** A replacement NO2 sensor about every 2 years and the collocation time are not in the BOM [I3].
 
 ## J. Results
 
-*Table 3. Requirement status (AST-REQ-001 v0.4). Counts: 5 at risk, 6 met on paper, 4 met by design, 1 withdrawn, none not met [J1].*
+*Table 3. Requirement status (AST-REQ-001 v0.5). Counts: 2 not met, 5 at risk, 4 met on paper, 4 met by design, 1 withdrawn [J1].*
 
 | ID | Requirement | Value | Target | Status |
 | --- | --- | --- | --- | --- |
+| R13 | Light and compact | 3.84 kg (4.00 kg with the sun shield); 0.143 m² [F3, F5] | 3.5 kg; 0.15 m² | Not met |
+| R15 | Low cost | Sensor head $303.00; $434.00 with FieldNode [I1] | Sensor head $285 (`budget_usd`) | Not met |
 | R1 | PM2.5 | Within the bound up to 80 % RH, outside it above 85 % RH [E2] | ±5 µg/m³ or ±30 % hourly | At risk |
 | R2 | NO2 | Hourly MAE about 3.9 ppb [C3] | 5 ppb or less | At risk |
 | R4 | EU limit classification | Decisive outside 34.6 to 45.4 µg/m³ [C5] | 90 % confidence at 40 µg/m³ | At risk |
 | R5 | T and RH | Shield 0.43 to 0.89 K at 1 m/s; 4.2 % RH low at 85 % RH [D1, D3] | ±0.5 °C, ±3 % RH; radiation 1 °C or less | At risk |
-| R12 | Survive outdoors | FieldNode sun shield required above 45 °C, not yet designed; SPS30 recommended to 80 % RH [H3, H4] | -10 to 50 °C; shield above 45 °C | At risk |
+| R12 | Survive outdoors | FieldNode sun shield required above 45 °C, designed and fits the adapter plates; SPS30 recommended to 80 % RH [H3, H4] | -10 to 50 °C; shield above 45 °C | At risk |
 | R8 | Reporting | 5 min on the private gateway; 15 min on TTN, fair use met up to SF9; 7 days = 40.3 kB [B6, B8] | 5 min private, 15 min TTN; hourly within 15 min; 7 days | Met on paper |
 | R9 | Power | 87.0 mW design load; 2.33 Wh/day against 7.75 Wh [A3, A7] | 115 mW or less; energy neutral | Met on paper |
 | R10 | Duty cycle | 0.082 % at SF9, 0.60 % at SF12 [B3] | Below 1 % | Met on paper |
-| R13 | Light and compact | 3.26 kg; 0.126 m² [F3, F5] | 3.5 kg; 0.15 m² | Met on paper |
-| R15 | Low cost | Sensor head $285.00; $411.00 with FieldNode [I1] | Sensor head $285 (`budget_usd`) | Met on paper |
 | R16 | Serviceable | About 14 min for a pod exchange [H1] | Pre-collocated pod in 15 min | Met on paper |
 | R6 | Stated calibration | CalRig for T, RH, PM; collocation per D3 | Calibration record per node | Met by design |
 | R7 | Raw data | Raw WE, AE, PM, T, RH and version tag | Raw signals kept | Met by design |
-| R11 | Pole mounting | 80 to 200 mm, band clamps, inlet 3.0 m [F1] | No drilling; 1.5 to 4 m | Met by design |
+| R11 | Pole mounting | 80 to 200 mm, V-saddles and bands, inlet 3.0 m [F1] | No drilling; 1.5 to 4 m | Met by design |
 | R14 | Levels only | Levels, T and RH only | No images, audio or identifiers | Met by design |
 | R3 | NO2 near the WHO guideline | 4.2 µg/m³ annual (1σ) [C4] | Withdrawn; research question | Withdrawn |
 
@@ -170,3 +176,16 @@ The design case is a 140 mm street light pole with the inlet plane 3.0 m above t
 | Sensor head cost | $283.00 against $180 | $285.00 against $285 | Budget figure; adapter bars |
 | Service | 14 min sensor swap, recollocation needed | 14 min pod exchange | Pod as exchange unit |
 | R3 | Not met | Withdrawn, research question | WHO guideline |
+
+*Table 6. Changes from v0.2 under AST-DDR-003 (design for construction).*
+
+| Quantity | v0.2 | v0.3 | Reason |
+| --- | --- | --- | --- |
+| Mass on the pole | 3.26 kg | 3.84 kg (4.00 kg with the sun shield) | FieldNode's constructable core; adapter plates, cross arm, saddles, pod floor, fixings |
+| Frontal area | 0.126 m² | 0.143 m² | FieldNode's bracket, plates and cross arm |
+| Wind on the node | 114 N, 379 N·m | 128 N, 428 N·m | Larger area |
+| Sensor head cost | $285.00 | $303.00 | Parts added for construction |
+| FieldNode core cost | $126.00 | $131.00 | FieldNode's constructable BOM less its pole mounting kit |
+| Whip clearance to the pod | 23 mm | 15 mm | FieldNode's antenna moved; pod moved 20 mm left |
+| Shield arm | 20 x 8 mm bar, 4.6 MPa | 30 x 30 x 3 mm cross arm carrying pod and shield, 4.5 MPa | Pod and shield needed fixings |
+| R13 and R15 | Met on paper | Not met | Proposed to Amish, AST-DDR-003 A1 and A2 |

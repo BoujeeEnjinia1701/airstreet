@@ -28,7 +28,15 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from build123d import (Align, Axis, Box, Cylinder, Plane, Pos, RegularPolygon, Rot, Solid, Sphere, Text,
                        Vector, extrude, fillet)
-from model import PARAMS, derived, build_parts, box as m_box, zcyl as m_zcyl, fuse
+from model import PARAMS as _PARAMS, derived, build_parts, box as m_box, zcyl as m_zcyl, fuse
+
+# STALE (AST-DDR-003, 2026-09-30): this appearance model still follows the TRL 3 concept. The
+# constructable model.py dropped the concept-only parameters below, so they are kept here to let
+# the renders run unchanged until the appearance model is rebuilt on Amish's Mac.
+_CONCEPT_ONLY = {"adapter": (180.0, 25.0, 3.0), "ant_x": 58.0, "arm_z": 3100.0, "gland_x": (8.0, 34.0),
+                 "m16_d": (20.0, 24.0), "port_x": (-52.0, -22.0), "post_foot_dz": 260.0, "slot": (50.0, 60.0),
+                 "strut_foot_dz": 210.0, "th_stem": (6.0, 56.0), "whip": (10.0, 190.0)}
+PARAMS = dict(_PARAMS, **_CONCEPT_ONLY)
 
 _FONT = Path(__file__).resolve().parents[2] / ".kit" / "fonts" / "IBMPlexSans-SemiBold.ttf"
 

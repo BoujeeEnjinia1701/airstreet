@@ -212,3 +212,56 @@ Appearance only: no tolerances, fabrication detail, PCB layouts or TRL 4 work. `
 - Kit 1.5.0 synced: STANDARDS v1.5 (sections 12 to 15: product renders, storefront images and image quality, public release, authorship and signing), `.kit/cards.py`, `.kit/image_qc.py`, `.kit/release_gate.py`, issue templates, and the `/render-product` and `/release` commands. `CLAUDE.md` now matches `.kit/CLAUDE.md`.
 - Every `media/render-*.png` recaptioned from its original render with the new layout: the title, concept label and repository sit in a band above the render and the view note in a band below it, each line wrapped to the image width, so no text overlaps other text or the render or runs off the image. `media/card.png` and `media/social-preview.png` regenerated with the same rules.
 - `python .kit/image_qc.py` and `python .kit/release_gate.py` pass. trl stays 3.
+
+## Session 2026-09-30: kit 1.7.0, design for construction and the prototype build plan
+
+On 2026-09-30 Amish approved the FieldNode build plan as the format for every repo ("this is the correct build plan ... this is a good quality document format. Extend this across all the other repos") and asked that outstanding decisions go in a separate design decisions register, not in the build plan. He also wrote: "If you are realising that the design cannot be built as per concept - fix the design assumptions to match and be physically feasible as you draw the illustrations." This session applied both to AirStreet.
+
+### What was done
+
+- Kit 1.7.0 installed (`.kit/`, `.claude/commands/`); `CLAUDE.md` replaced by `.kit/CLAUDE.md`.
+- `cad/src/fieldnode_core.py` (new): an unchanged, vendored copy of FieldNode's constructable model (FND-DDR-003), so AirStreet builds the FieldNode core exactly as FieldNode does.
+- `cad/src/model.py` rewritten as a constructable model (components, fixings and 71 constructability checks, all passing: `python cad/src/model.py --check`). STEP and STL re-exported.
+- `docs/decisions/0003-design-for-construction.md` (AST-DDR-003 v0.1, Draft): every change, its reason, the knock-on changes and three items proposed to Amish.
+- `cad/src/build_plan_media.py` (new) and its pictures: overview, hole layout, wiring, nine making sketches (AST-DWG-101 to 109), eight joint close-ups and sixteen step pictures in `docs/05-build-plan/` and `cad/drawings/`. Every picture was looked at and fixed where unclear.
+- `docs/05-build-plan.md` (AST-BLD-001 v0.1) and `docs/06-design-decisions.md` (AST-DEC-001 v0.1) written from the kit templates.
+- Recalculated: `docs/04-calcs/sizing.py` and AST-CAL-001 v0.3 (mass from the model's volumes, new mount loads, cost). AST-REQ-001 v0.5 and AST-PRC-001 v0.5 updated. `bom/bom.csv` lines 1, 2, 3, 4, 8, 9, 10 and 11 revised.
+- AST-DWG-001 Rev P4 regenerated; concept media regenerated from the new model (`media/hero.png`, `exploded.png`, `cutaway.png`, `flow.png`, `concept-blueprint.*`, `model.glb`).
+- `project.yaml`: `design_state: constructable`; the DDR, build plan and register added to `trl_evidence`. `README.md`: links line and a "Building the prototype" section.
+- `cad/src/product_model.py`: given the concept-only parameters it needs so it still runs; it still shows the concept (see Stale media).
+
+### Design changes made for construction (AST-DDR-003, Draft, open for Amish's review)
+
+1. FieldNode core taken from FieldNode's own constructable model; the pod moved from 70 to 90 mm left of the pole because FieldNode's whip moved; whip clearance to the drip lid 15 mm (was 23 mm).
+2. Two 3 mm aluminium adapter plates (180 x 75 and 180 x 110 mm) on the rail, drilled to FieldNode's back plate pattern, carry the enclosure lugs, the plate clips and (hot sites) the sun shield; they replace the two adapter bars.
+3. Adapter plate heights set so FieldNode's sun shield screws land on them.
+4. Printed V-saddles 100 x 50 x 24 mm with a 140° V that seats 80 to 200 mm poles (was a round seat for 140 mm only).
+5. Bands cut to length from a 12.7 mm worm-drive band roll, running in a groove across the back of each saddle, between saddle and rail.
+6. Saddles fixed to the rail by two M5 countersunk screws into heat-set inserts.
+7. A 30 x 30 x 3 mm angle cross arm bolted to the rail carries the pod and the shield cap on screws from above; the rail shortened to 451 mm.
+8. Pod split into a printed shell (walls, roof, drip lid) and a printed sensor floor with a PM sensor cradle and an NO2 sensor collar, closed from below over the mesh by four M3 screws; front end on standoffs on the back wall; inlet slots 50 x 50 and 50 x 40 mm.
+9. Two M16 glands in the pod roof under FieldNode's ports; an M8 socket in the pod wall for the probe lead, so the pod unplugs for exchange.
+10. Shield: 24 spacers, rods through the cap with nuts, cap screwed under the arm, probe on a 6 mm tube through the cap and the arm.
+
+### Key results
+
+- Mass 3.84 kg on the pole (4.00 kg with FieldNode's sun shield): **R13 not met** (3.5 kg). Frontal area 0.143 m², met.
+- Sensor head $303.00 against the $285 `budget_usd`: **R15 not met**. FieldNode core as used $131.00; whole node $434.00.
+- Wind 128 N and 428 N·m at the pole base in a 35 m/s gust; clamp slip factor 24; cross arm 4.5 MPa; rail 16.4 MPa.
+- Requirement status: 2 not met (R13, R15), 5 at risk (R1, R2, R4, R5, R12), 4 met on paper, 4 met by design, R3 withdrawn.
+
+### Proposed, awaiting Amish
+
+All open decisions, with options and recommendations, are in the design decisions register (AST-DEC-001). New this session: acceptance of the design changes as a whole; the R13 mass limit (recommend lightening at TRL 4 and a 4.0 kg limit); the R15 budget (recommend $305 for the prototype, with the open front end as the route back under $285); the 15 mm whip clearance (recommend accept and check at TRL 4); FieldNode's agreement to the adapter plates.
+
+### Safety
+
+No change to the safety case. The build plan adds safety stops for the NO2 sensor's shorting spring and the pole stub stand, and repeats the street pole, mains and lithium cell warnings. The higher wind load (128 N) is in AST-PRC-001's safety note and the build plan's stop S6.
+
+### Stale media
+
+`media/card.png` and `media/social-preview.png`, and the photoreal renders made on Amish's Mac (`media/render-*.png`), show the concept mount and pod: the design changed visibly (adapter plates, cross arm, saddles, pod). They, and `cad/src/product_model.py`, need updating on Amish's Mac.
+
+### Recommended next step
+
+Amish reviews AST-DDR-003 and the register (decisions 1 to 4), then FieldNode is asked to accept the adapter plates. TRL stays at 3; nothing was built, bought or tested.

@@ -3,9 +3,9 @@ doc_id: AST-PRC-001
 title: AirStreet design precis
 project: AirStreet
 doc_type: Design precis
-version: "0.4"
+version: "0.5"
 status: Draft
-date: '2026-09-25'
+date: '2026-09-30'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -25,6 +25,10 @@ revisions:
   date: '2026-09-25'
   author: Amish Chadha
   change: Recommendations accepted by Amish (DDR-002)
+- version: "0.5"
+  date: '2026-09-30'
+  author: Amish Chadha
+  change: Design made constructable (AST-DDR-003); mount, pod, shield, mass, area and cost figures updated
 ---
 
 
@@ -34,7 +38,7 @@ revisions:
 
 AirStreet is a pole-mounted node that measures PM2.5 and NO2 at street level for neighborhood-scale pollution maps. A small sensor pod and a radiation shield hang below a FieldNode core on a street light pole, with the inlet plane 3.0 m above the sidewalk. Temperature, humidity and particle readings are checked on CalRig. CalRig does not cover NO2, so each NO2 sensor is calibrated by field collocation with a reference station before deployment and at intervals afterward. The node sends raw signals, so calibrations can be improved and reapplied later. Amish accepted the recommended design choices on 2026-09-25 ([AST-DDR-001](decisions/0001-trl2-review-decisions.md), [AST-DDR-002](decisions/0002-recommendations-accepted.md)).
 
-The TRL 3 calculations ([AST-CAL-001](04-calcs/01-sizing.md) v0.2) confirm the power and radio budget: an 87.0 mW design sensor load with a 60 s particle run, inside FieldNode's 100 mW design allowance, 6.6 days without sun, and 0.60 % duty cycle even at SF12. With the DDR-002 decisions applied, no requirement is now unmet. FieldNode's back plate is left off, so the node weighs 3.26 kg and presents 0.126 m² to the street, inside R13's 3.5 kg and relaxed 0.15 m². The sensor head costs $285.00 in parts, exactly the $285 budget (R15); the node costs $411.00 with the FieldNode core. Resolving NO2 at the WHO guideline of 10 µg/m³ is no longer a requirement: an annual mean carries about 4.2 µg/m³ of uncertainty, so AirStreet ranks streets and checks the EU limit, and the WHO question stays open as research.
+The TRL 3 calculations ([AST-CAL-001](04-calcs/01-sizing.md) v0.3) confirm the power and radio budget: an 87.0 mW design sensor load with a 60 s particle run, inside FieldNode's 100 mW design allowance, 6.6 days without sun, and 0.60 % duty cycle even at SF12. On 2026-09-30 the design was made constructable ([AST-DDR-003](decisions/0003-design-for-construction.md)) and an illustrated prototype build plan was written ([AST-BLD-001](05-build-plan.md)). The buildable node weighs 3.84 kg and presents 0.143 m² to the street, so it misses R13's 3.5 kg while meeting its 0.15 m² area limit, and the sensor head costs $303.00 in parts against the $285 budget (R15); both are proposed to Amish with options in the design decisions register ([AST-DEC-001](06-design-decisions.md)). The node costs $434.00 with the FieldNode core. Resolving NO2 at the WHO guideline of 10 µg/m³ is no longer a requirement: an annual mean carries about 4.2 µg/m³ of uncertainty, so AirStreet ranks streets and checks the EU limit, and the WHO question stays open as research.
 
 ![Figure 1. AirStreet on a street light pole, with a 1.75 m person for scale.](../media/hero.png)
 
@@ -62,16 +66,16 @@ Table 1. Main components.
 
 | No. | Component | Key choice (decided by Amish, 2026-09-25) |
 | --- | --- | --- |
-| 1 | FieldNode core | Shared lab core per FND: IP65 enclosure 150 x 90 x 200 mm, LiFePO4 cell, MPPT charger, STM32WL LoRaWAN, two M12 5-pin sensor ports; the enclosure bolts straight to the AirStreet rail, and FieldNode's back plate, V-blocks and 40 to 60 mm clamps are not used (DDR-002); FieldNode's sun shield is fitted at sites above 45 °C |
+| 1 | FieldNode core | Shared lab core per FND: IP65 enclosure 150 x 90 x 200 mm, LiFePO4 cell, MPPT charger, STM32WL LoRaWAN, two M12 5-pin sensor ports; the enclosure, built to FieldNode's constructable design, fixes by its four lugs to two adapter plates on the AirStreet rail, and FieldNode's back plate, V-blocks and 40 to 60 mm clamps are not used (DDR-002, DDR-003); FieldNode's sun shield is fitted at sites above 45 °C |
 | 2 | FieldNode 6 W panel hood | Part of FieldNode; 40° tilt toward the street side as a sun and rain hood |
-| 3 | Band clamps and mounting rail | Two 12.7 mm stainless band clamps for 80 to 200 mm poles, 375 mm apart, on printed V-saddles; 40 x 5 mm aluminum rail 565 mm long; two 180 x 25 x 3 mm adapter bars for the panel bracket feet (DDR-002); 20 x 8 mm shield arm; no drilling |
-| 4 | Sensor pod | Printed ASA shell 170 x 110 x 95 mm, open underneath behind mesh, 200 x 140 mm drip lid; offset 70 mm to one side so the FieldNode whip hangs beside it with 23 mm clearance; the pod with its sensors and front end is the service exchange unit (DDR-002) |
+| 3 | Band clamps and mounting rail | Two 12.7 mm stainless bands cut to length, 375 mm apart, each running in a groove behind a printed 140° V-saddle that seats 80 to 200 mm poles; 40 x 5 mm aluminium rail 451 mm long; two 3 mm aluminium adapter plates with FieldNode's back plate hole pattern; a 30 x 30 x 3 mm cross arm that carries the pod and the shield (DDR-002, DDR-003); no drilling |
+| 4 | Sensor pod | Printed ASA shell with walls, roof and 200 x 140 mm drip lid in one, 170 x 110 x 95 mm with its sensor floor, which carries both sensors and closes the pod from below behind mesh; hung under the cross arm 90 mm to one side so the FieldNode whip hangs beside it with 15 mm clearance; the pod with its sensors and front end is the service exchange unit (DDR-002) |
 | 5 | Optical PM sensor | Sensirion SPS30 (D6); the maker states a lifetime of more than ten years ([Sensirion](https://sensirion.com/products/catalog/SPS30)) |
 | 6 | Electrochemical NO2 sensor | Alphasense NO2-B43F class (D4): four electrodes and an ozone filter; replace about every 2 years (estimate) |
 | 7 | NO2 front end and ADC | Alphasense ISB class potentiostat bought for the first units (D5), with an ADS1115 class 16-bit ADC |
-| 8 | Radiation shield | Eight white 120 mm plates at 13 mm pitch on three rods, 124 mm cap, naturally ventilated |
-| 9 | Temperature and humidity sensor | Sensirion SHT45 on a probe board |
-| 10 | Sensor cables | Two 0.5 m shielded cables with M12 plugs |
+| 8 | Radiation shield | Eight white 120 mm plates at 13 mm pitch on three rods with spacers, 124 mm cap screwed under the cross arm, naturally ventilated |
+| 9 | Temperature and humidity sensor | Sensirion SHT45 on a probe board, hung in the shield on a 6 mm tube |
+| 10 | Sensor cables | Two 0.5 m shielded cables with M12 plugs into glands in the pod roof; probe lead with an M8 plug for the pod wall |
 | 11 | Fasteners and consumables | Not modeled |
 
 ![Figure 3. Exploded view with BOM numbers.](../media/exploded.png)
@@ -90,7 +94,7 @@ Amish accepted every recommendation below on 2026-09-25 (AST-DDR-001 D1 to D9 an
 - **Duty-cycled PM sensor (D8, run length per DDR-002).** Running the particle sensor for 60 s every 5 min gives a valid reading even in clean air, keeps its average draw near 55 mW and slows fouling.
 - **Reporting by network (DDR-002).** 5 min records through the private TwinKit gateway; 15 min on The Things Network, which keeps within its 30 s/day fair-use policy up to SF9.
 - **Pod exchange for service (DDR-002).** The whole pod, pre-collocated at the reference site, is exchanged at the pole; sensors are never swapped at height.
-- **No FieldNode back plate (DDR-002).** The FieldNode enclosure bolts straight to the AirStreet rail and its panel bracket to two adapter bars, saving about 0.4 kg net. This changes the FieldNode mounting interface and needs FieldNode's agreement.
+- **No FieldNode back plate (DDR-002).** The FieldNode enclosure and its panel bracket fix to two adapter plates on the AirStreet rail (AST-DDR-003), saving about 0.15 kg against FieldNode's back plate. This changes the FieldNode mounting interface and needs FieldNode's agreement.
 - **Hot sites (DDR-002).** FieldNode's sun shield is required at any site where ambient temperature exceeds 45 °C.
 - **WHO guideline as research (DDR-002).** AirStreet ranks streets and checks the EU limit; it makes no claim about the WHO annual guideline for NO2.
 - **Inlets 3.0 m above the sidewalk (D7).** This is within the 1.5 to 4 m inlet range in EU Directive 2008/50/EC ([EUR-Lex](https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32008L0050)) and out of easy reach.
@@ -114,10 +118,10 @@ Table 2. Key numbers.
 | EU limit classification | Decisive below 34.6 or above 45.4 µg/m³ | 90 % confidence against 40 µg/m³ (R4 at risk) |
 | PM2.5 hourly error | Within ±5 µg/m³ or ±30 % up to 80 % RH | Outside the bound at 85 % RH and above (R1 at risk) |
 | Shield radiation error | 0.43 to 0.89 K at 1 m/s | Reads up to 4.2 % RH low at 85 % RH (R5 at risk) |
-| Mass on the pole | 3.26 kg | FieldNode 1.74 kg as used (no back plate), sensor head and mount 1.52 kg (R13 met on paper) |
-| Frontal area | 0.126 m² | Rasterized from the model; limit 0.15 m² (R13 met on paper) |
-| Wind at 35 m/s | 114 N, 379 N·m at the pole base | Clamp slip factor 26; the pole check is the owner's |
-| Parts cost | Sensor head $285.00; $411.00 with the FieldNode core | Against the $285 `budget_usd`, no margin (R15 met on paper) |
+| Mass on the pole | 3.84 kg | FieldNode 1.89 kg as used (no back plate), sensor head and mount 1.95 kg (R13 not met; proposed to Amish, AST-DDR-003 A1) |
+| Frontal area | 0.143 m² | Rasterized from the model; limit 0.15 m² (met on paper) |
+| Wind at 35 m/s | 128 N, 428 N·m at the pole base | Clamp slip factor 24; the pole check is the owner's |
+| Parts cost | Sensor head $303.00; $434.00 with the FieldNode core | $18.00 over the $285 `budget_usd` (R15 not met; proposed to Amish, AST-DDR-003 A2) |
 | Service | About 14 min for a pod exchange | Against 15 min (R16 met on paper) |
 
 ![Figure 4. Measurement and data flow.](../media/flow.png)
@@ -126,7 +130,7 @@ Figure 4. Measurement and data flow.
 
 ## Safety
 
-> **Safety:** Mounting on a street pole is work at height next to traffic. Install only with the pole owner's written permission, by trained crews using a mobile elevating work platform or a secured ladder with a second person, with traffic management as local rules require. The node adds about 114 N of wind load and about 379 N·m at the pole base in a 35 m/s gust; the pole owner must confirm the pole can carry it.
+> **Safety:** Mounting on a street pole is work at height next to traffic. Install only with the pole owner's written permission, by trained crews using a mobile elevating work platform or a secured ladder with a second person, with traffic management as local rules require. The node adds about 128 N of wind load and about 428 N·m at the pole base in a 35 m/s gust; the pole owner must confirm the pole can carry it.
 
 > **Safety:** Street light poles carry mains voltage inside. Never open the pole's access door or tap pole power; AirStreet runs only on its own solar and battery supply.
 
@@ -142,7 +146,7 @@ Figure 4. Measurement and data flow.
 - [ ] Is the NO2 error after field calibration stable across seasons, and how large is the reference-to-street transfer bias in practice?
 - [ ] How fast does air move inside the shield in low wind, and so how large is the radiation error?
 - [ ] Does the SPS30 need a heated or dried inlet above 85 % RH, or is a humidity flag on the data enough?
-- [ ] Will FieldNode accept an enclosure fixed straight to the AirStreet rail without its back plate, and provide the sun shield for sites above 45 °C? (Decided in AirStreet, AST-DDR-002; needs FieldNode's agreement.)
+- [ ] Will FieldNode accept its enclosure, plate clips and sun shield on AirStreet's two adapter plates in place of its back plate? (Decided in AirStreet, AST-DDR-002 and AST-DDR-003; needs FieldNode's agreement; see the design decisions register.)
 - [ ] Can the NO2 annual mean ever be resolved at the WHO guideline, for example with an anchor node at every site? (Research question, AST-DDR-002.)
 - [ ] Is an open two-channel front end at about $25 worth designing, to restore cost margin? (On hold with TRL 4.)
 - [ ] How are nodes secured against theft, and what does the pole owner require for insurance and inspection?

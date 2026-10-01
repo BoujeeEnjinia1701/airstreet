@@ -9,9 +9,9 @@ R7,"Raw WE, AE, PM, T, RH and a calibration version tag",Raw signals kept,Met by
 R8,"5 min records (15 min on TTN, fair use met up to SF9); hourly mean within one interval; 7 days = 40.3 kB of 16 MB","5 min on a private gateway, 15 min on TTN; hourly within 15 min; 7 days",Met on paper
 R9,Design load 87.0 mW at the ports; 2.33 Wh/day drawn against 7.75 Wh stored in the worst month; 6.6 days without sun,115 mW or less; energy neutral at FieldNode design sun hours,Met on paper
 R10,"0.082 % at SF9, 0.60 % at SF12",Below 1 % per EU868 sub-band,Met on paper
-R11,"80 to 200 mm poles, band clamps; inlet 3.0 m","80 to 200 mm, no drilling, inlets 1.5 to 4 m",Met by design
-R12,FieldNode sun shield required above 45 degC ambient (not yet designed in FieldNode); SPS30 recommended range 20 to 80 % RH; condensation and insects unverified,"Outdoors, -10 to 50 degC; FieldNode sun shield above 45 degC; mesh, drip lid, IP65 core",At risk
-R13,3.26 kg; 0.126 m2 frontal,3.5 kg or less; 0.15 m2 or less,Met on paper
+R11,"80 to 200 mm poles, V-saddles and bands; inlet 3.0 m","80 to 200 mm, no drilling, inlets 1.5 to 4 m",Met by design
+R12,"FieldNode sun shield required above 45 degC ambient (designed in FND-DDR-003, fixes to the AirStreet adapter plates); SPS30 recommended range 20 to 80 % RH; condensation and insects unverified","Outdoors, -10 to 50 degC; FieldNode sun shield above 45 degC; mesh, drip lid, IP65 core",At risk
+R13,3.84 kg; 0.143 m2 frontal,3.5 kg or less; 0.15 m2 or less,Not met
 R14,"Levels, T and RH only","No images, audio or identifiers",Met by design
-R15,Sensor head $285.00; $411.00 with the FieldNode core,Sensor head $285 or less (budget_usd),Met on paper
+R15,Sensor head $303.00; $434.00 with the FieldNode core,Sensor head $285 or less (budget_usd),Not met
 R16,About 14 min for a pod exchange; no recollocation at the pole,Pre-collocated pod exchanged in 15 min at the pole with hand tools,Met on paper

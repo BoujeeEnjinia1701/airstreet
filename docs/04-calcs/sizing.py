@@ -1,10 +1,10 @@
-"""AirStreet sizing calculations, AST-CAL-001 v0.2 (TRL 3, decisions of AST-DDR-002 applied).
+"""AirStreet sizing calculations, AST-CAL-001 v0.3 (TRL 3, constructable design of AST-DDR-003).
 
 Run from the repo root:  python docs/04-calcs/sizing.py
 Prints every number quoted in docs/04-calcs/01-sizing.md. Each line carries a tag such as
 [A3] that the note cites, and the requirement table is written to docs/04-calcs/results.csv.
 Geometry comes from cad/src/model.py (PARAMS, derived and the part solids), the parts cost from
-bom/bom.csv and the budget from project.yaml. FieldNode figures come from FND-CAL-001 v0.1.
+bom/bom.csv and the budget from project.yaml. FieldNode figures come from FND-CAL-001 (v0.1 power, v0.3 mass).
 First-principles estimates for a paper proof of concept; not a substitute for tests.
 """
 import csv
@@ -17,7 +17,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "cad" / "src"))
-from model import PARAMS as P, derived, build_parts  # noqa: E402
+from model import PARAMS as P, derived, build_parts, build_components  # noqa: E402
 
 D = derived(P)
 OUT = {}
@@ -27,7 +27,7 @@ def tag(t, text):
     print(f"[{t}] {text}")
 
 
-print("AirStreet sizing, AST-CAL-001 v0.2")
+print("AirStreet sizing, AST-CAL-001 v0.3")
 
 # ------------------------------------------------------------------ assumptions
 # Sensors (SPS30 values from the Sensirion SPS30 datasheet, 07/2023; others assumed)
@@ -48,7 +48,8 @@ E_USABLE = 6.0 * 3.2 * 0.8            # Wh, 6 Ah LiFePO4, 80 % usable
 COLD, EOL = 4.03 / 5.75, 4.60 / 5.75  # capacity ratios at -20 degC and end of life, from FND-CAL-001
 E_STORED_WORST, E_STORED_HOT = 7.75, 0.8   # Wh/day stored: worst month; hot clear day without shield
 FND_ALLOW, FND_CEIL = 100.0, 115.0    # mW: FND design value (proposed) and 5-day ceiling
-FND_MASS, FND_VBLOCK = 2.41, 0.20     # kg: FieldNode as built; V-blocks and small clamps not used here
+FND_MASS, FND_MOUNT = 2.45, 0.56      # kg: FieldNode base node (FND-CAL-001 v0.3 [F1]); its back plate, V-blocks and bands, not used here
+FND_SHIELD = 0.16                     # kg: FieldNode sun shield with fixings (FND-CAL-001 v0.3 [F1b]), hot sites only
 A_LIMIT = 0.15                        # m2 frontal area limit, relaxed from 0.12 (DDR-002)
 
 # ------------------------------------------------------------------ A. Power and energy (R9)
@@ -241,34 +242,51 @@ a_front = silhouette(node, "y")
 a_side = silhouette(node, "x")
 tag("F3", f"Projected area from the model: {a_front:.3f} m2 seen from the street, {a_side:.3f} m2 seen along the street (R13 limit {A_LIMIT} m2, relaxed from 0.12)")
 RHO = {"asa": 1.07e-6, "al": 2.70e-6, "ss": 7.90e-6}   # kg/mm3
+C = build_components(P)
+vol = lambda *ks: sum(C[k].shape.volume for k in ks)  # noqa: E731
 W, Dp, H = P["pod"]
-pod_m = parts["pod"].volume * RHO["asa"]
-plates_vol = nplates * math.pi * ((so / 2) ** 2 - (si / 2) ** 2) * stk + math.pi * (P["cap"][0] / 2) ** 2 * P["cap"][1]
-rods_vol = 3 * math.pi * (P["rod_d"] / 2) ** 2 * (P["arm_z"] - D["sh_bot"] + 3)
-shield_m = plates_vol * RHO["asa"] + rods_vol * RHO["ss"]
-rail_m = P["rail"][0] * P["rail"][1] * D["rail_len"] * RHO["al"]
-arm_m = (P["shield_x"] + so * 0.2 - 15) * P["arm"][0] * P["arm"][1] * RHO["al"] + 10 * P["arm"][1] * 60 * RHO["al"]
-saddle_m = 2 * 0.030                  # printed ASA V-saddles (from the model envelope, rounded)
-clamp_m = 2 * 0.065                   # 12.7 mm stainless worm-drive clamps for up to 200 mm (assumed)
-bought = {"SPS30": 0.0263, "NO2 sensor": 0.015, "front end and ADC": 0.025, "T and RH probe": 0.010,
-          "cables and plugs": 2 * 0.040 + 0.020, "fasteners, mesh, desiccant": 0.050}
-plate_m = P["plate"][0] * P["plate"][1] * P["plate"][2] * RHO["al"]
-adapt_m = 0.0 if P["fnd_plate"] else 2 * P["adapter"][0] * P["adapter"][1] * P["adapter"][2] * RHO["al"]
-fnd_m = FND_MASS - FND_VBLOCK - (0.0 if P["fnd_plate"] else plate_m)
-mass = {"FieldNode core as used": fnd_m, "rail": rail_m, "adapter bars": adapt_m, "shield arm": arm_m, "saddles": saddle_m, "band clamps": clamp_m,
-        "sensor pod": pod_m, "radiation shield": shield_m, "bought sensor-head parts": sum(bought.values())}
-m_tot = sum(mass.values())
-tag("F4", "Mass: " + "; ".join(f"{k} {v:.2f} kg" for k, v in mass.items()))
-tag("F5", f"Total on the pole {m_tot:.2f} kg against 3.5 kg (R13); sensor head and mount alone {m_tot - fnd_m:.2f} kg")
-tag("F6", f"DDR-002: FieldNode back plate ({plate_m:.2f} kg) left off, enclosure bolted to the rail, bracket feet on two adapter bars ({adapt_m:.2f} kg); with the plate the node would be {m_tot + plate_m - adapt_m:.2f} kg")
-OUT["R11"] = (f"80 to 200 mm poles, band clamps; inlet {P['inlet_z'] / 1e3:.1f} m", "80 to 200 mm, no drilling, inlets 1.5 to 4 m", "Met by design")
+band_m = 2 * (D["band_len"] * P["band"][0] * 0.6 * RHO["ss"] + 0.020)     # 0.6 mm band, about 20 g housing each
+made = {"rail (Al)": vol("rail") * RHO["al"], "adapter plates (Al)": vol("lplate", "uplate") * RHO["al"],
+        "cross arm (Al)": vol("arm") * RHO["al"], "V-saddles (ASA, solid)": vol("saddle_low", "saddle_up") * RHO["asa"],
+        "pod shell and floor (ASA)": vol("pod_shell", "pod_floor") * RHO["asa"],
+        "shield plates, cap and spacers (ASA)": vol("shield_plates", "shield_cap", "spacers") * RHO["asa"]}
+bought = {"bands": band_m, "shield rods and nuts": vol("rods") * RHO["ss"], "SPS30": 0.0263, "NO2 sensor": 0.015,
+          "front end and ADC": 0.025, "T and RH probe and tube": 0.015, "cables, plugs and probe lead": 2 * 0.040 + 0.020,
+          "mesh, glands, inserts, terminal block": 0.045, "fixings (AST-DDR-003)": 0.060}
+fnd_m = FND_MASS - FND_MOUNT
+mass = {"FieldNode core as used": fnd_m, **made, **bought}
+m_head = sum(made.values()) + sum(bought.values())
+m_tot = fnd_m + m_head
+tag("F4", "Mass: FieldNode core as used " + f"{fnd_m:.2f} kg ({FND_MASS:.2f} kg less its back plate, V-blocks and bands, {FND_MOUNT:.2f} kg); "
+    + "; ".join(f"{k} {v:.3f} kg" for k, v in {**made, **bought}.items()))
+tag("F5", f"Total on the pole {m_tot:.2f} kg against 3.5 kg (R13); sensor head and mount {m_head:.2f} kg; "
+          f"with FieldNode's sun shield (hot sites) {m_tot + FND_SHIELD:.2f} kg")
+tag("F6", f"AST-DDR-003: the TRL 3 concept gave 3.26 kg; FieldNode's own constructable core is {fnd_m - 1.74:+.2f} kg heavier as used, "
+          f"and AirStreet's adapter plates, cross arm, larger saddles, pod floor and fixings make up the rest")
+bl = {d: derived(dict(P, pole_od=d))["band_len"] for d in (80.0, 140.0, 200.0)}
+tag("F7", f"Bands: {bl[140.0]:.0f} mm of 12.7 mm band round the 140 mm design pole, {bl[80.0]:.0f} mm round an 80 mm pole and "
+          f"{bl[200.0]:.0f} mm round a 200 mm pole, plus about 100 mm for the housing and tail")
+OUT["R11"] = (f"80 to 200 mm poles, V-saddles and bands; inlet {P['inlet_z'] / 1e3:.1f} m", "80 to 200 mm, no drilling, inlets 1.5 to 4 m", "Met by design")
 OUT["R13"] = (f"{m_tot:.2f} kg; {a_front:.3f} m2 frontal", f"3.5 kg or less; {A_LIMIT} m2 or less", "Not met" if (m_tot > 3.5 or a_front > A_LIMIT) else "Met on paper")
+
+
+def angle_section(leg, t):
+    """Second moments (mm4) and extreme fibre distances of an equal angle with one leg horizontal
+    (along Y) at the bottom and one vertical (along Z) at the back, about its centroid."""
+    rects = [(leg / 2, t / 2, leg, t), (t / 2, (leg + t) / 2, t, leg - t)]   # (y, z, wy, hz)
+    A = sum(w * h for _, _, w, h in rects)
+    yc = sum(y * w * h for y, _, w, h in rects) / A
+    zc = sum(z * w * h for _, z, w, h in rects) / A
+    Iy = sum(w * h ** 3 / 12 + w * h * (z - zc) ** 2 for _, z, w, h in rects)     # vertical bending
+    Iz = sum(h * w ** 3 / 12 + w * h * (y - yc) ** 2 for y, _, w, h in rects)     # horizontal bending
+    return A, Iy / max(zc, leg - zc), Iz / max(yc, leg - yc)
+
 
 # ------------------------------------------------------------------ G. Wind and mounting
 V_W, RHO_AIR, CD = 35.0, 1.225, 1.2
 q = 0.5 * RHO_AIR * V_W ** 2
 f_wind = q * CD * max(a_front, a_side)
-z_c = (D["overall_h"] / 2 + P["rail_z"][0]) / 1e3
+z_c = (D["overall_h"] / 2 + P["inlet_z"] - 20.0) / 1e3
 tag("G1", f"35 m/s gust: q {q:.0f} Pa; wind force {f_wind:.0f} N at about {z_c:.2f} m; moment at the pole base {f_wind * z_c:.0f} N m (pole check is the owner's)")
 T_BAND, MU = 1000.0, 0.3              # N preload per band (as FND-CAL-001), friction on painted steel (assumed)
 slip_cap = 2 * MU * math.pi * T_BAND
@@ -276,28 +294,40 @@ f_down = m_tot * 9.81 + q * CD * P["panel"][0] * P["panel"][1] / 1e6 * math.cos(
 tag("G2", f"Slip: downward load {f_down:.0f} N (weight and wind on the tilted panel) against {slip_cap:.0f} N friction; factor {slip_cap / f_down:.0f}")
 a_sh = so / 1e3 * (nplates * pitch + P["cap"][1]) / 1e3
 f_sh = q * CD * a_sh
-lever = (P["shield_x"] + so * 0.2 - 15) / 1e3
-m_arm = f_sh * lever
-z_arm = P["arm"][1] * P["arm"][0] ** 2 / 6
-tag("G3", f"Shield arm: {f_sh:.1f} N on the shield, {m_arm:.2f} N m at the rail, stress {m_arm * 1e3 / z_arm:.1f} MPa in the 20 x 8 mm bar (6063 yield about 170 MPa)")
+m_sh_kg = made["shield plates, cap and spacers (ASA)"] + bought["shield rods and nuts"] + bought["T and RH probe and tube"]
+m_pod_kg = made["pod shell and floor (ASA)"] + sum(bought[k] for k in ("SPS30", "NO2 sensor", "front end and ADC")) + 0.03
+A_arm, Zv, Zh = angle_section(*P["arm"])
+lev_sh = P["shield_x"] / 1e3
+lev_pod = -P["pod_x"] / 1e3
+mv = max(m_sh_kg * 9.81 * lev_sh, m_pod_kg * 9.81 * lev_pod)
+mh = f_sh * lev_sh
+sig = mv * 1e3 / Zv + mh * 1e3 / Zh
+tag("G3", f"Cross arm (30 x 30 x 3 angle): shield {m_sh_kg:.2f} kg and {f_sh:.1f} N wind at {lev_sh * 1e3:.0f} mm, pod {m_pod_kg:.2f} kg at {lev_pod * 1e3:.0f} mm; "
+          f"{mv:.2f} N m vertical and {mh:.2f} N m horizontal at the rail; combined stress {sig:.1f} MPa (6063 yield about 150 MPa)")
+f_bolt = mh / (abs(P["arm_bolt_x"][1] - P["arm_bolt_x"][0]) / 1e3) / 2 + f_sh / 2
+tag("G4", f"Cross arm bolts: wind on the shield pulls each M5 bolt about {f_bolt:.0f} N (two bolts {abs(P['arm_bolt_x'][1] - P['arm_bolt_x'][0]):.0f} mm apart); "
+          f"M5 A2-70 proof load about 7,000 N")
 t_twist = f_sh * P["shield_x"] / 1e3
 t_cap = slip_cap * D["R"] / 1e3
-tag("G4", f"Twist about the pole: {t_twist:.2f} N m against {t_cap:.0f} N m friction")
+tag("G5", f"Twist about the pole: {t_twist:.2f} N m against {t_cap:.0f} N m friction")
 f_low = q * CD * (W * H + a_sh * 1e6) / 1e6
 m_rail = f_low * (P["clamp_z"][0] - (P["inlet_z"] + H / 2)) / 1e3
 z_rail = P["rail"][0] * P["rail"][1] ** 2 / 6
-tag("G5", f"Rail below the lower clamp: {f_low:.1f} N on pod and shield, {m_rail:.2f} N m, stress {m_rail * 1e3 / z_rail:.1f} MPa in the 40 x 5 mm bar")
+tag("G6", f"Rail at the lower clamp: {f_low:.1f} N on pod and shield, {m_rail:.2f} N m, stress {m_rail * 1e3 / z_rail:.1f} MPa in the 40 x 5 mm bar")
+f_pod_w = q * CD * W * H / 1e6
+tag("G7", f"Pod hanging screws: pod weight {m_pod_kg * 9.81:.1f} N and {f_pod_w:.1f} N wind on two M5 screws in heat-set inserts in printed ASA; "
+          f"worst pull-out per screw about {(m_pod_kg * 9.81 + f_pod_w * (H / 2 + 3) / 40) / 2:.0f} N (insert pull-out in ASA several hundred N, to be checked at TRL 4)")
 
 # ------------------------------------------------------------------ H. Service and environment (R12, R16)
 steps = {"place and secure ladder or platform": 5, "unplug two M12 plugs and the probe lead": 1.5,
-         "release pod (two captive screws to the rail)": 1.5, "fit pre-collocated pod": 2, "reconnect and check glands": 1.5,
+         "release pod (two screws down through the cross arm)": 1.5, "fit pre-collocated pod": 2, "reconnect and check glands": 1.5,
          "confirm an uplink": 2}                  # DDR-002: exchange a pre-collocated pod, no sensor swaps at the pole
 t_serv = sum(steps.values())
 tag("H1", "Service steps (min): " + "; ".join(f"{k} {v:g}" for k, v in steps.items()) + f"; total {t_serv:.0f} min against 15 min")
 tag("H2", "The exchange pod arrives with its NO2 collocation and CalRig record, so no recollocation is needed at the pole; the returned pod is serviced and collocated at the reference site")
 tag("H3", "FieldNode is rated for -20 to +45 degC ambient (FND-REQ-001 R2) and reaches 58.7 to 73.3 degC inside at 45 degC; AirStreet R12 asks -10 to 50 degC")
 tag("H4", "SPS30 datasheet: recommended 10 to 40 degC and 20 to 80 % RH; absolute -10 to 60 degC and 0 to 95 % RH")
-OUT["R12"] = ("FieldNode sun shield required above 45 degC ambient (not yet designed in FieldNode); SPS30 recommended range 20 to 80 % RH; condensation and insects unverified",
+OUT["R12"] = ("FieldNode sun shield required above 45 degC ambient (designed in FND-DDR-003, fixes to the AirStreet adapter plates); SPS30 recommended range 20 to 80 % RH; condensation and insects unverified",
               "Outdoors, -10 to 50 degC; FieldNode sun shield above 45 degC; mesh, drip lid, IP65 core", "At risk")
 OUT["R16"] = (f"About {t_serv:.0f} min for a pod exchange; no recollocation at the pole", "Pre-collocated pod exchanged in 15 min at the pole with hand tools", "Met on paper" if t_serv <= 15 else "At risk")
 

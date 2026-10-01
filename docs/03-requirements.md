@@ -3,9 +3,9 @@ doc_id: AST-REQ-001
 title: AirStreet requirements
 project: AirStreet
 doc_type: Requirements
-version: "0.4"
+version: "0.5"
 status: Draft
-date: '2026-09-25'
+date: '2026-09-30'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -25,11 +25,15 @@ revisions:
   date: '2026-09-25'
   author: Amish Chadha
   change: Recommendations accepted by Amish (DDR-002)
+- version: "0.5"
+  date: '2026-09-30'
+  author: Amish Chadha
+  change: Status from AST-CAL-001 v0.3 after the design was made constructable (AST-DDR-003); R13 and R15 not met, proposed to Amish
 ---
 
 # AirStreet requirements
 
-These requirements are checked by calculation in [AST-CAL-001](04-calcs/01-sizing.md) v0.2. Targets remain proposals for review with the first co-design partner. On 2026-09-25 Amish accepted the recommendations in [AST-DDR-001](decisions/0001-trl2-review-decisions.md) and [AST-DDR-002](decisions/0002-recommendations-accepted.md). As a result R3 is withdrawn and kept as a research question, R8, R12, R13, R15 and R16 are restated, and R15 uses the $285 `budget_usd`. No requirement is now **not met**; five are at risk, six are met on paper, four are met by design and one is withdrawn.
+These requirements are checked by calculation in [AST-CAL-001](04-calcs/01-sizing.md) v0.3. Targets remain proposals for review with the first co-design partner. On 2026-09-25 Amish accepted the recommendations in [AST-DDR-001](decisions/0001-trl2-review-decisions.md) and [AST-DDR-002](decisions/0002-recommendations-accepted.md). As a result R3 is withdrawn and kept as a research question, R8, R12, R13, R15 and R16 are restated, and R15 uses the $285 `budget_usd`. On 2026-09-30 the design was made constructable ([AST-DDR-003](decisions/0003-design-for-construction.md)), which raised the mass and the sensor-head cost: two requirements are **not met** (R13 mass, R15 cost), both proposed to Amish with options; five are at risk, four are met on paper, four are met by design and one is withdrawn.
 
 Table 1. Requirements.
 
@@ -45,11 +49,11 @@ Table 1. Requirements.
 | R8 | Report often enough for street maps | One record every 5 min through a private gateway (TwinKit by default); one every 15 min on The Things Network; hourly means published within 15 min; 7 days of store and forward | Timing, airtime and storage calculation | Met on paper: 5 min records on the private gateway; at 15 min TTN fair use is met up to SF9; 7 days in 40.3 kB |
 | R9 | Fit the FieldNode power budget | Sensor average 115 mW or less; energy neutral at the FieldNode design sun hours | Power budget calculation | Met on paper: 87.0 mW design load with the 60 s PM run; 2.33 Wh/day drawn against 7.75 Wh stored in the worst month; 6.6 days without sun |
 | R10 | Stay within radio duty-cycle rules | LoRaWAN airtime below 1 % in EU868 sub-bands | Airtime calculation | Met on paper: 0.082 % at SF9, 0.60 % at SF12 |
-| R11 | Mount on street poles without drilling | Poles 80 to 200 mm diameter; band clamps only; inlets between 1.5 and 4 m above ground | Design review | Met by design (inlet 3.0 m, AST-DDR-001 D7) |
-| R12 | Survive outdoors | Pod inlets face down behind insect mesh with drip lid; electronics in the FieldNode IP65 enclosure; -10 to 50 °C, with FieldNode's sun shield required at sites where ambient exceeds 45 °C | Design review, later field trial | At risk: the FieldNode sun shield is not yet designed in FieldNode; SPS30 recommended range 20 to 80 % RH; condensation and insects unverified |
-| R13 | Light and compact on the pole | Mass 3.5 kg or less; frontal area 0.15 m² or less (relaxed from 0.12 m², AST-DDR-002) | Massing model | Met on paper: 3.26 kg and 0.126 m² with FieldNode's back plate left off and two adapter bars; this needs FieldNode to accept the mounting change |
+| R11 | Mount on street poles without drilling | Poles 80 to 200 mm diameter; band clamps only; inlets between 1.5 and 4 m above ground | Design review | Met by design (inlet 3.0 m, AST-DDR-001 D7; 140° V-saddles and bands cut to length fit the range, AST-DDR-003) |
+| R12 | Survive outdoors | Pod inlets face down behind insect mesh with drip lid; electronics in the FieldNode IP65 enclosure; -10 to 50 °C, with FieldNode's sun shield required at sites where ambient exceeds 45 °C | Design review, later field trial | At risk: the FieldNode sun shield is now designed (FND-DDR-003) and fixes to AirStreet's adapter plates (AST-DDR-003); SPS30 recommended range 20 to 80 % RH; condensation and insects unverified |
+| R13 | Light and compact on the pole | Mass 3.5 kg or less; frontal area 0.15 m² or less (relaxed from 0.12 m², AST-DDR-002) | Constructable model | **Not met**: 3.84 kg (4.00 kg with FieldNode's sun shield) against 3.5 kg; frontal area 0.143 m², met. The constructable FieldNode core and the parts that make AirStreet buildable add 0.58 kg (AST-DDR-003, A1: proposed, awaiting Amish) |
 | R14 | Collect levels only | No images, audio or personal identifiers collected or sent | Design review | Met by design |
-| R15 | Low cost | AirStreet sensor-head parts $285 or less per node (`budget_usd`); FieldNode core excluded and costed in FieldNode | Priced BOM (AST-CAL-001 I) | Met on paper, with no margin: sensor head $285.00; $411.00 with the FieldNode core |
+| R15 | Low cost | AirStreet sensor-head parts $285 or less per node (`budget_usd`); FieldNode core excluded and costed in FieldNode | Priced BOM (AST-CAL-001 I) | **Not met**: sensor head $303.00, $18.00 over; $434.00 with the FieldNode core (AST-DDR-003, A2: proposed, awaiting Amish) |
 | R16 | Serviceable in the field | Pre-collocated sensor pod exchanged in 15 min at the pole with hand tools; no sensor-level swaps at the pole (AST-DDR-002) | Design review | Met on paper: about 14 min for a pod exchange; the exchanged pod is serviced and recollocated at the reference site |
 
 ## Assumptions

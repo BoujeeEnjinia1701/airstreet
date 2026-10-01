@@ -8,7 +8,7 @@ A street-level air quality node measuring PM2.5 and NO2, with particles checked 
 
 ![AirStreet: street-level air quality node for PM2.5 and NO2, product render](media/render-hero.png)
 
-[Exploded render](media/render-exploded.png) · [Detail render](media/render-detail.png) · [Interactive 3D model](media/viewer.html) · [Concept blueprint (PDF)](media/concept-blueprint.pdf) · [General arrangement AST-DWG-001 (PDF)](cad/drawings/AST-DWG-001.pdf) · [Sizing calculations](docs/04-calcs/01-sizing.md) · [Review note](docs/REVIEW.md)
+[Exploded render](media/render-exploded.png) · [Detail render](media/render-detail.png) · [Interactive 3D model](media/viewer.html) · [Concept blueprint (PDF)](media/concept-blueprint.pdf) · [General arrangement AST-DWG-001 (PDF)](cad/drawings/AST-DWG-001.pdf) · [Sizing calculations](docs/04-calcs/01-sizing.md) · [Prototype build plan](docs/05-build-plan.md) · [Design decisions](docs/06-design-decisions.md) · [Review note](docs/REVIEW.md)
 
 ## Concept rationale
 
@@ -57,16 +57,16 @@ Regulatory air monitors are few and far apart, missing the streets where people 
 
 A street-level air quality node measuring PM2.5 and NO2, with particles checked on CalRig and NO2 calibrated against a reference station, for neighborhood-scale pollution maps. The sensor pod and radiation shield hang below a FieldNode core on a street light pole, with inlets 3.0 m above the sidewalk, and send one record every 5 min over LoRaWAN. PM, temperature and humidity are checked on CalRig; **NO2 is calibrated by field collocation with a reference station** for at least 14 days before deployment and at least every 6 months, because CalRig does not cover NO2.
 
-Calculated performance (TRL 3, [AST-CAL-001](docs/04-calcs/01-sizing.md)): an 87 mW design sensor load with a 60 s particle run, within FieldNode's 100 mW design allowance, and 6.6 days without sun; records every 5 min through a private gateway and every 15 min on The Things Network; 0.60 % radio duty cycle even at SF12; hourly NO2 error of about 3.9 ppb and PM2.5 within ±5 µg/m³ or ±30 % up to 80 % RH. With FieldNode's back plate left off, the node weighs 3.26 kg and presents 0.126 m² to the street, and the sensor head costs $285.00 in parts ($411.00 with the FieldNode core), exactly the budget. No requirement is unmet on paper; five are at risk. The annual NO2 uncertainty (about 4.2 µg/m³) is too large to resolve the WHO guideline of 10 µg/m³, so AirStreet ranks streets and checks the EU limit, and the WHO question is kept as research. Decisions are recorded in [AST-DDR-001](docs/decisions/0001-trl2-review-decisions.md) and [AST-DDR-002](docs/decisions/0002-recommendations-accepted.md). Only pollutant levels, temperature and humidity leave the device; no images or audio.
+Calculated performance (TRL 3, [AST-CAL-001](docs/04-calcs/01-sizing.md)): an 87 mW design sensor load with a 60 s particle run, within FieldNode's 100 mW design allowance, and 6.6 days without sun; records every 5 min through a private gateway and every 15 min on The Things Network; 0.60 % radio duty cycle even at SF12; hourly NO2 error of about 3.9 ppb and PM2.5 within ±5 µg/m³ or ±30 % up to 80 % RH. As made buildable for the prototype build plan, the node weighs 3.84 kg and presents 0.143 m² to the street, and the sensor head costs $303.00 in parts ($434.00 with the FieldNode core). Mass (R13, 3.5 kg) and cost (R15, $285) are not met on paper and are proposed to Amish with options in the [design decisions register](docs/06-design-decisions.md); five requirements are at risk. The annual NO2 uncertainty (about 4.2 µg/m³) is too large to resolve the WHO guideline of 10 µg/m³, so AirStreet ranks streets and checks the EU limit, and the WHO question is kept as research. Decisions are recorded in [AST-DDR-001](docs/decisions/0001-trl2-review-decisions.md), [AST-DDR-002](docs/decisions/0002-recommendations-accepted.md) and [AST-DDR-003](docs/decisions/0003-design-for-construction.md). Only pollutant levels, temperature and humidity leave the device; no images or audio.
 
 Full design precis: [docs/02-concept.md](docs/02-concept.md). Requirements: [docs/03-requirements.md](docs/03-requirements.md).
 
 ## Key components
 
-1. FieldNode core (enclosure, LiFePO4 cell, MPPT charger, LoRaWAN radio), bolted to the rail without its back plate
+1. FieldNode core (enclosure, LiFePO4 cell, MPPT charger, LoRaWAN radio), on two adapter plates in place of its back plate
 2. FieldNode 6 W panel hood
-3. Band clamps, mounting rail and adapter bars (no drilling)
-4. Sensor pod with insect mesh and drip lid, exchanged whole for service
+3. Bands, V-saddles, mounting rail, adapter plates and cross arm (no drilling)
+4. Sensor pod (shell with drip lid, sensor floor, insect mesh), exchanged whole for service
 5. Optical PM2.5 sensor (Sensirion SPS30 class)
 6. Electrochemical NO2 sensor (Alphasense NO2-B43F class, ozone filtered)
 7. NO2 potentiostat front end and 16-bit ADC
@@ -75,6 +75,12 @@ Full design precis: [docs/02-concept.md](docs/02-concept.md). Requirements: [doc
 10. Sensor cables with M12 plugs (0.5 m)
 
 The priced bill of materials is in [bom/bom.csv](bom/bom.csv); the parametric model is `cad/src/model.py`, with STEP and STL exports in `cad/step/` and `cad/stl/`.
+
+## Building the prototype
+
+![AirStreet prototype: every component pulled apart and numbered in build order](docs/05-build-plan/overview.png)
+
+The [prototype build plan](docs/05-build-plan.md) (AST-BLD-001) shows, in pictures, how to make each of the eighteen components and put them together in sixteen steps; nothing has been built yet. The made parts are an aluminium rail, two adapter plates and a cross arm, and printed V-saddles, pod shell, sensor floor, shield plates and cap; the FieldNode core is built to FieldNode's own plan, and the sensors and front end are bought boards wired at block level. Writing the plan made the design buildable: the saddles, band path, enclosure fixing, pod, shield stack and cable entries were redesigned (AST-DDR-003, open for Amish's review), which raised the mass and cost beyond their limits; those choices are in the [design decisions register](docs/06-design-decisions.md). Every picture is drawn from the model, which checks that each part touches what it should and clears what it should not.
 
 ## Safety
 
