@@ -94,11 +94,12 @@ def main():
     asm = assembly(with_pole=True)
     views = safe_project_views(asm, work)
     bb = asm.bounding_box()
-    s = Sheet(project="AirStreet", title="General arrangement", dwg_no="AST-DWG-001", rev="P2",
+    s = Sheet(project="AirStreet", title="General arrangement", dwg_no="AST-DWG-001", rev="P3",
               author="Amish Chadha", date=DATE, scale=None, theme="technical",
               material="FieldNode core per FND; bought-in parts per bom/bom.csv. PRELIMINARY, NOT FOR FABRICATION",
               revisions=[("P1", "Preliminary GA for TRL 3 (from cad/src/model.py)", DATE, "AC"),
-                         ("P2", "DDR-002: FieldNode back plate left off, adapter bars; notes", DATE, "AC")])
+                         ("P2", "DDR-002: FieldNode back plate left off, adapter bars; notes", DATE, "AC"),
+                         ("P3", "Layout and labels tidied", DATE, "AC")])
     s.add_ortho(views)
     k = s.scale
     c = ortho_cells(s, views)
@@ -123,7 +124,7 @@ def main():
     xr = X(bb.max.X) + 5
     for zz in P["clamp_z"]:
         L.append(ext(X(P["rail"][0] / 2 + 20), Z(zz), xr + 1, Z(zz)))
-    L += dim_v(xr, Z(P["clamp_z"][1]), Z(P["clamp_z"][0]), f"{D['clamp_span']:.0f} clamps", side=1)
+    L += dim_v(xr, Z(P["clamp_z"][1]), Z(P["clamp_z"][0]), f"{D['clamp_span']:.0f}", side=1)
     L += [ext(X(ew / 2), Z(z0), xr + 8, Z(z0)), ext(X(ew / 2), Z(z0 + eh), xr + 8, Z(z0 + eh))]
     L += dim_v(xr + 7, Z(z0 + eh), Z(z0), f"{eh:.0f}", side=1)
     yb = zi + 12
@@ -131,13 +132,13 @@ def main():
     L += dim_h(X(P["pod_x"] - W / 2), X(P["pod_x"] + W / 2), yb, f"{W:.0f}")
     yb2 = yb + 6
     L += [ext(X(0), zi, X(0), yb2 + 1), ext(X(P["shield_x"]), Z(D["sh_bot"]), X(P["shield_x"]), yb2 + 1)]
-    L += dim_h(X(0), X(P["shield_x"]), yb2, f"{P['shield_x']:.0f} shield from pole axis")
+    L += dim_h(X(0), X(P["shield_x"]), yb2, f"{P['shield_x']:.0f}")
 
     # top view (from +Z): X to the right, Y up the sheet
     x, y, w, h = c["top"]
     Xt = lambda mx: x + (mx - bb.min.X) * k
     Yt = lambda my: y + h - (my - bb.min.Y) * k
-    L += leader(Xt(P["pod_x"]), Yt(D["pod_yc"] - P["pod"][1] / 2), Xt(bb.max.X) + 4, Yt(bb.min.Y) + 2, "STREET SIDE (-Y); KERB BEYOND")
+    L.append(_t(Xt(bb.max.X) + 4, Yt(bb.min.Y) + 2.8, "STREET SIDE (-Y); KERB BEYOND", 2.1, 400, INK, "start"))
 
     # right view (from +X): +Y to the right, Z up
     x, y, w, h = c["right"]
@@ -150,19 +151,19 @@ def main():
     zb = Zr(D["sh_bot"]) + 8
     yf = -R - D["offset_front"]
     L += [ext(Yr(yf), Zr(D["sh_bot"]), Yr(yf), zb + 1), ext(Yr(-R), Zr(P["rail_z"][0]), Yr(-R), zb + 1)]
-    L += dim_h(Yr(yf), Yr(-R), zb, f"{D['offset_front']:.0f} from pole face")
-    L.append(_t(Yr(D["panel_cy"]), Zr(D["panel_top"]) - 3, f"PANEL TILT {P['tilt']:.0f} DEG", 2.0, 400, INK, "middle"))
+    L += dim_h(Yr(yf), Yr(-R), zb, f"{D['offset_front']:.0f}")
+    L.append(_t(Yr(D["panel_cy"]), Zr(D["panel_top"]) - 1.2, f"PANEL TILT {P['tilt']:.0f} DEG", 2.0, 400, INK, "middle"))
 
     s._layers += L
-    s.add_svg(views["iso"], 276, 32, 140, 100, label="Isometric view", sublabel="Not to scale; pole stub shown")
+    s.add_svg(views["iso"], 276, 38, 140, 96, label="Isometric view", sublabel="Not to scale; pole stub shown")
     so, si, stk, pitch, n = P["shield"]
     s.add_notes("Main dimensions and interfaces (mm)", [
-        f"Pole {P['pole_range'][0]:.0f} to {P['pole_range'][1]:.0f} OD (design {P['pole_od']:.0f}); two 12.7 stainless band clamps, V-saddles",
+        f"Pole {P['pole_range'][0]:.0f} to {P['pole_range'][1]:.0f} OD (design {P['pole_od']:.0f}); two 12.7 stainless band clamps {D['clamp_span']:.0f} apart, V-saddles",
         f"Rail {P['rail'][0]:.0f} x {P['rail'][1]:.0f} x {D['rail_len']:.0f}; enclosure on it, no back plate; adapters {P['adapter'][0]:.0f} x {P['adapter'][1]:.0f} x {P['adapter'][2]:.0f}",
         f"FieldNode core {ew:.0f} x {ed:.0f} x {eh:.0f}, underside {z0:,.0f}; 6 W panel at {P['tilt']:.0f} deg",
         f"Pod {W:.0f} x {Dp:.0f} x {H:.0f}, open underneath behind mesh; drip lid +{P['lid'][0]:.0f} each side",
         f"Inlet plane {P['inlet_z']:,.0f} above sidewalk, chain line in front view (EU 1,500 to 4,000)",
-        f"Shield {n} plates {so:.0f} OD at {pitch:.0f} pitch; T and RH probe at {D['th_z']:,.0f}",
+        f"Shield {n} plates {so:.0f} OD at {pitch:.0f} pitch, {P['shield_x']:.0f} from pole axis, {D['offset_front']:.0f} from pole face; T and RH probe at {D['th_z']:,.0f}",
         "M12 port A (switched 5 V): SPS30 and SHT45; port B (5 V held on): NO2 front end",
         f"FieldNode whip at x = {P['ant_x']:.0f}, {D['whip_clear']:.0f} clear of the pod lid",
         "Mass 3.26 kg, frontal area 0.126 m² (AST-CAL-001 v0.2; R13 met on paper)",
