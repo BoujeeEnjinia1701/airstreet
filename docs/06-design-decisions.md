@@ -3,9 +3,9 @@ doc_id: AST-DEC-001
 title: AirStreet design decisions register
 project: AirStreet
 doc_type: Design decisions register
-version: "0.2"
+version: "0.3"
 status: Draft
-date: '2026-10-01'
+date: '2026-10-02'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -17,6 +17,10 @@ revisions:
   date: '2026-10-01'
   author: Amish Chadha
   change: Budget treated as a value-engineering target
+- version: "0.3"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: "Amish approved the recommendations for open decisions 1 to 8 (2026-10-02); moved to decisions made (AST-DDR-003 accepted)"
 ---
 
 # AirStreet design decisions register
@@ -25,16 +29,7 @@ Every design decision still to be made, and every decision made, in one place. E
 
 ## Open decisions
 
-| # | Decision needed | Options | Recommendation | Affects in the build | Source |
-| --- | --- | --- | --- | --- | --- |
-| 1 | Design for construction as a whole: the changes that make the node buildable (adapter plates, 140° V-saddles, bands in saddle grooves, cross arm, two-part pod, cable entries, shield spacers and probe tube) | Accept; or ask for changes | Accept | The whole build plan | AST-DDR-003, Table 1 |
-| 2 | Mass on the pole: 3.84 kg (4.00 kg with FieldNode's sun shield) against R13's 3.5 kg | (a) raise the R13 limit to 4.0 kg, pole owner to confirm the load; (b) lighten (saddles at 40 % infill, 40 x 4 mm rail, 1.5 mm shield plates, windows in the adapter plates) to about 3.6 kg, still over; (c) both | (c) | Rail, plates and printed parts; first check "Mass" | AST-DDR-003, A1 |
-| 3 | Antenna whip 15 mm from the pod's drip lid (23 mm in the concept) | (a) accept and check the radio link with the pod fitted at TRL 4; (b) move the pod 8 mm further left | (a) | Pod position on the cross arm | AST-DDR-003, A3 |
-| 4 | First partner, city and reference station for co-design and collocation | Open; no recommendation made | None yet | Not part of the TRL 3 build; sets the radio band and the first site | AST-DDR-001, O1 |
-| 5 | FieldNode to accept its enclosure, plate clips and sun shield on AirStreet's two adapter plates in place of its back plate | Agree with FieldNode; or restore FieldNode's back plate (heavier) | Agree with FieldNode | Sections 3.3 and 3.5 of the build plan | AST-DDR-002 N2, AST-DDR-003 |
-| 6 | FieldNode to keep port B's 5 V supply on at all times for the NO2 bias, and to allow a 5 min interval on a private gateway | Agree with FieldNode | Agree | Pod wiring and FieldNode's firmware (not part of the TRL 3 build) | AST-DDR-002 |
-| 7 | Port pin assignment of FieldNode's two M12 ports | Agreed between FieldNode and the projects that use it | None yet (FieldNode's decision) | Pod wiring, section 3.10 | FND-DDR-001, O2 |
-| 8 | Radio band and antenna for the pilot region | Follows decision 5 | None yet | FieldNode's antenna | FND-DDR-001, O1 |
+None. All open decisions were decided on 2026-10-02.
 
 ## To confirm when parts are bought
 
@@ -61,3 +56,11 @@ Value-engineering target: USD 285 (a hypothetical control target, not a limit). 
 | --- | --- | --- | --- |
 | 2026-09-25 | TRL 2 review items D1 to D9: budget covers the sensor head only; pitch wording; NO2 collocation plan; NO2-B43F class sensor; ISB class front end bought first; SPS30 class particle sensor; 3.0 m inlets; 5 min records with raw signals; open data | Amish: "i accept all your recommendations, go with them across all repos." | AST-DDR-001, AST-DDR-002 |
 | 2026-09-25 | `budget_usd` $285 for the sensor head; FieldNode back plate left off with the enclosure and bracket on the AirStreet rail; frontal area limit 0.15 m²; R3 (WHO guideline) withdrawn and kept as research; 60 s particle run; 5 min records on a private gateway and 15 min on The Things Network; FieldNode sun shield at sites above 45 °C; pre-collocated pod exchange for service | Amish, same instruction: go with recommendation | AST-DDR-002, N1 to N7 |
+| 2026-10-02 | Design for construction accepted as a whole: the changes P1 to P10 (adapter plates, 140° V-saddles, bands in saddle grooves, cross arm, two-part pod, cable entries, shield spacers and probe tube) and their knock-on changes, as made | Amish: "i approve your recommendations for all 555 open decisions." | AST-DDR-003, Table 1 |
+| 2026-10-02 | Mass (R13): option (c). The R13 limit is set at 4.0 kg including FieldNode's sun shield, the pole owner is asked to confirm that load, and the four lightening steps (saddles at 40 % infill, 40 x 4 mm rail, 1.5 mm shield plates, windows in the adapter plates) are carried into the TRL 4 build to give margin | Amish: "i approve your recommendations for all 555 open decisions." | AST-DDR-003, A1 |
+| 2026-10-02 | Antenna whip: accept the 15 mm clearance to the pod's drip lid and check signal strength with the pod fitted at TRL 4; move the pod 8 mm left only if that check shows a loss | Amish: "i approve your recommendations for all 555 open decisions." | AST-DDR-003, A3 |
+| 2026-10-02 | First partner chosen by one rule: a city or air agency that runs a regulatory NO2 reference station at a street-level site AirStreet can mount beside, and that will share its data. First candidate to approach: the Texas Commission on Environmental Quality's Dallas-Fort Worth monitoring network, with a local university or city partner | Amish: "i approve your recommendations for all 555 open decisions." | AST-DDR-001, O1 |
+| 2026-10-02 | Agree with FieldNode: send FieldNode the request to mount its enclosure, plate clips and sun shield on AirStreet's two adapter plates, and to keep its model stable since AirStreet carries a copy | Amish: "i approve your recommendations for all 555 open decisions." | AST-DDR-002 N2, AST-DDR-003 |
+| 2026-10-02 | Port B's always-on 5 V supply and the 5 min interval on a private gateway: closed as already decided on 2026-09-25 (AST-DDR-002, N5 and its cross-repo actions); FieldNode's confirmation is tracked as a cross-repo action, not a decision | Amish: "i approve your recommendations for all 555 open decisions." | AST-DDR-002 |
+| 2026-10-02 | FieldNode port pin assignment: propose to FieldNode one common assignment for both M12 ports (supply, ground, I2C data, I2C clock and one spare line), with each port's supply voltage set per project by its supply module (5 V on both ports for AirStreet) | Amish: "i approve your recommendations for all 555 open decisions." | FND-DDR-001, O2 |
+| 2026-10-02 | Radio band set with the partner of the first-partner decision above (not with the adapter plates, as the register said): US915 for a North American partner, EU868 for a European one, with the matching FieldNode antenna | Amish: "i approve your recommendations for all 555 open decisions." | FND-DDR-001, O1 |

@@ -3,9 +3,9 @@ doc_id: AST-PRC-001
 title: AirStreet design precis
 project: AirStreet
 doc_type: Design precis
-version: "0.6"
+version: "0.7"
 status: Draft
-date: '2026-10-01'
+date: '2026-10-02'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -33,6 +33,10 @@ revisions:
   date: '2026-10-01'
   author: Amish Chadha
   change: Budget treated as a value-engineering target
+- version: "0.7"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: "Decisions of 2026-10-02: R13 limit 4.0 kg with the sun shield; first partner rule and first candidate; radio band follows the partner"
 ---
 
 
@@ -42,7 +46,7 @@ revisions:
 
 AirStreet is a pole-mounted node that measures PM2.5 and NO2 at street level for neighborhood-scale pollution maps. A small sensor pod and a radiation shield hang below a FieldNode core on a street light pole, with the inlet plane 3.0 m above the sidewalk. Temperature, humidity and particle readings are checked on CalRig. CalRig does not cover NO2, so each NO2 sensor is calibrated by field collocation with a reference station before deployment and at intervals afterward. The node sends raw signals, so calibrations can be improved and reapplied later. Amish accepted the recommended design choices on 2026-09-25 ([AST-DDR-001](decisions/0001-trl2-review-decisions.md), [AST-DDR-002](decisions/0002-recommendations-accepted.md)).
 
-The TRL 3 calculations ([AST-CAL-001](04-calcs/01-sizing.md) v0.3) confirm the power and radio budget: an 87.0 mW design sensor load with a 60 s particle run, inside FieldNode's 100 mW design allowance, 6.6 days without sun, and 0.60 % duty cycle even at SF12. On 2026-09-30 the design was made constructable ([AST-DDR-003](decisions/0003-design-for-construction.md)) and an illustrated prototype build plan was written ([AST-BLD-001](05-build-plan.md)). The buildable node weighs 3.84 kg and presents 0.143 m² to the street, so it misses R13's 3.5 kg while meeting its 0.15 m² area limit, and the sensor head costs $303.00 in parts against the $285 value-engineering target, $18.00 over (R15); the mass is proposed to Amish with options in the design decisions register ([AST-DEC-001](06-design-decisions.md)). The node costs $434.00 with the FieldNode core. Resolving NO2 at the WHO guideline of 10 µg/m³ is no longer a requirement: an annual mean carries about 4.2 µg/m³ of uncertainty, so AirStreet ranks streets and checks the EU limit, and the WHO question stays open as research.
+The TRL 3 calculations ([AST-CAL-001](04-calcs/01-sizing.md) v0.3) confirm the power and radio budget: an 87.0 mW design sensor load with a 60 s particle run, inside FieldNode's 100 mW design allowance, 6.6 days without sun, and 0.60 % duty cycle even at SF12. On 2026-09-30 the design was made constructable ([AST-DDR-003](decisions/0003-design-for-construction.md)) and an illustrated prototype build plan was written ([AST-BLD-001](05-build-plan.md)). The buildable node weighs 3.84 kg and presents 0.143 m² to the street, which meets its 0.15 m² area limit; with FieldNode's sun shield it weighs 4.00 kg, exactly on the 4.0 kg limit that Amish set for R13 on 2026-10-02 (it was 3.5 kg), so the lightening steps go into the TRL 4 build to give margin. The sensor head costs $303.00 in parts against the $285 value-engineering target, $18.00 over (R15). Decisions are recorded in the design decisions register ([AST-DEC-001](06-design-decisions.md)). The node costs $434.00 with the FieldNode core. Resolving NO2 at the WHO guideline of 10 µg/m³ is no longer a requirement: an annual mean carries about 4.2 µg/m³ of uncertainty, so AirStreet ranks streets and checks the EU limit, and the WHO question stays open as research.
 
 ![Figure 1. AirStreet on a street light pole, with a 1.75 m person for scale.](../media/hero.png)
 
@@ -122,7 +126,7 @@ Table 2. Key numbers.
 | EU limit classification | Decisive below 34.6 or above 45.4 µg/m³ | 90 % confidence against 40 µg/m³ (R4 at risk) |
 | PM2.5 hourly error | Within ±5 µg/m³ or ±30 % up to 80 % RH | Outside the bound at 85 % RH and above (R1 at risk) |
 | Shield radiation error | 0.43 to 0.89 K at 1 m/s | Reads up to 4.2 % RH low at 85 % RH (R5 at risk) |
-| Mass on the pole | 3.84 kg | FieldNode 1.89 kg as used (no back plate), sensor head and mount 1.95 kg (R13 not met; proposed to Amish, AST-DDR-003 A1) |
+| Mass on the pole | 3.84 kg | FieldNode 1.89 kg as used (no back plate), sensor head and mount 1.95 kg (4.00 kg with the sun shield against the 4.0 kg R13 limit set on 2026-10-02; R13 at risk, AST-DDR-003 A1) |
 | Frontal area | 0.143 m² | Rasterized from the model; limit 0.15 m² (met on paper) |
 | Wind at 35 m/s | 128 N, 428 N·m at the pole base | Clamp slip factor 24; the pole check is the owner's |
 | Parts cost | Sensor head $303.00; $434.00 with the FieldNode core | $18.00 over the $285 value-engineering target (`budget_usd`; R15 over the target) |
@@ -146,11 +150,11 @@ Figure 4. Measurement and data flow.
 
 ## Open questions
 
-- [ ] Which city, partner and reference station host the first collocation? (AST-DDR-001 O1, proposed, awaiting Amish.)
+- [ ] Which city, partner and reference station host the first collocation? Decided on 2026-10-02 as a rule: a city or air agency that runs a regulatory NO2 reference station at a street-level site AirStreet can mount beside, and that will share its data. First candidate to approach: the Texas Commission on Environmental Quality's Dallas-Fort Worth monitoring network, with a local university or city partner; nothing is agreed yet. The partner's country sets the radio band (US915 in North America, EU868 in Europe).
 - [ ] Is the NO2 error after field calibration stable across seasons, and how large is the reference-to-street transfer bias in practice?
 - [ ] How fast does air move inside the shield in low wind, and so how large is the radiation error?
 - [ ] Does the SPS30 need a heated or dried inlet above 85 % RH, or is a humidity flag on the data enough?
-- [ ] Will FieldNode accept its enclosure, plate clips and sun shield on AirStreet's two adapter plates in place of its back plate? (Decided in AirStreet, AST-DDR-002 and AST-DDR-003; needs FieldNode's agreement; see the design decisions register.)
+- [ ] Will FieldNode accept its enclosure, plate clips and sun shield on AirStreet's two adapter plates in place of its back plate? (Decided in AirStreet, AST-DDR-002 and AST-DDR-003; on 2026-10-02 Amish approved sending FieldNode the request; FieldNode's agreement is outstanding.)
 - [ ] Can the NO2 annual mean ever be resolved at the WHO guideline, for example with an anchor node at every site? (Research question, AST-DDR-002.)
 - [ ] Is an open two-channel front end at about $25 worth designing, to restore cost margin? (On hold with TRL 4.)
 - [ ] How are nodes secured against theft, and what does the pole owner require for insurance and inspection?

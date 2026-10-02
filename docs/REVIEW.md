@@ -265,3 +265,60 @@ No change to the safety case. The build plan adds safety stops for the NO2 senso
 ### Recommended next step
 
 Amish reviews AST-DDR-003 and the register (decisions 1 to 4), then FieldNode is asked to accept the adapter plates. TRL stays at 3; nothing was built, bought or tested.
+
+## Session 2026-10-02: open decisions decided
+
+Amish, 2026-10-02: "i approve your recommendations for all 555 open decisions." This approves the recommendation written for every open decision in the design decisions register (AST-DEC-001). trl stays 3; nothing was built, bought or tested, and TRL 4 remains on hold.
+
+### Decisions recorded (8)
+
+| Register item | Decision |
+| --- | --- |
+| 1 | AST-DDR-003 accepted as a whole: P1 to P10 and their knock-on changes |
+| 2 | R13 set at 4.0 kg including FieldNode's sun shield; pole owner to confirm the load; the four lightening steps carried into the TRL 4 build |
+| 3 | 15 mm whip clearance accepted; signal strength checked with the pod fitted at TRL 4; pod moved 8 mm left only if that shows a loss |
+| 4 | First partner rule: a city or air agency with a street-level regulatory NO2 reference station that will share data; first candidate to approach, TCEQ's Dallas-Fort Worth network with a local university or city partner |
+| 5 | Agree with FieldNode: send the request for its enclosure, plate clips and sun shield on AirStreet's adapter plates, and for a stable model |
+| 6 | Closed as already decided on 2026-09-25 (AST-DDR-002, N5); FieldNode's confirmation tracked as a cross-repo action |
+| 7 | Propose to FieldNode one common pin assignment for both M12 ports, supply voltage per project by supply module (5 V on both for AirStreet) |
+| 8 | Radio band set with the partner of item 4 (not item 5): US915 in North America, EU868 in Europe, with the matching FieldNode antenna |
+
+All 8 moved to Decisions made in AST-DEC-001, dated 2026-10-02; the Open decisions section now reads "None."
+
+### Documents changed
+
+- `docs/06-design-decisions.md` (AST-DEC-001 v0.3): items 1 to 8 moved to Decisions made; Open decisions reads "None"; item 8's link corrected to the partner decision
+- `docs/decisions/0003-design-for-construction.md` (AST-DDR-003 v0.3): status accepted (kept Draft), A1 and A3 marked accepted, consequence for R13 added
+- `docs/03-requirements.md` (AST-REQ-001 v0.7): R13 relaxed to 4.0 kg including the sun shield; status at risk (no margin); counts updated
+- `docs/04-calcs/01-sizing.md` (AST-CAL-001 v0.5): R13 status and Table 3 counts against the 4.0 kg limit; note that the script still prints the 3.5 kg result
+- `docs/02-concept.md` (AST-PRC-001 v0.7): R13 wording; first partner rule and first candidate; radio band follows the partner; FieldNode request approved
+- `docs/01-problem.md` (AST-PRB-001 v0.5): first partner rule and first candidate to approach
+- `docs/05-build-plan.md` (AST-BLD-001 v0.2): section 2 says AST-DDR-003 is accepted; no open decisions added
+- `README.md`: R13 wording; AST-DDR-003 accepted
+- `docs/decisions/0001-trl2-review-decisions.md` (AST-DDR-001 v0.3): item O1 ("Proposed, awaiting Amish") recorded as decided
+- `docs/decisions/0002-recommendations-accepted.md` (AST-DDR-002 v0.2): item O1 recorded as decided
+- PDFs regenerated with `python3 .kit/render.py`; superseded versions removed.
+
+### Follow-up actions to carry approved decisions into the design
+
+The model, BOM quantities and prices, calculations and pictures were not changed in this session. These actions carry the approved decisions into them:
+
+1. Decision 2 (calculations): Re-run `docs/04-calcs/sizing.py` with R13's limit at 4.0 kg including FieldNode's sun shield, so [J1] and `results.csv` show R13 at risk rather than not met.
+2. Decision 2 (model, drawings, build plan pictures): Carry the four lightening steps into the TRL 4 design: saddles printed at 40 % infill, 40 x 4 mm rail, 1.5 mm shield plates and windows in the adapter plates; update AST-DWG-001 and the making sketches.
+3. Decision 2 (BOM, calculations): Reprice and reweigh the lightened parts (rail, shield plates, adapter plates) and check whether the lightened 3.6 kg figure includes FieldNode's 0.16 kg sun shield (about 3.76 kg if it does not).
+4. Decision 2 (documents): Ask the pole owner of the first site to confirm a 4.0 kg load on the pole.
+5. Decision 3 (test plan): At TRL 4, check LoRaWAN signal strength with the pod fitted; move the pod 8 mm left in the model and pictures only if the check shows a loss.
+6. Decision 4 (documents): Approach the first candidate partner (TCEQ's Dallas-Fort Worth monitoring network, with a local university or city partner); nothing is agreed yet.
+7. Decision 5 and 6 (cross-repo): Send FieldNode the adapter plate request and track its confirmation of port B's always-on 5 V and the 5 min private-gateway interval as one cross-repo action.
+8. Decision 7 (build plan pictures, documents): Propose the common M12 pin assignment to FieldNode (with CurbCount, which asks for 3.3 V on port A); once FieldNode agrees, update the pod wiring in build plan section 3.10 and its wiring picture.
+9. Decision 8 (BOM, requirements): Once the partner is agreed, fix the band and FieldNode antenna in the BOM; for US915, restate R10 against the 400 ms dwell limit (SF9 or lower) instead of the EU868 duty cycle.
+
+### Points found in the review
+
+Raised when the recommendations were written (2026-10-01) and kept here so they are not lost:
+
+- Item 8 says it 'Follows decision 5'; it should follow decision 4 (partner, city and reference station). Decision 5 is the adapter plates.
+- Item 6 was already accepted by Amish on 2026-09-25 (AST-DDR-002, N5 and its cross-repo actions); only FieldNode's confirmation is outstanding, so it belongs with cross-repo actions rather than open decisions.
+- Cross-repo conflict on FieldNode port A: AirStreet's build plan powers the SPS30 from a switched 5 V on port A, while CurbCount's build plan replaces FieldNode's port A boost converter with a 3.3 V load switch. FieldNode's pinout decision (FND-DDR-001, O2) must allow a per-project port supply.
+- The four appearance items from REVIEW.md 2026-09-26 (pod service window, lipped shield plates, FieldNode interior, label wording) were 'Proposed, awaiting Amish' and are not in the register.
+- Item 2: the lightened 3.6 kg figure does not say whether it includes FieldNode's 0.16 kg sun shield; if it does not, the lightened node with shield is about 3.76 kg.

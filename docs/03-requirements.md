@@ -3,9 +3,9 @@ doc_id: AST-REQ-001
 title: AirStreet requirements
 project: AirStreet
 doc_type: Requirements
-version: "0.6"
+version: "0.7"
 status: Draft
-date: '2026-10-01'
+date: '2026-10-02'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -33,11 +33,15 @@ revisions:
   date: '2026-10-01'
   author: Amish Chadha
   change: Budget treated as a value-engineering target
+- version: "0.7"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: "R13 mass limit set at 4.0 kg including FieldNode's sun shield (AST-DDR-003 A1, accepted 2026-10-02); R13 now at risk"
 ---
 
 # AirStreet requirements
 
-These requirements are checked by calculation in [AST-CAL-001](04-calcs/01-sizing.md) v0.3. Targets remain proposals for review with the first co-design partner. On 2026-09-25 Amish accepted the recommendations in [AST-DDR-001](decisions/0001-trl2-review-decisions.md) and [AST-DDR-002](decisions/0002-recommendations-accepted.md). As a result R3 is withdrawn and kept as a research question, R8, R12, R13, R15 and R16 are restated, and R15 uses the $285 `budget_usd`. On 2026-09-30 the design was made constructable ([AST-DDR-003](decisions/0003-design-for-construction.md)), which raised the mass and the sensor-head cost: R13 (mass) is **not met** and is proposed to Amish with options, R15 (cost) is **over the value-engineering target** by $18.00, five are at risk, four are met on paper, four are met by design and one is withdrawn.
+These requirements are checked by calculation in [AST-CAL-001](04-calcs/01-sizing.md) v0.3. Targets remain proposals for review with the first co-design partner. On 2026-09-25 Amish accepted the recommendations in [AST-DDR-001](decisions/0001-trl2-review-decisions.md) and [AST-DDR-002](decisions/0002-recommendations-accepted.md). As a result R3 is withdrawn and kept as a research question, R8, R12, R13, R15 and R16 are restated, and R15 uses the $285 `budget_usd`. On 2026-09-30 the design was made constructable ([AST-DDR-003](decisions/0003-design-for-construction.md)), which raised the mass and the sensor-head cost: R15 (cost) is **over the value-engineering target** by $18.00. On 2026-10-02 Amish accepted the design for construction and set R13's mass limit at 4.0 kg including FieldNode's sun shield (AST-DEC-001, decision of 2026-10-02 on mass), so R13 is now at risk, on its limit with no margin, rather than not met. Six are at risk, four are met on paper, four are met by design and one is withdrawn.
 
 Table 1. Requirements.
 
@@ -55,7 +59,7 @@ Table 1. Requirements.
 | R10 | Stay within radio duty-cycle rules | LoRaWAN airtime below 1 % in EU868 sub-bands | Airtime calculation | Met on paper: 0.082 % at SF9, 0.60 % at SF12 |
 | R11 | Mount on street poles without drilling | Poles 80 to 200 mm diameter; band clamps only; inlets between 1.5 and 4 m above ground | Design review | Met by design (inlet 3.0 m, AST-DDR-001 D7; 140° V-saddles and bands cut to length fit the range, AST-DDR-003) |
 | R12 | Survive outdoors | Pod inlets face down behind insect mesh with drip lid; electronics in the FieldNode IP65 enclosure; -10 to 50 °C, with FieldNode's sun shield required at sites where ambient exceeds 45 °C | Design review, later field trial | At risk: the FieldNode sun shield is now designed (FND-DDR-003) and fixes to AirStreet's adapter plates (AST-DDR-003); SPS30 recommended range 20 to 80 % RH; condensation and insects unverified |
-| R13 | Light and compact on the pole | Mass 3.5 kg or less; frontal area 0.15 m² or less (relaxed from 0.12 m², AST-DDR-002) | Constructable model | **Not met**: 3.84 kg (4.00 kg with FieldNode's sun shield) against 3.5 kg; frontal area 0.143 m², met. The constructable FieldNode core and the parts that make AirStreet buildable add 0.58 kg (AST-DDR-003, A1: proposed, awaiting Amish) |
+| R13 | Light and compact on the pole | Mass 4.0 kg or less including FieldNode's sun shield (relaxed from 3.5 kg, AST-DDR-003 A1, 2026-10-02; the pole owner is asked to confirm the load); frontal area 0.15 m² or less (relaxed from 0.12 m², AST-DDR-002) | Constructable model; weighing at TRL 4 | At risk: 4.00 kg with FieldNode's sun shield (3.84 kg without) against 4.0 kg, no margin; the four lightening steps carried into the TRL 4 build give the margin; frontal area 0.143 m², met |
 | R14 | Collect levels only | No images, audio or personal identifiers collected or sent | Design review | Met by design |
 | R15 | Low cost | AirStreet sensor-head parts at or under the $285 value-engineering target per node (`budget_usd`, a hypothetical control target); FieldNode core excluded and costed in FieldNode | Priced BOM (AST-CAL-001 I) | **Over the value-engineering target by $18.00**: sensor head $303.00; $434.00 with the FieldNode core (AST-DDR-003) |
 | R16 | Serviceable in the field | Pre-collocated sensor pod exchanged in 15 min at the pole with hand tools; no sensor-level swaps at the pole (AST-DDR-002) | Design review | Met on paper: about 14 min for a pod exchange; the exchanged pod is serviced and recollocated at the reference site |

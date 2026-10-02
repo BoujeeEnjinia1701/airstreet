@@ -3,9 +3,9 @@ doc_id: AST-DDR-001
 title: AirStreet TRL 2 review decisions
 project: AirStreet
 doc_type: Design decision record
-version: "0.2"
+version: "0.3"
 status: Draft
-date: '2026-09-25'
+date: '2026-10-02'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -17,12 +17,16 @@ revisions:
   date: '2026-09-25'
   author: Amish Chadha
   change: Recommendations accepted by Amish (DDR-002)
+- version: "0.3"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: "Item O1 decided by Amish on 2026-10-02 (AST-DEC-001)"
 ---
 
 # 0001: TRL 2 review decisions
 
 - **Date:** 2026-09-25
-- **Status:** accepted. On 2026-09-25 Amish wrote: "i accept all your recommendations, go with them across all repos." Items D1 to D9 are decided by Amish, 2026-09-25: go with recommendation ([AST-DDR-002](0002-recommendations-accepted.md)). Item O1 had no recommendation and remains "Proposed, awaiting Amish".
+- **Status:** accepted. On 2026-09-25 Amish wrote: "i accept all your recommendations, go with them across all repos." Items D1 to D9 are decided by Amish, 2026-09-25: go with recommendation ([AST-DDR-002](0002-recommendations-accepted.md)). Item O1 had no recommendation on 2026-09-25; a recommendation was written later and Amish approved it on 2026-10-02 ("i approve your recommendations for all 555 open decisions."; AST-DEC-001).
 
 ## Context
 
@@ -52,7 +56,7 @@ The options for each item are those listed in `docs/REVIEW.md` (session 2026-09-
 
 | # | Item | Status |
 | --- | --- | --- |
-| O1 | First partner, city and reference station for co-design and collocation. No recommendation was made. | Proposed, awaiting Amish |
+| O1 | First partner, city and reference station for co-design and collocation. No recommendation was made. | Decided by Amish, 2026-10-02: a city or air agency with a street-level regulatory NO2 reference station that will share its data; first candidate to approach, TCEQ's Dallas-Fort Worth monitoring network with a local university or city partner (AST-DEC-001) |
 
 ## Consequences
 

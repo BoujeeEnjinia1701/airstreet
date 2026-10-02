@@ -3,9 +3,9 @@ doc_id: AST-BLD-001
 title: AirStreet prototype build plan
 project: AirStreet
 doc_type: Build plan
-version: "0.1"
+version: "0.2"
 status: Draft
-date: '2026-09-30'
+date: '2026-10-02'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -13,6 +13,10 @@ revisions:
     date: '2026-09-30'
     author: Amish Chadha
     change: First build plan, with pictures by component and step; design made constructable (AST-DDR-003)
+  - version: "0.2"
+    date: '2026-10-02'
+    author: Amish Chadha
+    change: "Section 2: AST-DDR-003 accepted by Amish (2026-10-02)"
 ---
 
 # AirStreet prototype build plan
@@ -31,7 +35,7 @@ The prototype is one AirStreet node on a short length of 140 mm street light pol
 
 ## 2. What changed to make it buildable
 
-The concept showed what the node does; some of its parts could not be made or fixed as drawn, and the FieldNode core it hangs from has since been made buildable in its own right. Each change below keeps what the node does, and all of them are recorded in decision record AST-DDR-003, open for Amish's review.
+The concept showed what the node does; some of its parts could not be made or fixed as drawn, and the FieldNode core it hangs from has since been made buildable in its own right. Each change below keeps what the node does, and all of them are recorded in decision record AST-DDR-003, which Amish accepted on 2026-10-02.
 
 *Table 1. Changes from the concept.*
 

@@ -3,9 +3,9 @@ doc_id: AST-DDR-003
 title: AirStreet design for construction
 project: AirStreet
 doc_type: Design decision record
-version: "0.2"
+version: "0.3"
 status: Draft
-date: '2026-10-01'
+date: '2026-10-02'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -17,12 +17,16 @@ revisions:
   date: '2026-10-01'
   author: Amish Chadha
   change: Budget treated as a value-engineering target
+- version: "0.3"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: "Accepted by Amish (2026-10-02), with the recommendations for A1 and A3; status kept Draft"
 ---
 
 # 0003: Design for construction
 
 - **Date:** 2026-09-30
-- **Status:** draft. The changes in Table 1 were made under Amish's 2026-09-30 instruction to make the design physically buildable; they are open for his review. The items in Table 3 change a requirement result or note value engineering and are "Proposed, awaiting Amish".
+- **Status:** accepted. Amish, 2026-10-02: "i approve your recommendations for all 555 open decisions." This covers every change in Tables 1 and 2 and the recommendations for A1 and A3 in Table 3, which are now decided as recommended and recorded in the design decisions register (AST-DEC-001). A2 is a value-engineering note, not a decision; its route back to the target stands.
 
 ## Context
 
@@ -58,17 +62,17 @@ The changes keep what the node does: the same sensors, front end, shield, inlet 
 | Drawings | AST-DWG-001 Rev P4; making sketches AST-DWG-101 to 109 added. | Follows the model. |
 | Documents | AST-CAL-001 v0.3, AST-REQ-001 v0.5, AST-PRC-001 v0.5: mass, area, cost, mount and pod figures updated. | Follows the model. |
 
-*Table 3. Proposed, awaiting Amish.*
+*Table 3. Items proposed to Amish; A1 and A3 accepted as recommended on 2026-10-02 (A1 with the limit set at 4.0 kg including FieldNode's sun shield).*
 
 | # | Question | Options | Recommendation |
 | --- | --- | --- | --- |
-| A1 | Mass on the pole is 3.84 kg (4.00 kg with the sun shield) against R13's 3.5 kg. | (a) raise the R13 limit to 4.0 kg, with the pole owner confirming the load; (b) lighten: print the saddles at 40 % infill, use 40 x 4 mm rail, 1.5 mm shield plates and cut windows in the adapter plates, which gives about 3.6 kg and still misses 3.5 kg; (c) both. | (c): adopt the lightening at TRL 4 and set the limit to 4.0 kg. |
+| A1 | Mass on the pole is 3.84 kg (4.00 kg with the sun shield) against R13's 3.5 kg. | (a) raise the R13 limit to 4.0 kg, with the pole owner confirming the load; (b) lighten: print the saddles at 40 % infill, use 40 x 4 mm rail, 1.5 mm shield plates and cut windows in the adapter plates, which gives about 3.6 kg and still misses 3.5 kg; (c) both. | (c): adopt the lightening at TRL 4 and set the limit to 4.0 kg. Accepted 2026-10-02: R13 is 4.0 kg including FieldNode's sun shield, the pole owner is asked to confirm the load, and the four lightening steps are carried into the TRL 4 build. |
 | A2 | Value engineering (a note, not a decision). Sensor head parts cost $303.00 against the $285 value-engineering target (`budget_usd`), $18.00 over. | (a) recover the $18 with the open two-channel NO2 front end (about $35 cheaper, PCB work on hold with TRL 4); (b) look for cheaper band hardware and fixings at purchase. | (a) as the route back to the target, with (b) at purchase. |
-| A3 | The whip now hangs 15 mm from the pod's drip lid, not 23 mm. | (a) accept, and check the radio link with the pod fitted at TRL 4; (b) move the pod a further 8 mm left, widening the node. | (a). |
+| A3 | The whip now hangs 15 mm from the pod's drip lid, not 23 mm. | (a) accept, and check the radio link with the pod fitted at TRL 4; (b) move the pod a further 8 mm left, widening the node. | (a). Accepted 2026-10-02: check signal strength with the pod fitted at TRL 4 and move the pod only if that check shows a loss. |
 
 ## Consequences
 
 - `design_state: constructable` in `project.yaml`. The build plan AST-BLD-001 shows every component and step in pictures generated from the model (`cad/src/build_plan_media.py`); open decisions are in the register AST-DEC-001.
-- Requirement status (AST-CAL-001 v0.3): 1 not met (R13), 1 over the value-engineering target (R15), 5 at risk (R1, R2, R4, R5, R12), 4 met on paper (R8, R9, R10, R16), 4 met by design (R6, R7, R11, R14), R3 withdrawn.
-- Cross-repo: FieldNode is asked to accept its enclosure, plate clips and sun shield on AirStreet's two adapter plates in place of its back plate (this replaces the adapter-bar request of AST-DDR-002 N2), and to keep `cad/src/model.py` stable, since AirStreet carries a copy.
+- Requirement status (AST-CAL-001 v0.3): 1 not met (R13), 1 over the value-engineering target (R15), 5 at risk (R1, R2, R4, R5, R12), 4 met on paper (R8, R9, R10, R16), 4 met by design (R6, R7, R11, R14), R3 withdrawn. With A1 accepted on 2026-10-02, R13's mass limit is 4.0 kg including FieldNode's sun shield: the node meets it with no margin (4.00 kg), so R13 is now at risk rather than not met, and the lightening at TRL 4 gives the margin (AST-REQ-001 v0.7).
+- Cross-repo: with register decision 5 approved on 2026-10-02, FieldNode is to be asked to accept its enclosure, plate clips and sun shield on AirStreet's two adapter plates in place of its back plate (this replaces the adapter-bar request of AST-DDR-002 N2), and to keep `cad/src/model.py` stable, since AirStreet carries a copy.
 - `media/card.png` and `media/social-preview.png` (made on Amish's Mac) show the concept mount and pod and are now stale; the appearance model `cad/src/product_model.py` also still follows the concept. Both need updating on Amish's Mac before any photoreal render.

@@ -3,9 +3,9 @@ doc_id: AST-PRB-001
 title: AirStreet problem statement
 project: AirStreet
 doc_type: Problem statement
-version: "0.4"
+version: "0.5"
 status: Draft
-date: '2026-09-25'
+date: '2026-10-02'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -25,6 +25,10 @@ revisions:
   date: '2026-09-25'
   author: Amish Chadha
   change: Recommendations accepted by Amish (DDR-002)
+- version: "0.5"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: "First partner rule and first candidate to approach (AST-DEC-001, 2026-10-02)"
 ---
 
 # AirStreet problem statement
@@ -84,7 +88,7 @@ What is missing is an open, documented node design that pairs these sensors with
 
 ## Open questions
 
-- Which city and partner first, and which reference station can host a collocation? Proposed, awaiting Amish (AST-DDR-001 O1).
+- Which city and partner first, and which reference station can host a collocation? Decided on 2026-10-02 as a rule (AST-DEC-001): a city or air agency with a regulatory NO2 reference station at a street-level site and willing to share its data; first candidate to approach, the Texas Commission on Environmental Quality's Dallas-Fort Worth monitoring network with a local university or city partner. Nothing is agreed yet.
 - Inlet height: 3.0 m is decided (AST-DDR-001 D7); partners may still ask for a lower inlet, closer to the breathing zone, which would reopen that decision.
 - Is NO2 accuracy of about 4 to 5 ppb hourly, which cannot resolve the WHO annual guideline but can rank streets, useful enough for the first partner's questions? To be tested with users. Resolving the WHO guideline is no longer a requirement; it is kept as a research question (AST-DDR-002).
 

@@ -3,9 +3,9 @@ doc_id: AST-DDR-002
 title: AirStreet recommendations accepted
 project: AirStreet
 doc_type: Design decision record
-version: "0.1"
+version: "0.2"
 status: Draft
-date: '2026-09-25'
+date: '2026-10-02'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -13,6 +13,10 @@ revisions:
   date: '2026-09-25'
   author: Amish Chadha
   change: Record the recommendations accepted by Amish on 2026-09-25, what changed in the repo, and the items still open
+- version: "0.2"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: "Item O1 decided by Amish on 2026-10-02 (AST-DEC-001)"
 ---
 
 # 0002: Recommendations accepted
@@ -43,11 +47,11 @@ The options for each item are those listed in `docs/REVIEW.md` (session 2026-09-
 | N6 | R12 temperature range | Require FieldNode's sun shield at sites above 45 °C | R12 target restated; AST-PRC-001 components, choices and safety; BOM line 1 note. The shield is FieldNode's to design (cross-repo action); R12 stays at risk |
 | N7 | Service unit (R16) | Exchange a pre-collocated pod rather than individual sensors at the pole | R16 restated; AST-CAL-001 H re-estimated for a pod exchange, about 14 min against 15 min; R16 at risk to met on paper. Spare pods are a fleet cost, noted in `bom/bom-notes.md` |
 
-*Table 2. Items still open.*
+*Table 2. Items open on 2026-09-25; O1 decided on 2026-10-02.*
 
 | # | Item | Status |
 | --- | --- | --- |
-| O1 | First partner, city and reference station for co-design and collocation. No recommendation was made. | Proposed, awaiting Amish |
+| O1 | First partner, city and reference station for co-design and collocation. No recommendation was made. | Decided by Amish, 2026-10-02: a city or air agency with a street-level regulatory NO2 reference station that will share its data; first candidate to approach, TCEQ's Dallas-Fort Worth monitoring network with a local university or city partner (AST-DEC-001) |
 
 ## Consequences
 

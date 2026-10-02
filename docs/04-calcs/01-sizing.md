@@ -3,9 +3,9 @@ doc_id: AST-CAL-001
 title: AirStreet sizing calculations
 project: AirStreet
 doc_type: Calculation
-version: "0.4"
+version: "0.5"
 status: Draft
-date: '2026-10-01'
+date: '2026-10-02'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -25,11 +25,15 @@ revisions:
   date: '2026-10-01'
   author: Amish Chadha
   change: Budget treated as a value-engineering target
+- version: "0.5"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: "R13 status against the 4.0 kg limit accepted on 2026-10-02 (AST-DDR-003 A1); sizing.py still to be re-run with it"
 ---
 
 # AirStreet sizing calculations
 
-Version 0.3 follows the constructable design of AST-DDR-003 (2026-09-30), which made every part of the node buildable and moved onto FieldNode's own constructable core. On paper AirStreet now meets eight of its sixteen requirements (four by calculation, four by design), has five at risk, misses one (R13) and is over its cost target on one (R15); R3 stays withdrawn. The node weighs 3.84 kg on the pole against R13's 3.5 kg, and the sensor head costs $303.00 against the $285 value-engineering target (`budget_usd`), so R13 is not met and R15 is over the target by $18.00; the mass is proposed to Amish in AST-DDR-003 (A1) and the cost drivers and savings worth trying are in the design decisions register. The frontal area, 0.143 m², stays inside 0.15 m², and every new mounting part carries its load with a large margin. Power, airtime, the NO2 error budget, the shield and the humidity results are unchanged from v0.2: the 60 s particle run gives an 87.0 mW design sensor load inside FieldNode's 100 mW allowance and 6.6 days without sun, and an annual NO2 mean carries about 4.2 µg/m³ of uncertainty (1σ). Every number in this note is printed by `docs/04-calcs/sizing.py`; the tag in brackets, for example [A3], is the line of that script's output that carries it.
+Version 0.3 follows the constructable design of AST-DDR-003 (2026-09-30), which made every part of the node buildable and moved onto FieldNode's own constructable core. On paper AirStreet now meets eight of its sixteen requirements (four by calculation, four by design), had five at risk, missed one (R13, against its 3.5 kg limit of the time) and is over its cost target on one (R15); R3 stays withdrawn. The node weighs 3.84 kg on the pole against R13's 3.5 kg, and the sensor head costs $303.00 against the $285 value-engineering target (`budget_usd`), so R13 was not met against 3.5 kg and R15 is over the target by $18.00. On 2026-10-02 Amish set R13's limit at 4.0 kg including FieldNode's sun shield (AST-DDR-003, A1), which the node meets with no margin, so R13 is now at risk (six at risk in all); the cost drivers and savings worth trying are in the design decisions register. The frontal area, 0.143 m², stays inside 0.15 m², and every new mounting part carries its load with a large margin. Power, airtime, the NO2 error budget, the shield and the humidity results are unchanged from v0.2: the 60 s particle run gives an 87.0 mW design sensor load inside FieldNode's 100 mW allowance and 6.6 days without sun, and an annual NO2 mean carries about 4.2 µg/m³ of uncertainty (1σ). Every number in this note is printed by `docs/04-calcs/sizing.py`; the tag in brackets, for example [A3], is the line of that script's output that carries it.
 
 > **Safety:** These are first-principles estimates for a paper proof of concept. They do not show that the node is safe to mount on any particular pole, and they are not a substitute for the pole owner's structural check, for electrical checks on the FieldNode cell or for field collocation of the sensors. AirStreet data are indicative, not a regulatory measurement or health advice. See AST-PRC-001, Safety.
 
@@ -111,8 +115,8 @@ The design case is a 140 mm street light pole with the inlet plane 3.0 m above t
 - **Fit.** Inlet plane 3,000 mm above the sidewalk, inside the EU 1,500 to 4,000 mm range; 140° V-saddles and bands cut to length fit 80 to 200 mm poles; no drilling [F1]. R11 is met by design.
 - **Layout.** FieldNode's whip clears the pod's drip lid by 15 mm (23 mm in v0.2, before FieldNode's antenna moved 28 mm toward the pod and the pod moved 20 mm away), the clamps are 375 mm apart, the node is 706 mm tall and it stands 173 mm out from the pole face [F2].
 - **Area.** Rasterizing the model gives 0.143 m² seen from the street and 0.055 m² along it, against 0.15 m² [F3] (0.126 m² in v0.2). FieldNode's constructable bracket, the adapter plates and the cross arm add to the outline. R13's area limit is met on paper.
-- **Mass.** FieldNode core as used 1.89 kg (FieldNode's base node of 2.45 kg less its back plate, V-blocks and bands, 0.56 kg); rail 0.24 kg; adapter plates 0.27 kg; cross arm 0.19 kg; V-saddles 0.18 kg (printed solid; less at 40 % infill); pod shell and floor 0.37 kg; shield plates, cap and spacers 0.27 kg; bands 0.10 kg; shield rods 0.06 kg; sensors, front end, probe, cables, glands, inserts and fixings 0.29 kg [F4]. In all 3.84 kg on the pole against 3.5 kg, and 4.00 kg with FieldNode's sun shield at a hot site; the sensor head and mount are 1.95 kg [F5]. **R13 is not met** on mass.
-- **Why it rose.** FieldNode's constructable core is 0.15 kg heavier as AirStreet uses it, and the parts that make AirStreet buildable (adapter plates in place of adapter bars, the cross arm in place of the short shield arm, larger saddles, the separate pod floor, spacers and fixings) add the rest [F6]. Options are in AST-DDR-003, A1.
+- **Mass.** FieldNode core as used 1.89 kg (FieldNode's base node of 2.45 kg less its back plate, V-blocks and bands, 0.56 kg); rail 0.24 kg; adapter plates 0.27 kg; cross arm 0.19 kg; V-saddles 0.18 kg (printed solid; less at 40 % infill); pod shell and floor 0.37 kg; shield plates, cap and spacers 0.27 kg; bands 0.10 kg; shield rods 0.06 kg; sensors, front end, probe, cables, glands, inserts and fixings 0.29 kg [F4]. In all 3.84 kg on the pole against 3.5 kg, and 4.00 kg with FieldNode's sun shield at a hot site; the sensor head and mount are 1.95 kg [F5]. R13 was not met on mass against 3.5 kg; against the 4.0 kg limit set on 2026-10-02 (including the sun shield) it is at risk, with no margin.
+- **Why it rose.** FieldNode's constructable core is 0.15 kg heavier as AirStreet uses it, and the parts that make AirStreet buildable (adapter plates in place of adapter bars, the cross arm in place of the short shield arm, larger saddles, the separate pod floor, spacers and fixings) add the rest [F6]. Option (c) of AST-DDR-003, A1 was accepted on 2026-10-02: the limit is 4.0 kg and the four lightening steps go into the TRL 4 build.
 - **Bands.** Each band runs 487 mm round the 140 mm design pole and its saddle, 326 mm round an 80 mm pole and 664 mm round a 200 mm pole, plus about 100 mm for the housing and tail [F7].
 
 ## G. Wind and mounting
@@ -135,11 +139,11 @@ The design case is a 140 mm street light pole with the inlet plane 3.0 m above t
 
 ## J. Results
 
-*Table 3. Requirement status (AST-REQ-001 v0.5). Counts: 1 not met, 1 over the value-engineering target, 5 at risk, 4 met on paper, 4 met by design, 1 withdrawn [J1].*
+*Table 3. Requirement status (AST-REQ-001 v0.7). Counts: 1 over the value-engineering target, 6 at risk, 4 met on paper, 4 met by design, 1 withdrawn. The script's line [J1] still counts R13 as not met against 3.5 kg until it is re-run with the 4.0 kg limit.*
 
 | ID | Requirement | Value | Target | Status |
 | --- | --- | --- | --- | --- |
-| R13 | Light and compact | 3.84 kg (4.00 kg with the sun shield); 0.143 m² [F3, F5] | 3.5 kg; 0.15 m² | Not met |
+| R13 | Light and compact | 3.84 kg (4.00 kg with the sun shield); 0.143 m² [F3, F5] | 4.0 kg with the sun shield (3.5 kg until 2026-10-02); 0.15 m² | At risk (no margin) |
 | R15 | Low cost | Sensor head $303.00; $434.00 with FieldNode [I1] | Sensor head $285 value-engineering target (`budget_usd`) | Over the target by $18.00 |
 | R1 | PM2.5 | Within the bound up to 80 % RH, outside it above 85 % RH [E2] | ±5 µg/m³ or ±30 % hourly | At risk |
 | R2 | NO2 | Hourly MAE about 3.9 ppb [C3] | 5 ppb or less | At risk |
@@ -192,5 +196,5 @@ The design case is a 140 mm street light pole with the inlet plane 3.0 m above t
 | FieldNode core cost | $126.00 | $131.00 | FieldNode's constructable BOM less its pole mounting kit |
 | Whip clearance to the pod | 23 mm | 15 mm | FieldNode's antenna moved; pod moved 20 mm left |
 | Shield arm | 20 x 8 mm bar, 4.6 MPa | 30 x 30 x 3 mm cross arm carrying pod and shield, 4.5 MPa | Pod and shield needed fixings |
-| R13 | Met on paper | Not met | Proposed to Amish, AST-DDR-003 A1 |
+| R13 | Met on paper | Not met against 3.5 kg; at risk against 4.0 kg | Limit set at 4.0 kg with the sun shield, AST-DDR-003 A1, accepted 2026-10-02 |
 | R15 | Met on paper | Over the value-engineering target by $18.00 | Parts added for construction, AST-DDR-003 |
