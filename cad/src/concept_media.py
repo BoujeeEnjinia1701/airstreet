@@ -1,5 +1,5 @@
 """AirStreet concept media (TRL 3), built from the parametric model in cad/src/model.py
-(constructable design, AST-DDR-003).
+(constructable design, AST-DDR-003, with the A1 lightening steps).
 
 Run from the repo root:  python cad/src/concept_media.py
 Main dimensions and interfaces only; not for fabrication.
@@ -55,13 +55,13 @@ context = [Part(p.name, SHIFT * p.shape, p.color, p.bom, p.explode, p.alpha) for
 
 render_all(
     parts, project="AirStreet", title="Street air quality node concept", dwg_no="AST-DWG-010",
-    date="2026-09-30",
+    date="2026-10-02",
     key_figures=["PM2.5 (SPS30) and NO2 (B43F class), shielded T and RH",
                  "Inlets 3.0 m above the sidewalk; poles 80 to 200 mm",
                  "PM, T, RH checked on CalRig; NO2 by field collocation",
                  "87 mW design sensor load; 5 min records (15 min on TTN)",
-                 "3.84 kg and 0.143 m² on the pole (FieldNode back plate left off)",
-                 "Sensor head $303; $434 with FieldNode core"],
+                 "3.62 kg (3.78 kg with sun shield) and 0.139 m² on the pole",
+                 "Sensor head $302.50; $433.50 with FieldNode core"],
     scale_figure=False, context=context,
     cut_exclude=(BOM["fieldnode"][1], BOM["panel"][1], BOM["mount"][1], BOM["cables"][1]),
     flow={"title": "measurement and data flow (AST-CAL-001)", "unit": "",

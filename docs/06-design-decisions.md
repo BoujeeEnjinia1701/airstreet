@@ -3,7 +3,7 @@ doc_id: AST-DEC-001
 title: AirStreet design decisions register
 project: AirStreet
 doc_type: Design decisions register
-version: "0.3"
+version: "0.4"
 status: Draft
 date: '2026-10-02'
 author: Amish Chadha
@@ -21,6 +21,10 @@ revisions:
   date: '2026-10-02'
   author: Amish Chadha
   change: "Amish approved the recommendations for open decisions 1 to 8 (2026-10-02); moved to decisions made (AST-DDR-003 accepted)"
+- version: "0.4"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: "Value engineering restated after the A1 lightening (USD 302.50, USD 17.50 over); actions that carry the 2026-10-02 decisions outside the design listed"
 ---
 
 # AirStreet design decisions register
@@ -45,10 +49,25 @@ None. All open decisions were decided on 2026-10-02.
 
 ## Value engineering
 
-Value-engineering target: USD 285 (a hypothetical control target, not a limit). Estimated cost of the constructable design: USD 303 for the sensor head (USD 18 over the target); USD 434 with the FieldNode core, which is costed in FieldNode. Main cost drivers and savings worth trying:
+Value-engineering target: USD 285. Estimated cost of the constructable design: USD 302.50 (USD 17.50 over the target).
 
-- The rise from USD 285 came from making the design constructable (AST-DDR-003): line 3, band stock, adapter plates and cross arm (USD 4); line 8, spacers (USD 1); line 9, probe tube (USD 1); line 10, probe lead with its M8 plug (USD 4); and line 11, inserts, glands, probe socket, terminal block and fixings (USD 8).
-- Savings worth trying: the open two-channel NO2 front end (about USD 35 cheaper, PCB work that is on hold with TRL 4) would recover the USD 18, and cheaper band hardware and fixings can be sought at purchase.
+The target is `budget_usd`, a hypothetical control target, not a limit, and covers the sensor head only; with the FieldNode core, which is costed in FieldNode, the node is USD 433.50. Main cost drivers and savings worth trying:
+
+- The rise from USD 285 came from making the design constructable (AST-DDR-003): line 3, band stock, adapter plates and cross arm (USD 4.50, after the A1 lightening: the thinner rail saves about USD 0.50 and the saddles are repriced at about USD 3.00 of filament at 40 % infill); line 9, probe tube (USD 1); line 10, probe lead with its M8 plug (USD 4); and line 11, inserts, glands, probe socket, terminal block and fixings (USD 8). Line 8 is back to USD 9.00: the 1.5 mm shield plates save about as much filament as the spacers use.
+- Savings worth trying: the open two-channel NO2 front end (about USD 35 cheaper, PCB work that is on hold with TRL 4) would recover the USD 17.50, and cheaper band hardware and fixings can be sought at purchase.
+
+## Actions that carry the decisions outside the design
+
+These follow from decisions already made; none is an open decision.
+
+| # | Action | Who | From |
+| --- | --- | --- | --- |
+| 1 | Ask the pole owner of the first site to confirm a load of 4.0 kg on the pole (3.78 kg with the sun shield as designed) and about 125 N of wind load 3.3 m up | Amish, once a site is chosen | Mass decision (R13), 2026-10-02 |
+| 2 | Approach the first candidate partner, the Texas Commission on Environmental Quality's Dallas-Fort Worth monitoring network, with a local university or city partner; nothing is agreed yet | Amish | First partner decision, 2026-10-02 |
+| 3 | When the partner is agreed, fix the radio band and FieldNode antenna in the BOM; for US915, restate R10 against the 400 ms dwell limit (SF9 or lower) | Next design update after the partner is agreed | Radio band decision, 2026-10-02 |
+| 4 | Send FieldNode the adapter plate request and track its confirmation of port B's always-on 5 V and the 5 min private-gateway interval | Cross-repo (see REVIEW.md) | Decisions of 2026-10-02 on FieldNode |
+| 5 | Propose the common M12 pin assignment to FieldNode, with CurbCount; once FieldNode agrees, update the pod wiring in build plan section 3.10 and its wiring picture | Cross-repo (see REVIEW.md) | Pin assignment decision, 2026-10-02 |
+| 6 | Check LoRaWAN signal strength with the pod fitted; move the pod 8 mm left in the model and pictures only if the check shows a loss | TRL 4 (on hold) | Antenna whip decision, 2026-10-02 |
 
 ## Decisions made
 

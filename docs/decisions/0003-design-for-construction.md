@@ -3,7 +3,7 @@ doc_id: AST-DDR-003
 title: AirStreet design for construction
 project: AirStreet
 doc_type: Design decision record
-version: "0.3"
+version: "0.4"
 status: Draft
 date: '2026-10-02'
 author: Amish Chadha
@@ -21,6 +21,10 @@ revisions:
   date: '2026-10-02'
   author: Amish Chadha
   change: "Accepted by Amish (2026-10-02), with the recommendations for A1 and A3; status kept Draft"
+- version: "0.4"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: "A1 carried out: the four lightening steps are in the model, BOM, calculations, drawings and build plan (3.78 kg with the sun shield; R13 met on paper); A1's 3.6 kg figure shown to exclude the sun shield; consequences updated"
 ---
 
 # 0003: Design for construction
@@ -59,20 +63,20 @@ The changes keep what the node does: the same sensors, front end, shield, inlet 
 | Frontal area | 0.143 m² (was 0.126 m²) against 0.15 m² [F3]; met on paper. | Taken from the model; FieldNode's bracket and the plates show more. |
 | Cost | BOM lines 1, 3, 4, 8, 9, 10 and 11 revised: sensor head $303.00 (was $285.00) against the $285 value-engineering target (`budget_usd`); R15 is now **over the target by $18.00** [I1], [I2]. FieldNode core as used $131.00 (FieldNode's $139.00 less its unused pole mounting kit). Whole node $434.00. | Plates, arm, band stock, spacers, inserts, glands, probe socket and fixings. See Table 3, A2. |
 | Mounting loads | Cross arm 4.5 MPa, its bolts about 67 N each in a 35 m/s gust, rail 16.4 MPa at the lower clamp, pod screws about 11 N each [G3], [G4], [G6], [G7]. Clamp slip factor 24 [G2]. | New load paths, all with large margins. |
-| Drawings | AST-DWG-001 Rev P4; making sketches AST-DWG-101 to 109 added. | Follows the model. |
+| Drawings | AST-DWG-001 Rev P4; making sketches AST-DWG-101 to 109 added. (Rev P5 and sketches 101, 103, 104 and 108 at P2 after the A1 lightening, 2026-10-02.) | Follows the model. |
 | Documents | AST-CAL-001 v0.3, AST-REQ-001 v0.5, AST-PRC-001 v0.5: mass, area, cost, mount and pod figures updated. | Follows the model. |
 
 *Table 3. Items proposed to Amish; A1 and A3 accepted as recommended on 2026-10-02 (A1 with the limit set at 4.0 kg including FieldNode's sun shield).*
 
 | # | Question | Options | Recommendation |
 | --- | --- | --- | --- |
-| A1 | Mass on the pole is 3.84 kg (4.00 kg with the sun shield) against R13's 3.5 kg. | (a) raise the R13 limit to 4.0 kg, with the pole owner confirming the load; (b) lighten: print the saddles at 40 % infill, use 40 x 4 mm rail, 1.5 mm shield plates and cut windows in the adapter plates, which gives about 3.6 kg and still misses 3.5 kg; (c) both. | (c): adopt the lightening at TRL 4 and set the limit to 4.0 kg. Accepted 2026-10-02: R13 is 4.0 kg including FieldNode's sun shield, the pole owner is asked to confirm the load, and the four lightening steps are carried into the TRL 4 build. |
-| A2 | Value engineering (a note, not a decision). Sensor head parts cost $303.00 against the $285 value-engineering target (`budget_usd`), $18.00 over. | (a) recover the $18 with the open two-channel NO2 front end (about $35 cheaper, PCB work on hold with TRL 4); (b) look for cheaper band hardware and fixings at purchase. | (a) as the route back to the target, with (b) at purchase. |
+| A1 | Mass on the pole is 3.84 kg (4.00 kg with the sun shield) against R13's 3.5 kg. | (a) raise the R13 limit to 4.0 kg, with the pole owner confirming the load; (b) lighten: print the saddles at 40 % infill, use 40 x 4 mm rail, 1.5 mm shield plates and cut windows in the adapter plates, which gives about 3.6 kg and still misses 3.5 kg; (c) both. | (c): adopt the lightening at TRL 4 and set the limit to 4.0 kg. Accepted 2026-10-02: R13 is 4.0 kg including FieldNode's sun shield, the pole owner is asked to confirm the load, and the four lightening steps are carried into the TRL 4 build. Carried into the design on 2026-10-02 (AST-CAL-001 v0.6 [F8]): 3.62 kg without the sun shield and 3.78 kg with it, so the "about 3.6 kg" above excludes the shield. |
+| A2 | Value engineering (a note, not a decision). Sensor head parts cost $303.00 against the $285 value-engineering target (`budget_usd`), $18.00 over ($302.50 and $17.50 after the A1 lightening and repricing, 2026-10-02). | (a) recover the $18 with the open two-channel NO2 front end (about $35 cheaper, PCB work on hold with TRL 4); (b) look for cheaper band hardware and fixings at purchase. | (a) as the route back to the target, with (b) at purchase. |
 | A3 | The whip now hangs 15 mm from the pod's drip lid, not 23 mm. | (a) accept, and check the radio link with the pod fitted at TRL 4; (b) move the pod a further 8 mm left, widening the node. | (a). Accepted 2026-10-02: check signal strength with the pod fitted at TRL 4 and move the pod only if that check shows a loss. |
 
 ## Consequences
 
 - `design_state: constructable` in `project.yaml`. The build plan AST-BLD-001 shows every component and step in pictures generated from the model (`cad/src/build_plan_media.py`); open decisions are in the register AST-DEC-001.
-- Requirement status (AST-CAL-001 v0.3): 1 not met (R13), 1 over the value-engineering target (R15), 5 at risk (R1, R2, R4, R5, R12), 4 met on paper (R8, R9, R10, R16), 4 met by design (R6, R7, R11, R14), R3 withdrawn. With A1 accepted on 2026-10-02, R13's mass limit is 4.0 kg including FieldNode's sun shield: the node meets it with no margin (4.00 kg), so R13 is now at risk rather than not met, and the lightening at TRL 4 gives the margin (AST-REQ-001 v0.7).
+- Requirement status (AST-CAL-001 v0.3): 1 not met (R13), 1 over the value-engineering target (R15), 5 at risk (R1, R2, R4, R5, R12), 4 met on paper (R8, R9, R10, R16), 4 met by design (R6, R7, R11, R14), R3 withdrawn. With A1 accepted on 2026-10-02, R13's mass limit is 4.0 kg including FieldNode's sun shield: the node meets it with no margin (4.00 kg), so R13 is now at risk rather than not met, and the lightening at TRL 4 gives the margin (AST-REQ-001 v0.7). The lightening was then carried into the model, BOM and calculations on 2026-10-02 (AST-CAL-001 v0.6): 3.78 kg with the sun shield, 0.22 kg under the limit, so R13 is met on paper (AST-REQ-001 v0.8). Status counts are now 1 over the value-engineering target (R15, $17.50), 5 at risk, 5 met on paper, 4 met by design and R3 withdrawn.
 - Cross-repo: with register decision 5 approved on 2026-10-02, FieldNode is to be asked to accept its enclosure, plate clips and sun shield on AirStreet's two adapter plates in place of its back plate (this replaces the adapter-bar request of AST-DDR-002 N2), and to keep `cad/src/model.py` stable, since AirStreet carries a copy.
-- `media/card.png` and `media/social-preview.png` (made on Amish's Mac) show the concept mount and pod and are now stale; the appearance model `cad/src/product_model.py` also still follows the concept. Both need updating on Amish's Mac before any photoreal render.
+- `media/card.png` and `media/social-preview.png` and the photoreal renders (made on Amish's Mac) show the concept mount and pod and are stale. On 2026-10-02 the appearance model `cad/src/product_model.py` was brought into line with the constructable, lightened design and its render scenes exported; the photoreal renders and the cards are to be made from them on Amish's Mac.

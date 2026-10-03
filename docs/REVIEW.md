@@ -322,3 +322,74 @@ Raised when the recommendations were written (2026-10-01) and kept here so they 
 - Cross-repo conflict on FieldNode port A: AirStreet's build plan powers the SPS30 from a switched 5 V on port A, while CurbCount's build plan replaces FieldNode's port A boost converter with a 3.3 V load switch. FieldNode's pinout decision (FND-DDR-001, O2) must allow a per-project port supply.
 - The four appearance items from REVIEW.md 2026-09-26 (pod service window, lipped shield plates, FieldNode interior, label wording) were 'Proposed, awaiting Amish' and are not in the register.
 - Item 2: the lightened 3.6 kg figure does not say whether it includes FieldNode's 0.16 kg sun shield; if it does not, the lightened node with shield is about 3.76 kg.
+
+## Session 2026-10-02: approved follow-ups carried out
+
+Amish, 2026-10-02: "497 follow-up actions that need CAD, drawing, picture, BOM or calculation work ... APPROVED CHANGES, COMPLETE THESE", and for the renders, "Photoreal renders are out of date in most repos ... COMPLETE THESE". This session carried AirStreet's nine follow-ups from the 2026-10-02 decisions into the design and prepared the render scenes. trl stays 3; nothing was built, bought or tested, and TRL 4 remains on hold.
+
+### Follow-ups
+
+| # | Follow-up | Done | What was done, or why not |
+| --- | --- | --- | --- |
+| 1 | Re-run `sizing.py` with R13 at 4.0 kg including the sun shield | Yes | R13 is checked against 4.0 kg with the shield; [J1] and `results.csv` now show R13 met on paper (with the lightening of item 2 in the model), not "not met". R15 now prints "Over the value-engineering target by $17.50" instead of "Not met" |
+| 2 | Four lightening steps into the design; update AST-DWG-001 and the making sketches | Yes | `model.py`: 40 x 4 mm rail, two windows in each adapter plate (24 x 59 and 24 x 94 mm, R5), 1.5 mm shield plates (spacers 11.5 and 9.25 mm), saddle print settings (6 walls, 40 % infill) as a mass parameter. Six new checks (windows clear of the rail, of every screw and bolt, and of the lugs, clips and shield flanges); two clearance checks now take the rail thickness as their limit, since the rail lies between the parts. 77 of 77 pass. STEP and STL regenerated. AST-DWG-001 Rev P5; AST-DWG-101, 103, 104 and 108 at P2 |
+| 3 | Reprice and reweigh the lightened parts; does 3.6 kg include the sun shield? | Yes | Line 3 $21.00 to $21.50 (rail about $0.50 cheaper; saddles repriced at about $3.00 of filament at 40 % infill, the $1.50 used before being low); line 8 $10.00 to $9.00 (thinner plates). Mass 3.62 kg, 3.78 kg with the sun shield (was 3.84 and 4.00). The "about 3.6 kg" of AST-DDR-003 A1 excludes the shield; with it the node is 3.78 kg ([F8]) |
+| 4 | Ask the pole owner of the first site to confirm 4.0 kg | Not done | No site is chosen yet, and asking is Amish's action. Listed as action 1 in the register's new "Actions that carry the decisions outside the design"; the build plan's safety stop S6 now asks for the 4.0 kg load as well as the wind load |
+| 5 | TRL 4 signal check with the pod fitted; move the pod 8 mm only on a loss | Not done | TRL 4 work, on hold. Listed as register action 6; the pod is not moved |
+| 6 | Approach TCEQ's Dallas-Fort Worth network with a university or city partner | Not done | Amish's action; nothing agreed. Register action 2 |
+| 7 | Send FieldNode the adapter plate request; track port B's always-on 5 V and the 5 min interval | Not done here | Lives in the FieldNode repo; see Cross-repo actions below. Register action 4 |
+| 8 | Propose the common M12 pin assignment; then update build plan section 3.10 and its wiring picture | Not done here | The proposal lives in FieldNode (see below). Section 3.10 and `wiring.png` stay as they are until FieldNode agrees; the picture already says the pins follow FieldNode's assignment. Register action 5 |
+| 9 | Fix the band and FieldNode antenna in the BOM; restate R10 for US915 | Not done | Waits for the partner to be agreed (item 6). R10 still reads against EU868; the US915 figure (SF9 passes the 400 ms dwell limit, [B5]) is already in AST-CAL-001. The BOM notes say the band is set with the partner. Register action 3 |
+
+### Requirement status changes
+
+- R13: at risk to **met on paper**. 3.78 kg with FieldNode's sun shield (3.62 kg without) against 4.0 kg, 0.22 kg of margin; frontal area 0.139 m² (was 0.143). The pole owner's confirmation of the load is still to come.
+- R15: still over the value-engineering target, now by $17.50 (was $18.00).
+- R5: still at risk; shield error 0.42 to 0.87 K (was 0.43 to 0.89 K), 4.1 % RH low at 85 % RH.
+- Counts: 5 at risk, 5 met on paper, 4 met by design, 1 over the value-engineering target, 1 withdrawn. No requirement is not met.
+
+### Cost and mass
+
+Value-engineering target: USD 285. Estimated cost of the constructable design: USD 302.50 (USD 17.50 over the target). Whole node USD 433.50 with the FieldNode core; `budget_usd` unchanged. Mass 3.62 kg on the pole, 3.78 kg with the sun shield. Wind 125 N and 416 N·m in a 35 m/s gust; rail stress 25.6 MPa in the 40 x 4 mm bar (16.4 MPa before), far below yield.
+
+### Pictures regenerated
+
+AST-DWG-001 Rev P5; making sketches AST-DWG-101, 103, 104 and 108 (P2); `docs/05-build-plan/overview.png`, `plate-holes.png` (windows now drawn as dashed outlines, sizes in the key), joints 01, 02, 03, 04, 06 and 08, steps 1 to 7 and 11 to 16; concept media (`media/hero.png`, `exploded.png`, `cutaway.png`, `flow.png`, `concept-blueprint.*`, `model.glb`). Each was looked at once. The kit rounds overall sheet dimensions to whole millimetres, so AST-DWG-108 overrides the plate thickness to show 1.5. Not regenerated, as the change does not touch them: AST-DWG-102, 105, 106, 107, 109, joints 05 and 07, steps 8 to 10 and `wiring.png`. `.kit/drawing.py --check-text` reports no hits.
+
+### Appearance model and render scenes
+
+`cad/src/product_model.py` rebuilt from `model.build_components()`, so every part of the appearance model is the constructable, lightened part: windowed adapter plates, angle cross arm, V-saddles, the two-part pod hanging under the arm, flat 1.5 mm shield plates on spacers, the probe tube, FieldNode's own core, bracket and panel. RENDER_VIEWS keeps hero, exploded and detail (the detail note now describes the pod, arm and shield). Scenes exported with `.kit/export_views.py` to `/home/claude/renders/airstreet`: `airstreet__hero`, `airstreet__exploded` and `airstreet__detail` (.npz and .json each) and `airstreet__jobs.json`. Photoreal renders, `media/card.png` and `media/social-preview.png` are to be made on Amish's Mac and are stale until then.
+
+Appearance deviations, proposed, awaiting Amish:
+
+1. Printed label and a lit green status light on the FieldNode lid (label wording as in the 2026-09-26 item 4). Recommendation: keep.
+2. Printed label strip on the pod's street face ("INLET BELOW · PM · NO2"). Recommendation: keep.
+3. The 2026-09-26 service window and lipped shield plates are dropped, so the renders now match the design: the pod is opaque and the plates are flat. Recommendation: accept; the sensors show in the exploded view.
+
+### Cross-repo actions
+
+- **FieldNode:** accept AirStreet's two adapter plates (now with lightening windows) in place of FieldNode's back plate for its enclosure, plate clips and sun shield, and keep `cad/src/model.py` stable, since AirStreet carries a vendored copy (`cad/src/fieldnode_core.py`).
+- **FieldNode:** confirm port B's always-on 5 V supply and the 5 min interval on a private gateway (AST-DDR-002, N5).
+- **FieldNode, with CurbCount:** adopt one common pin assignment for both M12 ports (supply, ground, I2C data, I2C clock, one spare), with each port's supply voltage set per project by its supply module (AirStreet 5 V on both; CurbCount 3.3 V on port A). When agreed, AirStreet updates build plan section 3.10 and `wiring.png`.
+- **FieldNode:** offer the antenna for US915 and EU868 so AirStreet can name one when its partner is agreed.
+
+### Documents changed
+
+- `cad/src/model.py` (lightening steps, windows, six new checks; 77 pass); `cad/step/*.step`, `cad/stl/*.stl` regenerated
+- `cad/src/sheets.py` (AST-DWG-001 Rev P5), `cad/src/build_plan_media.py` (sketch notes and revisions, window drawing), `cad/src/concept_media.py` (key figures), `cad/src/product_model.py` (rebuilt)
+- `docs/04-calcs/sizing.py` and `results.csv`; AST-CAL-001 v0.6 (`docs/04-calcs/01-sizing.md`)
+- `bom/bom.csv` lines 3 and 8; `bom/bom-notes.md` (totals, mass, cost history)
+- AST-REQ-001 v0.8, AST-PRC-001 v0.8, AST-BLD-001 v0.3, AST-DEC-001 v0.4, AST-DDR-003 v0.4, `README.md`
+- PDFs regenerated with `python3 .kit/render.py`
+
+### Safety
+
+No change to the safety case. The build plan's stop S6 and the precis safety note now give the pole owner both the wind load (125 N) and the 4.0 kg weight to confirm. The thinner rail and windowed plates carry their loads with large margins (25.6 MPa in the rail).
+
+### Recommended next step
+
+Amish reviews the three appearance deviations and renders the exported scenes on his Mac (then `python .kit/cards.py .`). The FieldNode cross-repo requests go to the FieldNode repo. TRL stays at 3.
+
+## 2026-10-02: photoreal renders redone on the constructable design
+
+Rendered with Blender Cycles on Amish's Mac from the updated appearance model (`cad/src/product_model.py`); captioned with `.kit/photo_caption.py`; `media/card.png` and `media/social-preview.png` regenerated with `.kit/cards.py`. Views: hero, exploded, detail. image_qc passes. Appearance deviations are those logged above as proposed, awaiting Amish.

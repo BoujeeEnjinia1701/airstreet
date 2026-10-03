@@ -3,7 +3,7 @@ doc_id: AST-REQ-001
 title: AirStreet requirements
 project: AirStreet
 doc_type: Requirements
-version: "0.7"
+version: "0.8"
 status: Draft
 date: '2026-10-02'
 author: Amish Chadha
@@ -37,11 +37,15 @@ revisions:
   date: '2026-10-02'
   author: Amish Chadha
   change: "R13 mass limit set at 4.0 kg including FieldNode's sun shield (AST-DDR-003 A1, accepted 2026-10-02); R13 now at risk"
+- version: "0.8"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: "Status from AST-CAL-001 v0.6 with the four lightening steps carried into the design: R13 at risk to met on paper (3.78 kg with the sun shield); R15 over the target by $17.50; R5 figures updated"
 ---
 
 # AirStreet requirements
 
-These requirements are checked by calculation in [AST-CAL-001](04-calcs/01-sizing.md) v0.3. Targets remain proposals for review with the first co-design partner. On 2026-09-25 Amish accepted the recommendations in [AST-DDR-001](decisions/0001-trl2-review-decisions.md) and [AST-DDR-002](decisions/0002-recommendations-accepted.md). As a result R3 is withdrawn and kept as a research question, R8, R12, R13, R15 and R16 are restated, and R15 uses the $285 `budget_usd`. On 2026-09-30 the design was made constructable ([AST-DDR-003](decisions/0003-design-for-construction.md)), which raised the mass and the sensor-head cost: R15 (cost) is **over the value-engineering target** by $18.00. On 2026-10-02 Amish accepted the design for construction and set R13's mass limit at 4.0 kg including FieldNode's sun shield (AST-DEC-001, decision of 2026-10-02 on mass), so R13 is now at risk, on its limit with no margin, rather than not met. Six are at risk, four are met on paper, four are met by design and one is withdrawn.
+These requirements are checked by calculation in [AST-CAL-001](04-calcs/01-sizing.md) v0.6. Targets remain proposals for review with the first co-design partner. On 2026-09-25 Amish accepted the recommendations in [AST-DDR-001](decisions/0001-trl2-review-decisions.md) and [AST-DDR-002](decisions/0002-recommendations-accepted.md). As a result R3 is withdrawn and kept as a research question, R8, R12, R13, R15 and R16 are restated, and R15 uses the $285 `budget_usd`. On 2026-09-30 the design was made constructable ([AST-DDR-003](decisions/0003-design-for-construction.md)), which raised the mass and the sensor-head cost: R15 (cost) is **over the value-engineering target**, now by $17.50. On 2026-10-02 Amish accepted the design for construction and set R13's mass limit at 4.0 kg including FieldNode's sun shield (AST-DEC-001, decision of 2026-10-02 on mass), with the four lightening steps carried into the design. With them the node weighs 3.78 kg with the sun shield, so R13 is met on paper with 0.22 kg of margin (it was at risk, on its limit, before the lightening). Five are at risk, five are met on paper, four are met by design, one is over the value-engineering target and one is withdrawn.
 
 Table 1. Requirements.
 
@@ -51,7 +55,7 @@ Table 1. Requirements.
 | R2 | Measure NO2 at street level | 0 to 200 ppb (about 0 to 380 µg/m³); hourly mean absolute error 5 ppb or less against a reference station after field calibration | Field collocation with a chemiluminescence reference station | At risk: hourly MAE about 3.9 ppb from a budget of literature and assumed terms (AST-CAL-001 C) |
 | R3 | Resolve NO2 near the WHO annual guideline | Withdrawn as a requirement (AST-DDR-002). Kept as a research question: can the annual mean be resolved to 2 µg/m³ at 10 µg/m³? | Collocation statistics (research) | Withdrawn. Annual uncertainty about 4.2 µg/m³ (1σ); AirStreet ranks streets and checks the EU limit (R4) and makes no WHO guideline claim |
 | R4 | Distinguish streets that exceed the EU NO2 limit value | Classify annual means above or below 40 µg/m³ with 90 % confidence | Collocation statistics | At risk: decisive only for annual means below 34.6 or above 45.4 µg/m³ |
-| R5 | Measure temperature and humidity for corrections | ±0.5 °C and ±3 % RH inside the shield; radiation error 1 °C or less in full sun at 1 m/s wind | CalRig chamber check; side-by-side field test against an aspirated reference | At risk: SHT45 meets the sensor figures; shield error 0.43 to 0.89 K at 1 m/s, which reads 4.2 % RH low at 85 % RH |
+| R5 | Measure temperature and humidity for corrections | ±0.5 °C and ±3 % RH inside the shield; radiation error 1 °C or less in full sun at 1 m/s wind | CalRig chamber check; side-by-side field test against an aspirated reference | At risk: SHT45 meets the sensor figures; shield error 0.42 to 0.87 K at 1 m/s, which reads 4.1 % RH low at 85 % RH |
 | R6 | Calibrate with a stated method | T, RH and PM checked on CalRig before deployment; NO2 collocated with a reference station for at least 14 days before deployment and at least every 6 months | Calibration record per node | Met by design (AST-DDR-001 D3) |
 | R7 | Keep raw data for recalibration | Send raw NO2 working and auxiliary electrode signals, PM, T and RH with a calibration version tag | Firmware and data schema review | Met by design |
 | R8 | Report often enough for street maps | One record every 5 min through a private gateway (TwinKit by default); one every 15 min on The Things Network; hourly means published within 15 min; 7 days of store and forward | Timing, airtime and storage calculation | Met on paper: 5 min records on the private gateway; at 15 min TTN fair use is met up to SF9; 7 days in 40.3 kB |
@@ -59,9 +63,9 @@ Table 1. Requirements.
 | R10 | Stay within radio duty-cycle rules | LoRaWAN airtime below 1 % in EU868 sub-bands | Airtime calculation | Met on paper: 0.082 % at SF9, 0.60 % at SF12 |
 | R11 | Mount on street poles without drilling | Poles 80 to 200 mm diameter; band clamps only; inlets between 1.5 and 4 m above ground | Design review | Met by design (inlet 3.0 m, AST-DDR-001 D7; 140° V-saddles and bands cut to length fit the range, AST-DDR-003) |
 | R12 | Survive outdoors | Pod inlets face down behind insect mesh with drip lid; electronics in the FieldNode IP65 enclosure; -10 to 50 °C, with FieldNode's sun shield required at sites where ambient exceeds 45 °C | Design review, later field trial | At risk: the FieldNode sun shield is now designed (FND-DDR-003) and fixes to AirStreet's adapter plates (AST-DDR-003); SPS30 recommended range 20 to 80 % RH; condensation and insects unverified |
-| R13 | Light and compact on the pole | Mass 4.0 kg or less including FieldNode's sun shield (relaxed from 3.5 kg, AST-DDR-003 A1, 2026-10-02; the pole owner is asked to confirm the load); frontal area 0.15 m² or less (relaxed from 0.12 m², AST-DDR-002) | Constructable model; weighing at TRL 4 | At risk: 4.00 kg with FieldNode's sun shield (3.84 kg without) against 4.0 kg, no margin; the four lightening steps carried into the TRL 4 build give the margin; frontal area 0.143 m², met |
+| R13 | Light and compact on the pole | Mass 4.0 kg or less including FieldNode's sun shield (relaxed from 3.5 kg, AST-DDR-003 A1, 2026-10-02; the pole owner is asked to confirm the load); frontal area 0.15 m² or less (relaxed from 0.12 m², AST-DDR-002) | Constructable model; weighing at TRL 4 | Met on paper: 3.78 kg with FieldNode's sun shield (3.62 kg without) against 4.0 kg, 0.22 kg margin, with the four lightening steps in the design; frontal area 0.139 m²; the pole owner's confirmation of the load is still to come |
 | R14 | Collect levels only | No images, audio or personal identifiers collected or sent | Design review | Met by design |
-| R15 | Low cost | AirStreet sensor-head parts at or under the $285 value-engineering target per node (`budget_usd`, a hypothetical control target); FieldNode core excluded and costed in FieldNode | Priced BOM (AST-CAL-001 I) | **Over the value-engineering target by $18.00**: sensor head $303.00; $434.00 with the FieldNode core (AST-DDR-003) |
+| R15 | Low cost | AirStreet sensor-head parts at or under the $285 value-engineering target per node (`budget_usd`, a hypothetical control target); FieldNode core excluded and costed in FieldNode | Priced BOM (AST-CAL-001 I) | **Over the value-engineering target by $17.50**: sensor head $302.50; $433.50 with the FieldNode core (AST-DDR-003) |
 | R16 | Serviceable in the field | Pre-collocated sensor pod exchanged in 15 min at the pole with hand tools; no sensor-level swaps at the pole (AST-DDR-002) | Design review | Met on paper: about 14 min for a pod exchange; the exchanged pod is serviced and recollocated at the reference site |
 
 ## Assumptions

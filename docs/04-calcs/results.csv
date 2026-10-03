@@ -3,7 +3,7 @@ R1,Within the bound up to 80 % RH on paper; outside it above that,+/-5 ug/m3 or 
 R2,Hourly MAE about 3.9 ppb (budget of assumed terms),"5 ppb or less hourly MAE, 0 to 200 ppb",At risk
 R3,Annual uncertainty 4.2 ug/m3 (1 sigma); kept as a research question,Withdrawn as a requirement (DDR-002),Withdrawn
 R4,Decisive outside 34.6 to 45.4 ug/m3,Classify vs 40 ug/m3 with 90 % confidence,At risk
-R5,"SHT45 +/-0.1 degC, +/-1 % RH typical; shield error 0.43 to 0.89 K at 1 m/s","+/-0.5 degC, +/-3 % RH; radiation error 1 degC or less",At risk
+R5,"SHT45 +/-0.1 degC, +/-1 % RH typical; shield error 0.42 to 0.87 K at 1 m/s","+/-0.5 degC, +/-3 % RH; radiation error 1 degC or less",At risk
 R6,"CalRig for T, RH and PM; 14-day NO2 collocation and every 6 months (DDR-001 D3)",Stated method per node,Met by design
 R7,"Raw WE, AE, PM, T, RH and a calibration version tag",Raw signals kept,Met by design
 R8,"5 min records (15 min on TTN, fair use met up to SF9); hourly mean within one interval; 7 days = 40.3 kB of 16 MB","5 min on a private gateway, 15 min on TTN; hourly within 15 min; 7 days",Met on paper
@@ -11,7 +11,7 @@ R9,Design load 87.0 mW at the ports; 2.33 Wh/day drawn against 7.75 Wh stored in
 R10,"0.082 % at SF9, 0.60 % at SF12",Below 1 % per EU868 sub-band,Met on paper
 R11,"80 to 200 mm poles, V-saddles and bands; inlet 3.0 m","80 to 200 mm, no drilling, inlets 1.5 to 4 m",Met by design
 R12,"FieldNode sun shield required above 45 degC ambient (designed in FND-DDR-003, fixes to the AirStreet adapter plates); SPS30 recommended range 20 to 80 % RH; condensation and insects unverified","Outdoors, -10 to 50 degC; FieldNode sun shield above 45 degC; mesh, drip lid, IP65 core",At risk
-R13,3.84 kg; 0.143 m2 frontal,3.5 kg or less; 0.15 m2 or less,Not met
+R13,3.78 kg with the sun shield (3.62 kg without); 0.139 m2 frontal,4.0 kg or less including the sun shield; 0.15 m2 or less,Met on paper
 R14,"Levels, T and RH only","No images, audio or identifiers",Met by design
-R15,Sensor head $303.00; $434.00 with the FieldNode core,Sensor head $285 or less (budget_usd),Not met
+R15,Sensor head $302.50; $433.50 with the FieldNode core,Sensor head $285 value-engineering target (budget_usd),Over the value-engineering target by $17.50
 R16,About 14 min for a pod exchange; no recollocation at the pole,Pre-collocated pod exchanged in 15 min at the pole with hand tools,Met on paper

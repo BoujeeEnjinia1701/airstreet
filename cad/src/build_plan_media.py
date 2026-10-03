@@ -25,6 +25,13 @@ from model import PARAMS as P, build_components, derived, pole_stub, FP  # noqa:
 OUT = ROOT / "docs" / "05-build-plan"
 DWG = ROOT / "cad" / "drawings"
 DATE = "2026-09-30"
+DATE_P2 = "2026-10-02"
+P2 = dict(date=DATE_P2, rev="P2")
+
+
+def revs(change):
+    """Revision list for a making sketch revised on 2026-10-02 (AST-DDR-003 A1 lightening)."""
+    return [("P1", "Making sketch for the prototype build plan", DATE, "AC"), ("P2", change, DATE_P2, "AC")]
 REPO = "github.com/BoujeeEnjinia1701/airstreet"
 D = derived(P)
 C = build_components(P, shield=True)
@@ -120,11 +127,12 @@ def sheets(only=None):
     z0 = P["enc_z0"]
     jobs = {}
 
+    base2 = dict(project="AirStreet", **P2)
     jobs["101"] = lambda: bv.component_sheet(
         part("Rail", C["rail"].shape, COL["rail"]), [M["saddles"], M["plates"], M["arm"], M["core"], pole(3050, 3600)],
-        dwg_no="AST-DWG-101", title="AirStreet rail: making sketch", material="Aluminium flat bar 40 x 5 mm, 6082 or 6063 class",
+        dwg_no="AST-DWG-101", title="AirStreet rail: making sketch", material="Aluminium flat bar 40 x 4 mm, 6082 or 6063 class",
         view_shape=b.Pos(0, 0, -P["rail_z"][0]) * C["rail"].shape, inset_view=(18, -60),
-        notes=["Cut 451 mm of 40 x 5 mm flat bar; square and deburr the ends.",
+        notes=["Cut 451 mm of 40 x 4 mm flat bar; square and deburr the ends.",
                "Heights up from the bottom end; the front is the face away from the pole.",
                "Saddle screws: 5.5 mm, 14 mm each side of centre, 67 and 442 up;",
                "  countersink from the front so M5 countersunk heads sit flush.",
@@ -133,7 +141,8 @@ def sheets(only=None):
                "  (plain holes: the countersinks are in the plates).",
                "The saddle centres are 51 and 426 up (375 mm apart).",
                "Fit: saddles behind, plates and cross arm in front; see the build plan.",
-               "Check: lay the plates and arm on it; every hole lines up."], **base)
+               "Check: lay the plates and arm on it; every hole lines up."],
+        revisions=revs("Lighter rail: 40 x 4 mm bar (was 40 x 5)"), **base2)
 
     sd = C["saddle_low"].shape
     jobs["102"] = lambda: bv.component_sheet(
@@ -166,10 +175,12 @@ def sheets(only=None):
                "  side, 64 up. Drill them on every node; they cost nothing.",
                "Rail bolts: 5.5 mm on the centre line, 12 and 62 up, countersunk",
                "  from the front so the M5 heads sit flush under the enclosure.",
-               "This is FieldNode's back plate hole pattern for its lower half.",
+               "Windows: two 24 x 59, corners R5, 26 to 50 each side, 8 to 67 up;",
+               "  cut out to save weight. Deburr. Holes as FieldNode's back plate.",
                "Fit: back face on the rail front, centred; enclosure back sits on",
                "  its front face, bottom of the enclosure 24 above the plate's edge.",
-               "Check: the lug holes are 124 mm apart, the shield holes 168 mm."], **base)
+               "Check: the lug holes are 124 mm apart, the shield holes 168 mm."],
+        revisions=revs("Two lightening windows added"), **base2)
 
     jobs["104"] = lambda: bv.component_sheet(
         part("Upper adapter plate", up, COL["plate"]), [M["rail"], M["core"], M["clips"], M["saddles"]],
@@ -182,10 +193,12 @@ def sheets(only=None):
                "Plate clip holes: 5.5 mm, 65 mm each side, 65 and 95 up.",
                "Rail bolts: 5.5 mm on the centre line, 15 and 85 up, countersunk",
                "  from the front so the M5 heads sit flush.",
-               "The top edge is where FieldNode's back plate top edge would be, so",
-               "  FieldNode's posts pass it with the same clearance.",
+               "Windows: two 24 x 94, corners R5, 26 to 50 each side, 8 to 102 up;",
+               "  cut out to save weight. Deburr.",
+               "The top edge is where FieldNode's back plate top edge would be.",
                "Fit: back face on the rail front; enclosure back on its lower 30 mm.",
-               "Check: plate clip holes 130 apart across, 30 apart up."], **base)
+               "Check: plate clip holes 130 apart across, 30 apart up."],
+        revisions=revs("Two lightening windows added"), **base2)
 
     arm = C["arm"].shape
     jobs["105"] = lambda: bv.component_sheet(
@@ -244,21 +257,35 @@ def sheets(only=None):
                "  it goes under the floor, held by the four M3 screws.",
                "Check: both sensors drop in without force; the floor sits flat."], **base)
 
+    def thin_dims(fn, mapping):
+        """The kit rounds overall dimensions to whole mm; show the true value of a thin part (1.5 mm plate)."""
+        import drawing
+        orig = drawing.Sheet._dim
+
+        def _dim(self, x1, y1, x2, y2, value, side, off=7.0):
+            return orig(self, x1, y1, x2, y2, mapping.get(value, value), side, off)
+        drawing.Sheet._dim = _dim
+        try:
+            return fn()
+        finally:
+            drawing.Sheet._dim = orig
+
     pl0 = C["shield_plates"].shape
     one = pl0 & (b.Pos(P["shield_x"], D["sh_yc"], D["sh_bot"]) * b.Box(130, 130, 4))
-    jobs["108"] = lambda: bv.component_sheet(
+    jobs["108"] = lambda: thin_dims(lambda: bv.component_sheet(
         part("Shield plate", one, COL["splate"]), [M["cap"], M["arm"], part("Other plates", pl0 - one, "#D1D5DB")],
         dwg_no="AST-DWG-108", title="AirStreet shield plate (make 8): making sketch", material="White ASA, 3D printed, 100 % infill",
         view_shape=b.Pos(-P["shield_x"], -D["sh_yc"], -D["sh_bot"]) * one, inset_view=(20, -55),
-        notes=["Make eight. Ring 120 outside, 56 inside, 2 thick, printed flat.",
+        notes=["Make eight. Ring 120 outside, 56 inside, 1.5 thick, printed flat.",
                "Three 5.5 mm holes on an 84 mm circle, 120 degrees apart; one of",
                "  them on the line from the centre toward the pole.",
                "White plastic reflects the sun; do not paint or use another colour.",
-               "Make 24 spacers too: 8 mm outside, 5.5 mm bore, 21 of them 11 long",
-               "  and 3 of them 9 long (the top row, under the cap).",
-               "Stack: plate, 11 spacer, plate ... 8 plates, then the 9 spacers and",
+               "Make 24 spacers too: 8 mm outside, 5.5 mm bore, 21 of them 11.5",
+               "  long and 3 of them 9.25 long (the top row, under the cap).",
+               "Stack: plate, 11.5 spacer, plate ... 8 plates, then the short spacers and",
                "  the cap, all on three M5 rods, 13 mm from plate to plate.",
-               "Check: the stack is 13 mm pitch, plates parallel, gaps open."], **base)
+               "Check: the stack is 13 mm pitch, plates parallel, gaps open."],
+        revisions=revs("Thinner plates: 1.5 mm (was 2); spacers 11.5 and 9.25 long"), **base2), {"2": f"{P['shield'][2]:g}"})
 
     cap = C["shield_cap"].shape
     jobs["109"] = lambda: bv.component_sheet(
@@ -302,7 +329,7 @@ def layouts():
         out = []
         for w in face.inner_wires():
             bb = w.bounding_box()
-            out.append((bb.center().X, bb.center().Z, bb.size.X))
+            out.append((bb.center().X, bb.center().Z, bb.size.X, bb.size.Z))
         return out
 
     def draw(ax, shape, w, h, zb, title, names):
@@ -311,7 +338,15 @@ def layouts():
         ax.axvline(0, color=MUT, lw=0.6, ls=(0, (8, 3, 2, 3)))
         H = holes(shape, D["rail_front"] - (P["plate_t"] if w > 50 else 0))
         xs, zs = set(), set()
-        for x, z, d in H:
+        from matplotlib.patches import FancyBboxPatch
+        for x, z, dx, dz in H:
+            if max(dx, dz) > 20:      # lightening window: rounded rectangle, sizes in the key
+                r = P["win_r"]
+                ax.add_patch(FancyBboxPatch((x - dx / 2 + r, z - zb - dz / 2 + r), dx - 2 * r, dz - 2 * r,
+                                            boxstyle=f"round,pad={r}", fc="white", ec=INK, lw=1, ls="--"))
+        for x, z, d, dz in H:
+            if max(d, dz) > 20:
+                continue
             zz = z - zb
             import numpy as np
             t_ = np.linspace(0, 2 * np.pi, 60)
@@ -336,7 +371,7 @@ def layouts():
 
     # rail: tall and thin, on the left
     ax = fig.add_axes([0.03, 0.08, 0.2, 0.83])
-    draw(ax, C["rail"].shape, P["rail"][0], D["rail_len"], P["rail_z"][0], "Rail 40 x 5 x 451", None)
+    draw(ax, C["rail"].shape, P["rail"][0], D["rail_len"], P["rail_z"][0], f"Rail {P['rail'][0]:.0f} x {P['rail'][1]:.0f} x {D['rail_len']:.0f}", None)
     ax.set_xlim(-55, 40); ax.set_ylim(-25, 460)
     ax = fig.add_axes([0.27, 0.53, 0.42, 0.36])
     draw(ax, C["uplate"].shape, 180, 110, z0 + 170, "Upper adapter plate 180 x 110 x 3", None)
@@ -348,7 +383,8 @@ def layouts():
            ("10 each side, 16.5 up", "cross arm bolts"), ("centre line, 119, 169, 316, 386 up", "adapter plate bolts"),
            ("", ""), ("Adapter plates", ""), ("62 each side", "FieldNode lug screws, 5.5"),
            ("65 each side (upper only)", "FieldNode plate clip screws, 5.5"), ("84 each side", "sun shield screws, M4 tapped (drill 3.3)"),
-           ("centre line", "rail bolts, countersunk from the front"), ("", ""),
+           ("centre line", "rail bolts, countersunk from the front"),
+           ("dashed, 26 to 50 each side", "windows, R5; lower 8 to 67 up, upper 8 to 102 up"), ("", ""),
            ("All other holes 5.5 mm.", ""), ("Plate holes follow FieldNode's back", ""), ("plate pattern: same parts, same screws.", "")]
     fig.text(0.72, 0.88, "What each hole is", fontsize=9.5, fontweight="bold", color=INK, va="top")
     for i, (a, b_) in enumerate(key):

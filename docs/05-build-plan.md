@@ -3,7 +3,7 @@ doc_id: AST-BLD-001
 title: AirStreet prototype build plan
 project: AirStreet
 doc_type: Build plan
-version: "0.2"
+version: "0.3"
 status: Draft
 date: '2026-10-02'
 author: Amish Chadha
@@ -17,6 +17,10 @@ revisions:
     date: '2026-10-02'
     author: Amish Chadha
     change: "Section 2: AST-DDR-003 accepted by Amish (2026-10-02)"
+  - version: "0.3"
+    date: '2026-10-02'
+    author: Amish Chadha
+    change: "Lightening steps of AST-DDR-003 A1 carried in: 40 x 4 mm rail, windows in the adapter plates, 1.5 mm shield plates and longer spacers, saddles at 40 % infill; mass and cost figures updated; pictures regenerated"
 ---
 
 # AirStreet prototype build plan
@@ -29,7 +33,7 @@ revisions:
 
 *Figure 1. Every component pulled apart and numbered in build order; 18, FieldNode's sun shield, is fitted only at hot sites.*
 
-The prototype is one AirStreet node on a short length of 140 mm street light pole (any pole from 80 to 200 mm will do). A FieldNode core, the grey box with its solar panel above it, hangs on an aluminium rail that two bands clamp to the pole. Below the box a cross arm carries the sensor pod on the left, with its particle and NO2 sensors behind insect mesh, and a stack of white plates on the right that shades the temperature and humidity probe. Figure 1 shows the 18 components in the order you make or fit them. Nine are made in a small workshop: the rail, two V-saddles, two adapter plates, the cross arm, the pod shell, the sensor floor, the shield plates with their spacers, and the shield cap with the probe tube. The FieldNode core is built to FieldNode's own build plan. Everything else is bought: bands, sensors, the NO2 front end, cables, glands, mesh and fixings. The work is sawing, drilling, countersinking and tapping aluminium bar, angle and sheet, 3D printing in ASA, setting heat-set inserts, and wiring bought sensor boards with screw terminals. The sensor head parts cost about $303 from the bill of materials.
+The prototype is one AirStreet node on a short length of 140 mm street light pole (any pole from 80 to 200 mm will do). A FieldNode core, the grey box with its solar panel above it, hangs on an aluminium rail that two bands clamp to the pole. Below the box a cross arm carries the sensor pod on the left, with its particle and NO2 sensors behind insect mesh, and a stack of white plates on the right that shades the temperature and humidity probe. Figure 1 shows the 18 components in the order you make or fit them. Nine are made in a small workshop: the rail, two V-saddles, two adapter plates, the cross arm, the pod shell, the sensor floor, the shield plates with their spacers, and the shield cap with the probe tube. The FieldNode core is built to FieldNode's own build plan. Everything else is bought: bands, sensors, the NO2 front end, cables, glands, mesh and fixings. The work is sawing, drilling, countersinking and tapping aluminium bar, angle and sheet, 3D printing in ASA, setting heat-set inserts, and wiring bought sensor boards with screw terminals. The sensor head parts cost about $302.50 from the bill of materials.
 
 > **Safety:** The FieldNode core holds a lithium iron phosphate cell; follow the safety stops of FieldNode's build plan as well as section 6 here. The NO2 sensor contains an acid electrolyte: do not open, crush or heat it. Cut aluminium and band ends are sharp: deburr everything and wear gloves. Printing ASA and setting heat-set inserts give off fumes; work in a ventilated space. A street light pole carries mains voltage inside: this plan builds on a pole stub on the bench only.
 
@@ -50,6 +54,7 @@ The concept showed what the node does; some of its parts could not be made or fi
 | Cable entries | Cables ending on the drip lid | Two glands in the pod roof under FieldNode's ports, and a plug-in socket for the probe lead (Figure 18) | The pod unplugs for exchange |
 | Radiation shield | Plates on rods with nothing between them; no fixing for the cap or the probe | Spacers between the plates, rods through the cap, the cap screwed under the arm, and the probe on a tube through the cap (Figures 15 and 16) | The 13 mm plate spacing holds and the probe hangs in the middle |
 | Rail | 565 mm | 451 mm, ending at the cross arm | Nothing fixed to the part below the arm |
+| Weight | 3.84 kg on the pole, 4.00 kg with FieldNode's sun shield | A 40 x 4 mm rail (was 40 x 5), windows in both adapter plates, 1.5 mm shield plates (was 2 mm) and saddles printed at 40 % infill: 3.62 kg, 3.78 kg with the sun shield (Figures 2, 4, 5 and 14) | The node must stay at or under 4.0 kg on the pole with the sun shield, with some margin |
 
 ## 3. Making the components
 
@@ -65,7 +70,7 @@ Make and check each component before the assembly step that needs it. Sizes are 
 
 *Figure 2a. Hole positions in the rail and both adapter plates, full size figures, seen from the front.*
 
-**What it is and what it is made from.** The upright bar that carries everything: saddles behind it, adapter plates and cross arm in front. Aluminium flat bar 40 x 5 mm, 6082 or 6063 class.
+**What it is and what it is made from.** The upright bar that carries everything: saddles behind it, adapter plates and cross arm in front. Aluminium flat bar 40 x 4 mm, 6082 or 6063 class.
 
 **How to make it.**
 
@@ -124,6 +129,7 @@ The back face sits flat on the back of the rail, held by two M5 x 16 countersunk
 3. Lower plate: lug holes 5.5 mm, 62 each side, 15 up; sun shield holes 84 each side, 64 up, drilled 3.3 mm and tapped M4; rail bolt holes 5.5 mm on the centre line at 12 and 62 up, countersunk from the front.
 4. Upper plate: sun shield holes 84 each side, 10 up, drilled 3.3 mm and tapped M4; lug holes 5.5 mm, 62 each side, 39 up; plate clip holes 5.5 mm, 65 each side, 65 and 95 up; rail bolt holes 5.5 mm on the centre line at 15 and 85 up, countersunk from the front.
 5. Drill the sun shield holes on every node. They cost nothing and let the shield go on later at a hot site.
+6. Cut two lightening windows in each plate, one each side of the centre line, from 26 to 50 mm out with 5 mm corner radii: in the lower plate 8 to 67 up (24 x 59), in the upper plate 8 to 102 up (24 x 94). Drill a 10 mm hole in each corner, saw or nibble between them and file the edges smooth. The windows lie behind the enclosure and keep at least 5 mm of metal round every hole and clear of the rail. They save about 60 g.
 
 **How they fit the parts next to them.**
 
@@ -237,11 +243,11 @@ The floor sits on the shell's open edge and the corner bosses; the mesh lies und
 
 **How to make them.**
 
-1. Print eight rings, 120 outside, 56 inside, 2 thick.
+1. Print eight rings, 120 outside, 56 inside, 1.5 thick.
 2. Each has three 5.5 mm holes on an 84 mm circle, 120° apart; one of them points to the pole when fitted.
-3. Print 24 spacers 8 mm outside with a 5.5 mm bore: 21 of them 11 long and 3 of them 9 long.
+3. Print 24 spacers 8 mm outside with a 5.5 mm bore: 21 of them 11.5 long and 3 of them 9.25 long.
 
-**How they fit the parts next to them.** See section 3.9 and Figure 16: plate, 11 mm spacer, plate and so on, eight plates, then the three 9 mm spacers and the cap, all on three M5 rods.
+**How they fit the parts next to them.** See section 3.9 and Figure 16: plate, 11.5 mm spacer, plate and so on, eight plates, then the three 9.25 mm spacers and the cap, all on three M5 rods.
 
 **Check before moving on.** Every plate is flat; the spacers slide on an M5 rod freely.
 
@@ -298,7 +304,7 @@ Before step 8, take the shorting spring off the NO2 sensor's pins only when you 
 Buy to specification, not brand. Line numbers are those of the bill of materials.
 
 - **Band clamps (line 3).** 12.7 mm (half inch) stainless worm-drive band from a roll, with two separate worm-drive housings. Each band is about 0.6 m including its tail for poles up to 200 mm; 487 mm goes round a 140 mm pole and saddle.
-- **Aluminium (line 3).** Flat bar 40 x 5 mm, 451 mm; sheet 3 mm, 180 x 185 mm; equal angle 30 x 30 x 3 mm, 415 mm.
+- **Aluminium (line 3).** Flat bar 40 x 4 mm, 451 mm; sheet 3 mm, 180 x 185 mm; equal angle 30 x 30 x 3 mm, 415 mm.
 - **Particle sensor (line 5).** Sensirion SPS30 class, 41 x 41 x 12 mm, 5 V, two-wire (I2C) interface, with its interface cable.
 - **NO2 sensor (line 6).** Four-electrode B4 class with an ozone filter (Alphasense NO2-B43F class), with its shorting spring.
 - **NO2 front end (line 7).** Four-electrode potentiostat board for B4 sensors (Alphasense ISB class) with a 16-bit ADC on a two-wire bus; the model assumes it is 86 x 55 mm with mounting holes 76 x 43 mm apart.
@@ -382,7 +388,7 @@ Lift the pod under the arm's left end, its back face against the rail, and fit t
 
 ![Step 12](05-build-plan/step-12.png)
 
-Work with the cap upside down (the picture shows it upright). Push the three rods through the cap and fit the nyloc nuts on the cap's top face. Then thread on, in turn, a 9 mm spacer on each rod, a plate, 11 mm spacers, a plate, and so on to the eighth plate, and fit an acorn nut on each rod, snug. Push the probe tube through the cap's centre hole from below, the probe board in the middle of the stack.
+Work with the cap upside down (the picture shows it upright). Push the three rods through the cap and fit the nyloc nuts on the cap's top face. Then thread on, in turn, a 9.25 mm spacer on each rod, a plate, 11.5 mm spacers, a plate, and so on to the eighth plate, and fit an acorn nut on each rod, snug. Push the probe tube through the cap's centre hole from below, the probe board in the middle of the stack.
 
 ### Step 13: shield onto the cross arm
 
@@ -425,7 +431,7 @@ These are the checks a TRL 4 test report would record; this plan only lists them
 | Pole range | R11 | Seat the mount on 80, 140 and 200 mm tubes | Both saddles touch the tube on both V faces; each band closes with adjustment to spare |
 | Band torque | R11, R13 | Torque screwdriver on each band housing | The maker's torque is reached with no band slip; value recorded |
 | Inlet height | R11 | Measure from the mesh to the pole's ground mark on the stub | The mesh is level and the inlet plane can be set 3.0 m above the sidewalk |
-| Mass | R13 | Weigh the node off the pole, with and without FieldNode's sun shield | Recorded; the estimate is 3.84 kg without the shield and 4.00 kg with it |
+| Mass | R13 | Weigh the node off the pole, with and without FieldNode's sun shield | Recorded; the estimate is 3.62 kg without the shield and 3.78 kg with it, against 4.0 kg with it |
 | Port supplies | R9 | Bench supply in place of the cell as FieldNode's plan; measure 5 V at each M12 plug with the pod unplugged | Port A switches on and off from the controller; port B stays on |
 | Sensor current | R9 | Pod plugged in; measure each port's current over a particle run | Port A about 55 mA while the particle sensor runs; port B a few milliamps, continuously |
 | Readings arrive | R7, R8 | Read every sensor over its bus from the controller | Particle, NO2 working and auxiliary, temperature and humidity values all arrive |
@@ -443,7 +449,7 @@ Stop at each point. Carry on only when everything listed is true.
 - **S3. Before the NO2 sensor's shorting spring comes off.** The front end is wired and ready to power; the sensor is undamaged with no electrolyte on its pins. Wash hands after handling a damaged sensor and dispose of it as its maker directs.
 - **S4. Before the radio transmits.** The antenna is connected and matches the pilot region's band.
 - **S5. Before the node goes on the pole stub.** Every bolt tight with nyloc nuts where shown, the panel glass whole, sharp edges and band tails deburred. The stub is clamped to a bench or stand that cannot tip under about 4 kg.
-- **S6. Before any installation on a street pole (outside this plan).** The pole owner's written permission; a trained crew with a mobile elevating work platform or a secured ladder and a second person; traffic management as local rules require; the pole owner has confirmed the pole can carry about 128 N of wind load 3.3 m up. Never open the pole's access door or touch its wiring: street light poles carry mains voltage.
+- **S6. Before any installation on a street pole (outside this plan).** The pole owner's written permission; a trained crew with a mobile elevating work platform or a secured ladder and a second person; traffic management as local rules require; the pole owner has confirmed the pole can carry about 125 N of wind load 3.3 m up, and a load on the pole of 4.0 kg. Never open the pole's access door or touch its wiring: street light poles carry mains voltage.
 
 ## 7. Tools, skills and workspace
 
@@ -457,11 +463,11 @@ Stop at each point. Carry on only when everything listed is true.
 
 ## 8. Where the numbers come from
 
-- Model and constructability checks: `cad/src/model.py` (`python cad/src/model.py --check`, 71 checks), using FieldNode's model vendored as `cad/src/fieldnode_core.py`; STEP and STL exports in `cad/step/` and `cad/stl/`.
+- Model and constructability checks: `cad/src/model.py` (`python cad/src/model.py --check`, 77 checks), using FieldNode's model vendored as `cad/src/fieldnode_core.py`; STEP and STL exports in `cad/step/` and `cad/stl/`.
 - Pictures: `cad/src/build_plan_media.py`, using `.kit/build_views.py`; written to `docs/05-build-plan/` and `cad/drawings/AST-DWG-101` to `AST-DWG-109`.
-- General arrangement: `cad/drawings/AST-DWG-001.pdf`, Rev P4.
-- Calculations: `docs/04-calcs/01-sizing.md` (AST-CAL-001 v0.3) and `docs/04-calcs/sizing.py`: mass [F4], [F5], band lengths [F7], mounting loads [G2] to [G7], service time [H1].
+- General arrangement: `cad/drawings/AST-DWG-001.pdf`, Rev P5.
+- Calculations: `docs/04-calcs/01-sizing.md` (AST-CAL-001 v0.6) and `docs/04-calcs/sizing.py`: mass [F4], [F5], [F8], band lengths [F7], mounting loads [G2] to [G7], service time [H1].
 - Bill of materials: `bom/bom.csv`.
-- Decisions: `docs/decisions/0003-design-for-construction.md` (AST-DDR-003), with AST-DDR-001 and AST-DDR-002; open decisions in `docs/06-design-decisions.md` (AST-DEC-001).
-- Requirements: `docs/03-requirements.md` (AST-REQ-001 v0.5).
+- Decisions: `docs/decisions/0003-design-for-construction.md` (AST-DDR-003), with AST-DDR-001 and AST-DDR-002; the design decisions register `docs/06-design-decisions.md` (AST-DEC-001).
+- Requirements: `docs/03-requirements.md` (AST-REQ-001 v0.8).
 - FieldNode core: FieldNode's build plan FND-BLD-001 and calculation note FND-CAL-001 v0.3, in the fieldnode repository.

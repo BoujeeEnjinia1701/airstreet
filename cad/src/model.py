@@ -15,16 +15,21 @@ imported from the vendored copy cad/src/fieldnode_core.py and moved into place: 
 penetrations, internal plate and modules, panel bracket and panel, and (hot sites) the sun shield.
 Per AST-DDR-002 FieldNode's back plate, V-blocks and band clamps are left off. In their place
 (AST-DDR-003, "Design for construction"):
-    a 40 x 5 mm rail held to the pole by two printed V-saddles (140 deg V for 80 to 200 mm poles)
+    a 40 x 4 mm rail held to the pole by two printed V-saddles (140 deg V for 80 to 200 mm poles,
+        printed with 6 walls and 40 % infill)
         and two stainless bands cut to length, each running in a groove between saddle and rail;
     two 3 mm aluminium adapter plates on the rail that carry FieldNode's four lugs, its two plate
-        clips and (hot sites) its sun shield screws, at the hole positions of FieldNode's back plate;
+        clips and (hot sites) its sun shield screws, at the hole positions of FieldNode's back plate,
+        with two lightening windows each;
     a 30 x 30 x 3 mm aluminium cross arm on the rail below the enclosure, from which the pod and
         the radiation shield hang on screws from above;
     a pod made of a printed shell (walls, roof and drip lid in one) and a printed sensor floor that
         carries the PM sensor cradle and the NO2 sensor collar, behind stainless mesh;
-    a radiation shield of eight printed plates on three M5 rods and spacers under a printed cap,
+    a radiation shield of eight printed 1.5 mm plates on three M5 rods and spacers under a printed cap,
         with the T and RH probe on a 6 mm tube through the cap and the arm.
+The four lightening steps of AST-DDR-003, A1 (accepted 2026-10-02) are in: 40 x 4 mm rail (was
+40 x 5), saddles at 40 % infill (mass only, "saddle_fill"), 1.5 mm shield plates (was 2 mm) and
+windows in the adapter plates ("plate_windows").
 Main dimensions and interfaces only; tolerances are TRL 4 work. The same PARAMS feed
 docs/04-calcs/sizing.py (AST-CAL-001), the drawing AST-DWG-001 (cad/src/sheets.py), the concept
 media (cad/src/concept_media.py) and the build plan pictures (cad/src/build_plan_media.py).
@@ -49,13 +54,18 @@ PARAMS = {
     #   the apex; band groove in the back face (height, depth); two M5 insert screws (x, dz)
     "saddle": (100.0, 50.0, 24.0), "saddle_v": 140.0, "saddle_base": 8.0, "groove": (14.0, 1.5),
     "saddle_screws": ((-14.0, 16.0), (14.0, 16.0)),
+    #   print settings used for the saddle mass: perimeter shell (6 walls of 0.45 mm), infill fraction
+    "saddle_fill": (2.7, 0.40),
     # 3 rail flat bar (W x t) and its ends; clamp (saddle centre) heights; band width and thickness
-    "rail": (40.0, 5.0), "rail_z": (3099.0, 3550.0), "clamp_z": (3150.0, 3525.0), "band": (12.7, 0.8),
+    "rail": (40.0, 4.0), "rail_z": (3099.0, 3550.0), "clamp_z": (3150.0, 3525.0), "band": (12.7, 0.8),
     # 1 FieldNode core: enclosure (from FND), bottom height
     "enc": FP["enc"], "lid_d": FP["lid_d"], "enc_z0": 3230.0,
     # 3 adapter plates, 3 mm aluminium (W, z from, z to, relative to enc_z0) with the rail bolts (dz)
     "lplate": (180.0, -24.0, 51.0), "uplate": (180.0, 170.0, 280.0), "plate_t": 3.0,
     "lplate_bolts": (-12.0, 38.0), "uplate_bolts": (185.0, 255.0),
+    #   lightening windows, mirrored either side of the centre line: (x from, x to, z from, z to
+    #   relative to enc_z0) and corner radius; they keep 5 mm of metal round every hole and the rail
+    "lwin": (26.0, 50.0, -16.0, 43.0), "uwin": (26.0, 50.0, 178.0, 272.0), "win_r": 5.0,
     # 3 cross arm: aluminium angle (leg, thickness), x from, x to; underside height = pod top;
     #   rail bolt x positions
     "arm": (30.0, 3.0), "arm_x": (-165.0, 250.0), "arm_bolt_x": (-10.0, 10.0),
@@ -75,7 +85,7 @@ PARAMS = {
     "afe": (86.0, 3.0, 55.0), "afe_z": 25.0, "afe_standoff": 6.0,
     # 8 radiation shield: plate OD, ID, thickness, pitch, count; cap OD and thickness; centre x;
     #   rod diameter and pitch circle radius; spacer OD
-    "shield": (120.0, 56.0, 2.0, 13.0, 8), "cap": (124.0, 8.0), "shield_x": 200.0, "rod_d": 5.0,
+    "shield": (120.0, 56.0, 1.5, 13.0, 8), "cap": (124.0, 8.0), "shield_x": 200.0, "rod_d": 5.0,
     "rod_r": 42.0, "spacer_od": 8.0, "cap_screw_dx": (-30.0, 30.0),
     # 9 temperature and humidity probe: board (x, y, z), tube (dia)
     "th_board": (14.0, 10.0, 4.0), "th_tube": 6.0,
@@ -218,6 +228,27 @@ def screw_z_down(x, y, z_top, length, d=5.0, head=8.5):
     return zcyl(x, y, z_top + hl / 2, head / 2, hl) + zcyl(x, y, z_top - length / 2, d / 2 - 0.3, length)
 
 
+def plate_windows(p=PARAMS):
+    """The lightening windows of the two adapter plates as solids (for cutting and for the checks)."""
+    D = derived(p)
+    yrf, pt, r = D["rail_front"], p["plate_t"], p["win_r"]
+    z0 = p["enc_z0"]
+    out = {}
+    for key in ("lplate", "uplate"):
+        x0, x1, za, zb = p["lwin" if key == "lplate" else "uwin"]
+        ws = []
+        for sx in (-1, 1):
+            xa, xb = sorted((sx * x0, sx * x1))
+            w = (bx(xa + r, xb - r, yrf - pt - 1, yrf + 1, z0 + za, z0 + zb)
+                 + bx(xa, xb, yrf - pt - 1, yrf + 1, z0 + za + r, z0 + zb - r))
+            for cx in (xa + r, xb - r):
+                for cz in (z0 + za + r, z0 + zb - r):
+                    w += ycyl(cx, yrf - pt / 2, cz, r, pt + 2)
+            ws.append(w)
+        out[key] = fuse(ws)
+    return out
+
+
 def _fnd_components(p=PARAMS, shield=False):
     """FieldNode's own components (FND-DDR-003), moved into place. Its back plate, V-blocks and
     band clamps are not used (AST-DDR-002)."""
@@ -315,6 +346,7 @@ def build_components(p=PARAMS, shield=False):
             for dz in FP["shield_screw_dz"]:
                 if z_a < dz < z_b:
                     pl -= ycyl(sx * shx, ypm, z0 + dz, 1.65, pt + 2)          # M4 tapped
+        pl -= plate_windows(p)[key]                                                    # lightening windows
         for dzb in bolts:
             pl -= ycyl(0, ypm, z0 + dzb, 2.75, pt + 2)
             pl -= b.Pos(0, yrf - pt, z0 + dzb) * b.Rot(-90, 0, 0) * b.Cone(5.1, 2.6, 2.6, align=(b.Align.CENTER, b.Align.CENTER, b.Align.MIN))
@@ -567,9 +599,16 @@ def checks(p=PARAMS):
     chk("Saddle screws in the rail and saddles", S("saddle_screws"), S("rail") + S("saddle_low") + S("saddle_up"), "touch")
     for k in ("lplate", "uplate"):
         chk(f"{C[k].name} on the rail", S(k), S("rail"), "touch")
-        chk(f"{C[k].name} clear of the saddles", S(k), S("saddle_low") + S("saddle_up"), 5.0)
+        chk(f"{C[k].name} clear of the saddles (the rail between)", S(k), S("saddle_low") + S("saddle_up"), p["rail"][1])
         chk(f"Enclosure back on the {C[k].name.lower()}", box_, S(k), "touch")
         chk(f"Lugs on the {C[k].name.lower()}", S("fnd_lugs"), S(k), "touch")
+    W_ = plate_windows(p)
+    for k in ("lplate", "uplate"):
+        chk(f"{C[k].name} windows clear of the rail", W_[k], S("rail"), 5.0)
+        chk(f"{C[k].name} windows clear of every screw and bolt", W_[k],
+            S("fnd_lug_screws") + S("plate_bolts") + S("fnd_shield_screws") + S("fnd_bracket_bolts"), 4.0)
+        chk(f"{C[k].name} windows clear of the lugs, clips and shield flanges", W_[k],
+            S("fnd_lugs") + S("fnd_plate_clip_r") + S("fnd_plate_clip_l") + S("fnd_shield"), 2.0)
     chk("Enclosure clear of the rail (sits on the plates)", box_, S("rail"), 2.0)
     chk("Lug screws clear of the rail", S("fnd_lug_screws"), S("rail"), 3.0)
     chk("Adapter plate bolts flush, clear of the enclosure", S("plate_bolts"), box_, 0.0)
@@ -586,7 +625,7 @@ def checks(p=PARAMS):
     chk("Shield thumb screws in the plates", S("fnd_shield_screws"), S("lplate") + S("uplate"), "touch")
     chk("Shield clear of the rail and plate bolts", S("fnd_shield"), S("rail") + S("plate_bolts"), 2.0)
     chk("Cross arm on the rail", S("arm"), S("rail"), "touch")
-    chk("Cross arm clear of the lower saddle and band", S("arm"), S("saddle_low") + S("bands"), 5.0)
+    chk("Cross arm clear of the lower saddle and band (the rail between)", S("arm"), S("saddle_low") + S("bands"), p["rail"][1])
     chk("Cross arm clear of the pole", S("arm"), pole, 5.0)
     chk("Cross arm bolts clear of the pole", S("arm_bolts"), pole, 3.0)
     chk("Cross arm clear of the enclosure, glands and ports", S("arm"), box_ + S("fnd_glands") + S("fnd_ports") + S("fnd_vent"), 20.0)

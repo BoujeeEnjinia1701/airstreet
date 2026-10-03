@@ -1,4 +1,4 @@
-"""AirStreet sizing calculations, AST-CAL-001 v0.3 (TRL 3, constructable design of AST-DDR-003).
+"""AirStreet sizing calculations, AST-CAL-001 v0.6 (TRL 3, constructable design of AST-DDR-003, lightened).
 
 Run from the repo root:  python docs/04-calcs/sizing.py
 Prints every number quoted in docs/04-calcs/01-sizing.md. Each line carries a tag such as
@@ -27,7 +27,7 @@ def tag(t, text):
     print(f"[{t}] {text}")
 
 
-print("AirStreet sizing, AST-CAL-001 v0.3")
+print("AirStreet sizing, AST-CAL-001 v0.6")
 
 # ------------------------------------------------------------------ assumptions
 # Sensors (SPS30 values from the Sensirion SPS30 datasheet, 07/2023; others assumed)
@@ -51,6 +51,8 @@ FND_ALLOW, FND_CEIL = 100.0, 115.0    # mW: FND design value (proposed) and 5-da
 FND_MASS, FND_MOUNT = 2.45, 0.56      # kg: FieldNode base node (FND-CAL-001 v0.3 [F1]); its back plate, V-blocks and bands, not used here
 FND_SHIELD = 0.16                     # kg: FieldNode sun shield with fixings (FND-CAL-001 v0.3 [F1b]), hot sites only
 A_LIMIT = 0.15                        # m2 frontal area limit, relaxed from 0.12 (DDR-002)
+M_LIMIT = 4.0                         # kg on the pole including FieldNode's sun shield (AST-DDR-003 A1, 2026-10-02; was 3.5 kg)
+M_V05, M_V05_SH = 3.84, 4.00          # kg: AST-CAL-001 v0.5, before the four lightening steps (without and with the sun shield)
 
 # ------------------------------------------------------------------ A. Power and energy (R9)
 duty = T_RUN / T_REC
@@ -246,8 +248,14 @@ C = build_components(P)
 vol = lambda *ks: sum(C[k].shape.volume for k in ks)  # noqa: E731
 W, Dp, H = P["pod"]
 band_m = 2 * (D["band_len"] * P["band"][0] * 0.6 * RHO["ss"] + 0.020)     # 0.6 mm band, about 20 g housing each
+# saddles printed with a 6-wall perimeter shell and 40 % infill (AST-DDR-003 A1): shell volume from the surface area
+sh_t, infill = P["saddle_fill"]
+sad_v = vol("saddle_low", "saddle_up")
+sad_a = sum(C[k].shape.area for k in ("saddle_low", "saddle_up"))
+sad_shell = min(sad_v, sad_a * sh_t / 2)          # walls and top and bottom layers; half the area-thickness product avoids double counting edges
+sad_eff = sad_shell + infill * (sad_v - sad_shell)
 made = {"rail (Al)": vol("rail") * RHO["al"], "adapter plates (Al)": vol("lplate", "uplate") * RHO["al"],
-        "cross arm (Al)": vol("arm") * RHO["al"], "V-saddles (ASA, solid)": vol("saddle_low", "saddle_up") * RHO["asa"],
+        "cross arm (Al)": vol("arm") * RHO["al"], "V-saddles (ASA, 40 % infill)": sad_eff * RHO["asa"],
         "pod shell and floor (ASA)": vol("pod_shell", "pod_floor") * RHO["asa"],
         "shield plates, cap and spacers (ASA)": vol("shield_plates", "shield_cap", "spacers") * RHO["asa"]}
 bought = {"bands": band_m, "shield rods and nuts": vol("rods") * RHO["ss"], "SPS30": 0.0263, "NO2 sensor": 0.015,
@@ -259,15 +267,22 @@ m_head = sum(made.values()) + sum(bought.values())
 m_tot = fnd_m + m_head
 tag("F4", "Mass: FieldNode core as used " + f"{fnd_m:.2f} kg ({FND_MASS:.2f} kg less its back plate, V-blocks and bands, {FND_MOUNT:.2f} kg); "
     + "; ".join(f"{k} {v:.3f} kg" for k, v in {**made, **bought}.items()))
-tag("F5", f"Total on the pole {m_tot:.2f} kg against 3.5 kg (R13); sensor head and mount {m_head:.2f} kg; "
-          f"with FieldNode's sun shield (hot sites) {m_tot + FND_SHIELD:.2f} kg")
+m_sh = m_tot + FND_SHIELD
+tag("F5", f"Total on the pole {m_tot:.2f} kg; with FieldNode's sun shield (hot sites) {m_sh:.2f} kg against {M_LIMIT:.1f} kg including the shield (R13), "
+          f"margin {M_LIMIT - m_sh:.2f} kg; sensor head and mount {m_head:.2f} kg")
+tag("F8", f"Lightening steps (AST-DDR-003 A1): saddles at {infill * 100:.0f} % infill ({sad_eff / sad_v * 100:.0f} % of solid), "
+          f"{P['rail'][0]:.0f} x {P['rail'][1]:.0f} mm rail, {P['shield'][2]:g} mm shield plates, windows in the adapter plates: "
+          f"{M_V05:.2f} to {m_tot:.2f} kg without the sun shield ({m_tot - M_V05:+.2f} kg), {M_V05_SH:.2f} to {m_sh:.2f} kg with it; "
+          f"the 3.6 kg estimate of AST-DDR-003 A1 is the node without the sun shield")
 tag("F6", f"AST-DDR-003: the TRL 3 concept gave 3.26 kg; FieldNode's own constructable core is {fnd_m - 1.74:+.2f} kg heavier as used, "
           f"and AirStreet's adapter plates, cross arm, larger saddles, pod floor and fixings make up the rest")
 bl = {d: derived(dict(P, pole_od=d))["band_len"] for d in (80.0, 140.0, 200.0)}
 tag("F7", f"Bands: {bl[140.0]:.0f} mm of 12.7 mm band round the 140 mm design pole, {bl[80.0]:.0f} mm round an 80 mm pole and "
           f"{bl[200.0]:.0f} mm round a 200 mm pole, plus about 100 mm for the housing and tail")
 OUT["R11"] = (f"80 to 200 mm poles, V-saddles and bands; inlet {P['inlet_z'] / 1e3:.1f} m", "80 to 200 mm, no drilling, inlets 1.5 to 4 m", "Met by design")
-OUT["R13"] = (f"{m_tot:.2f} kg; {a_front:.3f} m2 frontal", f"3.5 kg or less; {A_LIMIT} m2 or less", "Not met" if (m_tot > 3.5 or a_front > A_LIMIT) else "Met on paper")
+OUT["R13"] = (f"{m_sh:.2f} kg with the sun shield ({m_tot:.2f} kg without); {a_front:.3f} m2 frontal",
+              f"{M_LIMIT:.1f} kg or less including the sun shield; {A_LIMIT} m2 or less",
+              "Not met" if (m_sh > M_LIMIT or a_front > A_LIMIT) else ("At risk" if M_LIMIT - m_sh < 0.05 else "Met on paper"))
 
 
 def angle_section(leg, t):
@@ -313,7 +328,7 @@ tag("G5", f"Twist about the pole: {t_twist:.2f} N m against {t_cap:.0f} N m fric
 f_low = q * CD * (W * H + a_sh * 1e6) / 1e6
 m_rail = f_low * (P["clamp_z"][0] - (P["inlet_z"] + H / 2)) / 1e3
 z_rail = P["rail"][0] * P["rail"][1] ** 2 / 6
-tag("G6", f"Rail at the lower clamp: {f_low:.1f} N on pod and shield, {m_rail:.2f} N m, stress {m_rail * 1e3 / z_rail:.1f} MPa in the 40 x 5 mm bar")
+tag("G6", f"Rail at the lower clamp: {f_low:.1f} N on pod and shield, {m_rail:.2f} N m, stress {m_rail * 1e3 / z_rail:.1f} MPa in the {P['rail'][0]:.0f} x {P['rail'][1]:.0f} mm bar")
 f_pod_w = q * CD * W * H / 1e6
 tag("G7", f"Pod hanging screws: pod weight {m_pod_kg * 9.81:.1f} N and {f_pod_w:.1f} N wind on two M5 screws in heat-set inserts in printed ASA; "
           f"worst pull-out per screw about {(m_pod_kg * 9.81 + f_pod_w * (H / 2 + 3) / 40) / 2:.0f} N (insert pull-out in ASA several hundred N, to be checked at TRL 4)")
@@ -338,9 +353,11 @@ fnd_cost = sum(float(r["qty"]) * float(r["unit_cost_usd"]) for r in rows if r["i
 head = tot - fnd_cost
 budget = float(yaml.safe_load((ROOT / "project.yaml").read_text())["budget_usd"])
 tag("I1", f"BOM {len(rows)} lines, all priced: ${tot:.2f} per node; FieldNode core ${fnd_cost:.2f} (costed in FND); sensor head ${head:.2f}")
-tag("I2", f"Sensor head against budget_usd ${budget:.0f} (DDR-002): {'over' if head > budget else 'within'} by ${abs(head - budget):.2f}")
+tag("I2", f"Value-engineering target: USD {budget:.0f}. Estimated cost of the constructable design: USD {head:.2f} "
+          f"(USD {abs(head - budget):.2f} {'over' if head > budget else 'under'} the target)")
 tag("I3", "Replacement NO2 sensor about every 2 years (estimate) and collocation time are running costs, not in the BOM")
-OUT["R15"] = (f"Sensor head ${head:.2f}; ${tot:.2f} with the FieldNode core", f"Sensor head ${budget:.0f} or less (budget_usd)", "Not met" if head > budget else "Met on paper")
+OUT["R15"] = (f"Sensor head ${head:.2f}; ${tot:.2f} with the FieldNode core", f"Sensor head ${budget:.0f} value-engineering target (budget_usd)",
+              f"Over the value-engineering target by ${head - budget:.2f}" if head > budget else "Met on paper")
 
 # ------------------------------------------------------------------ by design
 OUT["R6"] = ("CalRig for T, RH and PM; 14-day NO2 collocation and every 6 months (DDR-001 D3)", "Stated method per node", "Met by design")
@@ -357,4 +374,4 @@ counts = {}
 for k in order:
     counts[OUT[k][2]] = counts.get(OUT[k][2], 0) + 1
 tag("J1", "Status counts: " + "; ".join(f"{k} {v}" for k, v in sorted(counts.items())))
-tag("J2", "Not met: " + ", ".join(k for k in order if OUT[k][2] == "Not met"))
+tag("J2", "Not met: " + (", ".join(k for k in order if OUT[k][2] == "Not met") or "none"))
