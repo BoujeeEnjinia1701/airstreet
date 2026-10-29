@@ -1,11 +1,19 @@
 """AirStreet parametric model (build123d), TRL 3, constructable design (AST-DDR-003).
 
-Run from the repo root:  python cad/src/model.py          (exports and checks)
+Run from the repo root:  python cad/src/model.py          (STL of the chosen option and the checks)
                          python cad/src/model.py --check  (constructability checks only)
-Exports STEP and STL into cad/step and cad/stl:
-    airstreet-assembly.step / .stl     the whole node on a stub of its 140 mm design pole
-    airstreet-sensor-head.step / .stl  pod, sensors, front end, radiation shield, probe and cables
-    airstreet-mount.step / .stl        rail, saddles, band clamps, adapter plates and cross arm
+                         python .kit/cad_check.py --export (kit 1.9: fidelity check, STEP per part and per option)
+Writes STL into cad/stl (0.15 mm chord error):
+    airstreet-assembly.stl     the whole node (option A, every part)
+    airstreet-sensor-head.stl  pod, sensors, front end, radiation shield, probe and cables
+    airstreet-mount.stl        rail, saddles, band clamps, adapter plates, cross arm and their fixings
+
+Kit 1.9 interface (STANDARDS section 24): TITLE, OPTIONS, PRINCIPLES, CHOSEN, OPTION_VIEWS, ALLOWED_CONTACTS and
+components(option), which returns cad_parts.part() dicts: option A from cad/src/ast_detail.py (the geometry of
+build_components() below, split into the parts a maker cuts, prints, buys and fits, with every fastener), options
+B and C from cad/src/ast_options.py; repo helpers in cad/src/ast_parts.py. build_components(), build_parts(),
+PARAMS and derived() stay as they were, so sizing.py, sheets.py, build_plan_media.py and concept_media.py read
+the same numbers.
 
 Axes: the street light pole is the Z axis (x = y = 0), Z is up with the sidewalk at z = 0, and the
 node faces the street (-Y). X is to the right seen from the street.
@@ -57,7 +65,9 @@ PARAMS = {
     #   print settings used for the saddle mass: perimeter shell (6 walls of 0.45 mm), infill fraction
     "saddle_fill": (2.7, 0.40),
     # 3 rail flat bar (W x t) and its ends; clamp (saddle centre) heights; band width and thickness
-    "rail": (40.0, 4.0), "rail_z": (3099.0, 3550.0), "clamp_z": (3150.0, 3525.0), "band": (12.7, 0.8),
+    "rail": (40.0, 4.0), "rail_z": (3099.0, 3550.0), "clamp_z": (3150.0, 3525.0),
+    #   band 12.7 x 0.6 mm (was drawn 0.8 mm while the calculation used 0.6; AST-DDR-005 F4)
+    "band": (12.7, 0.6),
     # 1 FieldNode core: enclosure (from FND), bottom height
     "enc": FP["enc"], "lid_d": FP["lid_d"], "enc_z0": 3230.0,
     # 3 adapter plates, 3 mm aluminium (W, z from, z to, relative to enc_z0) with the rail bolts (dz)
@@ -86,7 +96,8 @@ PARAMS = {
     # 8 radiation shield: plate OD, ID, thickness, pitch, count; cap OD and thickness; centre x;
     #   rod diameter and pitch circle radius; spacer OD
     "shield": (120.0, 56.0, 1.5, 13.0, 8), "cap": (124.0, 8.0), "shield_x": 200.0, "rod_d": 5.0,
-    "rod_r": 42.0, "spacer_od": 8.0, "cap_screw_dx": (-30.0, 30.0),
+    #   spacers are printed tubes with a 5.5 mm bore for the rod (drawn solid before; AST-DDR-005 F5)
+    "rod_r": 42.0, "spacer_od": 8.0, "spacer_id": 5.5, "cap_screw_dx": (-30.0, 30.0),
     # 9 temperature and humidity probe: board (x, y, z), tube (dia)
     "th_board": (14.0, 10.0, 4.0), "th_tube": 6.0,
     # 10 cables: diameter, M12 plug (dia x length); probe cable diameter
@@ -268,6 +279,25 @@ def pod_frame(p=PARAMS):
     return b.Pos(p["pod_x"], D["pod_yc"], D["pod_bot"])
 
 
+def probe_lead_points(p=PARAMS):
+    """Route of the probe lead: up out of the probe tube, along the top of the cross arm's flat leg against its
+    upright leg (clear of the cap and pod screw heads), across the arm, down past the pod's right side and into
+    the M8 plug from behind. (It ran over the left cap screw before; AST-DDR-005 F5.)"""
+    D = derived(p)
+    pr = p["probe_cable_d"] / 2
+    at, al = p["arm"][1], p["arm"][0]
+    scx, scy = p["shield_x"], D["sh_yc"]
+    W = p["pod"][0]
+    tube_top = D["arm_z"] + at + 8
+    zt = D["arm_z"] + at + pr
+    y_run = D["rail_front"] - at - pr
+    xg = p["pod_x"] + W / 2 + 9 + 12        # the back of the M8 plug (the plug body is 12 mm long)
+    zg = D["pod_bot"] + 49.0
+    yg = D["pod_yc"] + 10.0
+    return [(scx, scy, tube_top), (scx, scy, tube_top + 6), (scx - 12, y_run, zt), (20.0, y_run, zt),
+            (20.0, D["rail_front"] - al - 6, zt), (20.0, D["rail_front"] - al - 6, zg), (24.0, yg, zg), (xg, yg, zg)]
+
+
 def build_components(p=PARAMS, shield=False):
     """Every component as a Comp, keyed by a short name. shield=True adds FieldNode's hot-site
     sun shield and its thumb screws."""
@@ -395,6 +425,10 @@ def build_components(p=PARAMS, shield=False):
     for sx in (-1, 1):
         for sy in (-1, 1):
             shell += zcyl(sx * bxs, sy * bys, ft + 10, 4.0, 20.0)                 # floor screw bosses
+            # webs that join each boss to the two walls beside it (the bosses only touched the walls
+            # on a line before; AST-DDR-005 F5)
+            shell += bx(sx * bxs, sx * (W / 2 - wt + 0.5), sy * bys - 1.5, sy * bys + 1.5, ft, ft + 20.0)
+            shell += bx(sx * bxs - 1.5, sx * bxs + 1.5, sy * bys, sy * (Dp / 2 - wt + 0.5), ft, ft + 20.0)
             shell -= zcyl(sx * bxs, sy * bys, ft + 5, 2.0, 10.1)                  # M3 insert
     hy = D["arm_y"] - D["pod_yc"]
     for dx in p["pod_hang_dx"]:
@@ -411,8 +445,8 @@ def build_components(p=PARAMS, shield=False):
     afw, aft, afh = p["afe"]
     for sx in (-1, 1):
         for zz in (p["afe_z"] + 6, p["afe_z"] + afh - 6):
-            shell += ycyl(sx * (afw / 2 - 5), Dp / 2 - wt - 2, zz, 3.5, 4.0)
-            shell -= ycyl(sx * (afw / 2 - 5), Dp / 2 - wt - 2, zz, 1.6, 4.1)       # M3 insert
+            shell += ycyl(sx * (afw / 2 - 5), Dp / 2 - wt - 2, zz, 4.0, 4.0)
+            shell -= ycyl(sx * (afw / 2 - 5), Dp / 2 - wt - 2, zz, 2.0, 4.1)       # M3 insert (4.0 mm hole, was 3.2; AST-DDR-005 F5)
     add("pod_shell", "Pod shell", F * shell, 4, "made", "pod")
 
     floor = bx(-W / 2, W / 2, -Dp / 2, Dp / 2, 0, ft)
@@ -500,8 +534,10 @@ def build_components(p=PARAMS, shield=False):
     for x, y in rods_xy:
         for k in range(n - 1):
             z_a_ = D["sh_bot"] + k * pitch + stk / 2
-            sp.append(zcyl(x, y, z_a_ + (pitch - stk) / 2, p["spacer_od"] / 2, pitch - stk))
-        sp.append(zcyl(x, y, (top_plate + cz0) / 2, p["spacer_od"] / 2, cz0 - top_plate))
+            sp.append(zcyl(x, y, z_a_ + (pitch - stk) / 2, p["spacer_od"] / 2, pitch - stk)
+                      - zcyl(x, y, z_a_ + (pitch - stk) / 2, p["spacer_id"] / 2, pitch - stk + 2))
+        sp.append(zcyl(x, y, (top_plate + cz0) / 2, p["spacer_od"] / 2, cz0 - top_plate)
+                  - zcyl(x, y, (top_plate + cz0) / 2, p["spacer_id"] / 2, cz0 - top_plate + 2))
     add("spacers", "Shield spacers (24)", fuse(sp), 8, "made", "shield")
     z_rod0 = D["sh_bot"] - stk / 2 - 8
     z_rod1 = cz0 + ct + 7
@@ -532,9 +568,7 @@ def build_components(p=PARAMS, shield=False):
     yA = D["arm_y"]
     xg = p["pod_x"] + W / 2 + 9 + 12    # the M8 plug body is 12 mm long
     zg = D["pod_bot"] + pgz
-    lead = path_rod([(scx, scy, tube_top), (scx, scy, tube_top + 6), (scx - 30, yA, D["arm_z"] + at + pr),
-                     (20.0, yA, D["arm_z"] + at + pr), (20.0, D["rail_front"] - al - 6, D["arm_z"] + at + pr),
-                     (20.0, D["rail_front"] - al - 6, zg), (xg, D["pod_yc"] + pgy, zg)], pr)
+    lead = path_rod(probe_lead_points(p), pr)
     lead += xcyl(p["pod_x"] + W / 2 + 9 + 6, D["pod_yc"] + pgy, zg, 5.0, 12.0)      # M8 plug
     add("cables", "Sensor cables (2) and probe lead", cab + lead, 10, "bought", "cables")
     return C
@@ -564,6 +598,48 @@ def assembly(p=PARAMS, with_pole=True):
     parts = build_parts(p)
     kids = list(parts.values()) + ([pole_stub(p)] if with_pole else [])
     return b.Compound(children=kids)
+
+
+# ------------------------------------------------------------------ kit 1.9 interface (STANDARDS section 24)
+TITLE = "AirStreet"
+OPTIONS = {"A": "Electrochemical and optical node on FieldNode", "B": "Aspirated, heated-inlet sampling node",
+           "C": "Passive diffusion tubes with a battery PM logger"}
+PRINCIPLES = {
+    "A": "A naturally ventilated pod holds an electrochemical NO2 cell and a laser-scattering PM sensor in street air, "
+         "with T and RH in a passive plate shield; FieldNode's solar core sends raw signals every 5 min for "
+         "calibration by collocation (current design).",
+    "B": "A pump draws street air up a heated inlet into a sealed manifold past the NO2 cell and the PM sensor, so "
+         "humidity is driven down before measuring; a fan-aspirated shield reads T and RH; own 30 W solar supply.",
+    "C": "Triplicate Palmes diffusion tubes absorb NO2 on triethanolamine for a month and are analysed in a lab; a "
+         "battery-powered laser-scattering PM sensor logs to a memory card read at each monthly tube change.",
+}
+CHOSEN = "A"
+OPTION_VIEWS = {k: {"el": 16, "az": -55, "scale": "person", "ground_z": 0, "keep_context": True} for k in OPTIONS}
+# Pairs that share volume on purpose (substring pairs, as cad_check.py reads them): none in any option; every
+# fastener passes through a modelled hole with clearance and every insert fills its printed hole.
+ALLOWED_CONTACTS = []
+_PARTS_CACHE = {}
+
+
+def site_pole(p=PARAMS, z_top=4000.0, z_bot=-300.0):
+    """The street light pole (context, not in the BOM): a 140 mm tube from below the sidewalk to above the node."""
+    import cad_parts as cp
+    b = _b()
+    pole = b.Pos(0, 0, z_bot) * cp.round_tube(p["pole_od"], 4.0, z_top - z_bot)
+    return cp.part("Street light pole, 140 mm (site)", pole, "galvanised", kind="context", group="context")
+
+
+def components(option=CHOSEN):
+    """Kit 1.9: the parts of one concept option (A, B or C) as cad_parts.part() dicts, with the pole as context."""
+    if option not in _PARTS_CACHE:
+        if option == "A":
+            import ast_detail
+            parts = ast_detail.option_a(PARAMS)
+        else:
+            import ast_options
+            parts = {"B": ast_options.option_b, "C": ast_options.option_c}[option](PARAMS)
+        _PARTS_CACHE[option] = parts + [site_pole(PARAMS)]
+    return list(_PARTS_CACHE[option])
 
 
 # ------------------------------------------------------------------ constructability checks
@@ -675,24 +751,23 @@ def print_checks(p=PARAMS):
 
 
 def main():
-    from build123d import Compound, export_step, export_stl
+    """Write the STL files of the chosen option from components(CHOSEN) at a 0.15 mm chord error and print the
+    constructability checks. STEP files (one per made or bought part, and an assembly per option) are written by
+    python .kit/cad_check.py --export (kit 1.9)."""
+    from build123d import Compound, export_stl
     root = Path(__file__).resolve().parents[1]
-    (root / "step").mkdir(exist_ok=True)
     (root / "stl").mkdir(exist_ok=True)
-    C = build_components()
-    head = [c.shape for k, c in C.items() if c.bom in (4, 5, 6, 7, 8, 9, 10) or k in ("pod_screws", "cap_screws", "floor_screws", "afe_standoffs", "tblock", "pod_glands")]
-    mount = [C[k].shape for k in ("rail", "saddle_low", "saddle_up", "bands", "lplate", "uplate", "arm", "saddle_screws", "plate_bolts", "arm_bolts")]
+    parts = [q for q in components(CHOSEN) if q["kind"] != "context"]
     groups = {
-        "airstreet-assembly": [c.shape for c in C.values()] + [pole_stub()],
-        "airstreet-sensor-head": head,
-        "airstreet-mount": mount,
+        "airstreet-assembly": [q["shape"] for q in parts],
+        "airstreet-sensor-head": [q["shape"] for q in parts if q["group"] in ("pod", "shield", "cables")],
+        "airstreet-mount": [q["shape"] for q in parts if q["group"] == "mount"],
     }
     for name, shapes in groups.items():
         comp = Compound(children=shapes)
-        export_step(comp, str(root / "step" / f"{name}.step"))
-        export_stl(comp, str(root / "stl" / f"{name}.stl"), tolerance=0.2, angular_tolerance=0.3)
+        export_stl(comp, str(root / "stl" / f"{name}.stl"), tolerance=0.15, angular_tolerance=0.3)
         bb = comp.bounding_box()
-        print(f"{name}: {bb.size.X:.0f} x {bb.size.Y:.0f} x {bb.size.Z:.0f} mm")
+        print(f"{name}: {len(shapes)} parts, {bb.size.X:.0f} x {bb.size.Y:.0f} x {bb.size.Z:.0f} mm")
     D = derived()
     print(f"inlet plane {PARAMS['inlet_z']:.0f} mm; overall node height {D['overall_h']:.0f} mm; "
           f"whip clearance to the pod lid {D['whip_clear']:.0f} mm; band {D['band_len']:.0f} mm round the 140 mm pole")

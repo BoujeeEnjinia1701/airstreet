@@ -8,7 +8,7 @@ A street-level air quality node measuring PM2.5 and NO2, with particles checked 
 
 ![AirStreet: street-level air quality node for PM2.5 and NO2, product render](media/render-hero.png)
 
-[Exploded render](media/render-exploded.png) · [Detail render](media/render-detail.png) · [Interactive 3D model](media/viewer.html) · [Concept blueprint (PDF)](media/concept-blueprint.pdf) · [General arrangement AST-DWG-001 (PDF)](cad/drawings/AST-DWG-001.pdf) · [Sizing calculations](docs/04-calcs/01-sizing.md) · [Prototype build plan](docs/05-build-plan.md) · [Design decisions](docs/06-design-decisions.md) · [Review note](docs/REVIEW.md)
+[Studio render](media/render-studio.png) · [Detail render](media/render-detail.png) · [Interactive 3D model](media/viewer.html) · [Concept blueprint (PDF)](media/concept-blueprint.pdf) · [General arrangement AST-DWG-001 (PDF)](cad/drawings/AST-DWG-001.pdf) · [STEM check](docs/01b-stem-check.md) · [Concept options](docs/02a-concept-options.md) · [Requirements](docs/03-requirements.md) · [Traceability](docs/03b-traceability.md) · [Sizing calculations](docs/04-calcs/01-sizing.md) · [Prototype build plan](docs/05-build-plan.md) · [Design decisions](docs/06-design-decisions.md) · [Review note](docs/REVIEW.md)
 
 ## Concept rationale
 
@@ -57,9 +57,19 @@ Regulatory air monitors are few and far apart, missing the streets where people 
 
 A street-level air quality node measuring PM2.5 and NO2, with particles checked on CalRig and NO2 calibrated against a reference station, for neighborhood-scale pollution maps. The sensor pod and radiation shield hang below a FieldNode core on a street light pole, with inlets 3.0 m above the sidewalk, and send one record every 5 min over LoRaWAN. PM, temperature and humidity are checked on CalRig; **NO2 is calibrated by field collocation with a reference station** for at least 14 days before deployment and at least every 6 months, because CalRig does not cover NO2.
 
-Calculated performance (TRL 3, [AST-CAL-001](docs/04-calcs/01-sizing.md)): an 87 mW design sensor load with a 60 s particle run, within FieldNode's 100 mW design allowance, and 6.6 days without sun; records every 5 min through a private gateway and every 15 min on The Things Network; 0.60 % radio duty cycle even at SF12; hourly NO2 error of about 3.9 ppb and PM2.5 within ±5 µg/m³ or ±30 % up to 80 % RH. As made buildable for the prototype build plan, and lightened as decided on 2026-10-02 (40 x 4 mm rail, windows in the adapter plates, 1.5 mm shield plates, saddles at 40 % infill), the node weighs 3.62 kg and presents 0.139 m² to the street, and the sensor head costs $302.50 in parts ($433.50 with the FieldNode core). With FieldNode's sun shield the node weighs 3.78 kg, 0.22 kg under the 4.0 kg mass limit Amish set for R13 on 2026-10-02, and cost is $17.50 over the $285 value-engineering target (R15); both are covered in the [design decisions register](docs/06-design-decisions.md); five requirements are at risk. The annual NO2 uncertainty (about 4.2 µg/m³) is too large to resolve the WHO guideline of 10 µg/m³, so AirStreet ranks streets and checks the EU limit, and the WHO question is kept as research. Decisions are recorded in [AST-DDR-001](docs/decisions/0001-trl2-review-decisions.md), [AST-DDR-002](docs/decisions/0002-recommendations-accepted.md) and [AST-DDR-003](docs/decisions/0003-design-for-construction.md). Only pollutant levels, temperature and humidity leave the device; no images or audio.
+Calculated performance (TRL 3, [AST-CAL-001](docs/04-calcs/01-sizing.md)): an 87 mW design sensor load with a 60 s particle run, within FieldNode's 100 mW design allowance, and 6.6 days without sun; records every 5 min through a private gateway and every 15 min on The Things Network; 0.60 % radio duty cycle even at SF12; hourly NO2 error of about 4.3 ppb and PM2.5 within ±5 µg/m³ or ±30 % up to 80 % RH. As made buildable for the prototype build plan, and lightened as decided on 2026-10-02 (40 x 4 mm rail, windows in the adapter plates, 1.5 mm shield plates, saddles at 40 % infill), the node weighs 3.61 kg and presents 0.139 m² to the street, and the sensor head costs $302.50 in parts ($433.50 with the FieldNode core). With FieldNode's sun shield the node weighs 3.77 kg, 0.23 kg under the 4.0 kg mass limit Amish set for R13 on 2026-10-02, and cost is $17.50 over the $285 value-engineering target (R15); both are covered in the [design decisions register](docs/06-design-decisions.md); five requirements are at risk. The annual NO2 uncertainty (about 4.65 µg/m³) is too large to resolve the WHO guideline of 10 µg/m³, so AirStreet ranks streets and checks the EU limit, and the WHO question is kept as research. Decisions are recorded in [AST-DDR-001](docs/decisions/0001-trl2-review-decisions.md), [AST-DDR-002](docs/decisions/0002-recommendations-accepted.md), [AST-DDR-003](docs/decisions/0003-design-for-construction.md), [AST-DDR-004](docs/decisions/0004-concept-selection.md) and [AST-DDR-005](docs/decisions/0005-stem-check-fixes.md). Only pollutant levels, temperature and humidity leave the device; no images or audio.
 
-Full design precis: [docs/02-concept.md](docs/02-concept.md). Requirements: [docs/03-requirements.md](docs/03-requirements.md).
+Full design precis: [docs/02-concept.md](docs/02-concept.md). Requirements: [docs/03a-user-requirements.md](docs/03a-user-requirements.md) (users) and [docs/03-requirements.md](docs/03-requirements.md) (product).
+
+## STEM check
+
+Every physical, chemical and biological claim is checked against known science in [AST-STM-001](docs/01b-stem-check.md), with the numbers rerun from `docs/04-calcs/stem_check.py`. The working principle holds and no row fails outright. Four details were fixed on 2026-10-24 under Amish's standing instruction ([AST-DDR-005](docs/decisions/0005-stem-check-fixes.md)): rated-range flags in every record, a 12-month NO2 cell replacement unless the site's ozone record allows longer, the sensor data sheet's noise in the NO2 budget, and a 0.6 mm band in the model. One row goes to Amish: the NO2 cell is rated to 40 °C and 85 % RH, below the hottest and most humid hours the node will see. An independent reviewer tried to refute every verdict; its corrections raised the hourly NO2 error from 3.9 to 4.3 ppb. The check stays open on twelve plausible rows that need collocation data at TRL 4.
+
+## Concept options
+
+Three working principles were compared at the same detail level ([AST-OPT-001](docs/02a-concept-options.md)): A, the current electrochemical and optical node on FieldNode (221 of 260); C, passive diffusion tubes with a battery PM logger (198); and B, an aspirated, heated-inlet node (188). A is recommended and stays the design of record, proposed, awaiting Amish ([AST-DDR-004](docs/decisions/0004-concept-selection.md)); C's diffusion tubes are proposed as a cheap cross-check of annual NO2 at a few nodes.
+
+![Concept options side by side at one scale](media/options.png)
 
 ## Key components
 
@@ -74,7 +84,7 @@ Full design precis: [docs/02-concept.md](docs/02-concept.md). Requirements: [doc
 9. Temperature and humidity sensor (Sensirion SHT45 class)
 10. Sensor cables with M12 plugs (0.5 m)
 
-The priced bill of materials is in [bom/bom.csv](bom/bom.csv); the parametric model is `cad/src/model.py`, with STEP and STL exports in `cad/step/` and `cad/stl/`.
+The priced bill of materials is in [bom/bom.csv](bom/bom.csv); the parametric model is `cad/src/model.py`, detailed at level D3 with every screw, nut, washer and insert (`cad/fidelity.json`), with one STEP file per made or bought part in `cad/step/A/`, an assembly STEP per option in `cad/step/` and STL in `cad/stl/`.
 
 ## Building the prototype
 
@@ -92,7 +102,7 @@ The [prototype build plan](docs/05-build-plan.md) (AST-BLD-001) shows, in pictur
 
 | Folder | Contents |
 | --- | --- |
-| `docs/` | Problem, concept, requirements, calculations and design decisions |
+| `docs/` | Problem, STEM check, concept and options, user and product requirements, traceability, calculations, build plan, design decisions, regulatory, feasibility, risk, market and plan |
 | `cad/src/` | build123d Python source, the source of truth for all geometry |
 | `cad/step/`, `cad/stl/` | Exported models for FreeCAD, other CAD tools and printing |
 | `cad/drawings/` | 2D sketches and dimensioned drawings |

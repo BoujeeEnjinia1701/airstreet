@@ -5,6 +5,10 @@ repo: BoujeeEnjinia1701/airstreet         # GitHub repository, shown on every dr
 area: Smart Cities
 trl: 3                   # Technology Readiness Level, see .kit/STANDARDS.md section 9
 trl_target: 3
+stage: P3                # pipeline stage, STANDARDS section 19; set at the kit 1.9.1 upgrade 2026-10-24
+stem_check: open         # AST-STM-001: four fixes made under the standing instruction (AST-DDR-005); S33 fix proposed to Amish; twelve rows plausible, to confirm at TRL 4 or in FieldNode
+concept_options: [A, B, C]   # AST-OPT-001; A is the current design
+concept_chosen: A (proposed)  # proposed, awaiting Amish (AST-DDR-004); A stays the design of record
 design_state: constructable   # concept or constructable, see .kit/STANDARDS.md section 18
 trl_evidence:
   - docs/01-problem.md
@@ -15,13 +19,34 @@ trl_evidence:
   - docs/04-calcs/01-sizing.md
   - docs/04-calcs/sizing.py
   - cad/src/model.py
-  - cad/step/airstreet-assembly.step
+  - cad/step/A-assembly.step
+  - cad/step/B-assembly.step
+  - cad/step/C-assembly.step
+  - cad/fidelity.json
   - cad/drawings/AST-DWG-001.svg
   - cad/drawings/AST-DWG-001.pdf
   - bom/bom.csv
   - docs/decisions/0003-design-for-construction.md
   - docs/05-build-plan.md
   - docs/06-design-decisions.md
+  - docs/01b-stem-check.md
+  - docs/04-calcs/stem_check.py
+  - docs/04-calcs/stem_results.csv
+  - docs/02a-concept-options.md
+  - docs/03a-user-requirements.md
+  - docs/03b-traceability.md
+  - docs/07-regulatory.md
+  - docs/08-feasibility.md
+  - docs/09-risk.md
+  - docs/10-market.md
+  - docs/11-plan.md
+  - docs/decisions/0004-concept-selection.md
+  - docs/decisions/0005-stem-check-fixes.md
+  - docs/05-build-plan/overview.png
+  - cad/src/ast_detail.py
+  - cad/src/ast_options.py
+  - cad/src/ast_parts.py
+  - cad/src/product_model.py
 shortlisted: false
 pitch: >-
   A street-level air quality node measuring PM2.5 and NO2, with particles checked on CalRig and NO2 calibrated against a reference station, for neighborhood-scale pollution maps.

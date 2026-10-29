@@ -3,9 +3,9 @@ doc_id: AST-PRB-001
 title: AirStreet problem statement
 project: AirStreet
 doc_type: Problem statement
-version: "0.5"
+version: "0.6"
 status: Draft
-date: '2026-10-02'
+date: '2026-10-24'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -29,6 +29,10 @@ revisions:
   date: '2026-10-02'
   author: Amish Chadha
   change: "First partner rule and first candidate to approach (AST-DEC-001, 2026-10-02)"
+- version: "0.6"
+  date: '2026-10-24'
+  author: Amish Chadha
+  change: "Kit 1.9.1 upgrade: users-and-needs and stakeholder tables (Tables 1 and 2) for the user requirements AST-URS-001; no other change"
 ---
 
 # AirStreet problem statement
@@ -46,6 +50,31 @@ Low-cost sensors could fill the gap between stations, but raw readings are not t
 AirStreet addresses one specific gap: an open, pole-mounted node that measures PM2.5 and NO2 at street level, with a calibration method stated up front, so a city, school or community group can build a neighborhood map that others can check.
 
 ## Users and context
+
+Table 1. Users and needs (kit 1.8). The user requirements in AST-URS-001 are drawn from this table and Table 2.
+
+| User type | Goals and needs | Typical use scenario | Pain points and challenges |
+| --- | --- | --- | --- |
+| Residents and community groups | See PM2.5 and NO2 on their own street, near schools and clinics, and whether it changes | A node on a pole outside a school, read on an open map | Raw low-cost sensor readings are not trusted; no reference station nearby; little money |
+| Municipal environment and transport teams | Rank streets and judge interventions (school streets, bus corridors, freight routes) with a stated uncertainty | 10 to 100 nodes across a district beside at least one reference station | Need data often enough to see rush hours; need to know how good the numbers are; staff time at height is costly |
+| Schools and universities | Teach and research exposure with raw data and a documented method; build and repair the node | A campus node built in a school workshop, data reprocessed by students | Closed products hide their method; commercial nodes are costly to buy and to license |
+| Street furniture owners (utilities, city lighting) | Nothing that harms the pole, its wiring or its inspection; known load | Permission for a device on a light or signal pole | Drilling, added load and wind, access to mains in the pole, insurance |
+| Researchers and data platforms | Raw signals and calibration versions, so data can be reprocessed and compared | Data pulled into an open platform such as OpenAQ | Data without calibration metadata cannot be reused |
+| Installers and service crews | Fit and service quickly and safely from a platform or ladder | A pod exchange every 6 months beside traffic | Work at height next to traffic; small parts dropped from height |
+
+Table 2. Stakeholders.
+
+| Stakeholder group | Role or interest | Engagement needed |
+| --- | --- | --- |
+| Reference station operator (for example the Texas Commission on Environmental Quality) | Hosts the 14-day and 6-monthly NO2 collocation and shares reference data | Agreement for a node beside a regulatory NO2 monitor at a street-level site (AST-DEC-001) |
+| Pole owner (city lighting, utility, traffic department) | Permits the mount, confirms the load and wind on the pole, sets installation rules | Written permission, load check, inspection and insurance terms |
+| City or air agency | Uses the maps; decides whether indicative data inform decisions | Co-design of the questions the network answers; data publication terms |
+| Radio regulator and LoRaWAN network operator | Band rules (EU868 duty cycle, US915 dwell time) and fair use | Choice of band with the partner; private gateway or The Things Network |
+| FieldNode (shared lab core) | Supplies the solar, battery and radio core; owns its mounting interface | Agreement to the adapter plate mount and the always-on 5 V port (AST-DDR-002) |
+| CalRig (lab calibration rig) | Checks temperature, humidity and particle response before deployment | Chamber time for each pod |
+| Open data platforms (for example OpenAQ) | Host calibrated hourly data with the calibration version | Data format and licence |
+
+Table 3. Users and context (TRL 2 summary, kept for the record).
 
 | User | Need | Context |
 | --- | --- | --- |

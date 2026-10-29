@@ -3,9 +3,9 @@ doc_id: AST-DEC-001
 title: AirStreet design decisions register
 project: AirStreet
 doc_type: Design decisions register
-version: "0.4"
+version: "0.5"
 status: Draft
-date: '2026-10-02'
+date: '2026-10-24'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -25,6 +25,10 @@ revisions:
   date: '2026-10-02'
   author: Amish Chadha
   change: "Value engineering restated after the A1 lightening (USD 302.50, USD 17.50 over); actions that carry the 2026-10-02 decisions outside the design listed"
+- version: "0.5"
+  date: '2026-10-24'
+  author: Amish Chadha
+  change: "Kit 1.9.1 upgrade: open decisions 1 to 5 (concept selection, diffusion tube cross-check, flagged hot hours, the 2030 EU limit, PR-017 and PR-018), proposed, awaiting Amish; STEM check fixes F1 to F5 recorded as decided under Amish's standing instruction of 2026-10-23 (AST-DDR-005)"
 ---
 
 # AirStreet design decisions register
@@ -33,7 +37,15 @@ Every design decision still to be made, and every decision made, in one place. E
 
 ## Open decisions
 
-None. All open decisions were decided on 2026-10-02.
+All proposed, awaiting Amish (kit 1.9.1 upgrade, 2026-10-24). Nothing in the design changes until he decides.
+
+| # | To decide | Options | Recommendation | What it affects in the build | Source |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Concept selection | A, the current design (221 of 260); C, diffusion tubes with a battery PM logger (198); B, aspirated heated-inlet node (188) | A, kept as the design of record (no option within 10 %) | Nothing if A; a new design if B or C | AST-DDR-004, AST-OPT-001 |
+| 2 | Graft the runner-up's best idea: triplicate NO2 diffusion tubes at a few nodes as a check of the annual means and the street transfer bias | (a) yes, at the anchor node and one node in five; (b) yes, at every node; (c) no | (a): a printed hood and three tube clips on the cross arm, tubes changed every two to four weeks by the partner; laboratory cost about £8 per tube (2015 price) | Cross arm length and a hood part; a partner task | AST-OPT-001 |
+| 3 | Validity above the sensors' rated range (the NO2 cell is rated to 40 degC and 85 % RH; hot afternoons at a Dallas site and humid nights will be flagged, AST-STM-001 S33) | (a) accept flagged hours (the flags are made under the standing instruction, F2); (b) also seek a NO2 cell rated above 40 degC with the partner; (c) restrict PR-012 and the data claims to 40 degC | (a) now and (b) when the partner is agreed | None for (a); a supplier change for (b) | AST-DDR-005 F2, AST-STM-001 S15 and S33 |
+| 4 | PR-004 target: the recast Directive (EU) 2024/2881 lowers the NO2 annual limit to 20 ug/m3 from 2030 | (a) keep 40 ug/m3; (b) classify against both 40 and 20 ug/m3; (c) 20 ug/m3 only | (b): the same uncertainty gives a band of 13.9 to 26.1 ug/m3 round 20 (at the directive's 20 degC) | Calculation and data products only | AST-REG-001 A2, AST-CAL-001 C |
+| 5 | Text of PR-017 (open and garage buildable) and PR-018 (installation and service safety), added so that UR-014 and UR-015 each have a product requirement | (a) accept as written; (b) amend | (a) | None; both are met by design | AST-PRS-001 |
 
 ## To confirm when parts are bought
 
@@ -46,6 +58,8 @@ None. All open decisions were decided on 2026-10-02.
 | 5 | The M8 4-pin socket's panel hole and the M16 glands' hole size | The pod's printed holes are 8.2 and 16.2 mm | AST-DWG-106 |
 | 6 | FieldNode's enclosure lug kit positions match FieldNode's back plate pattern | The adapter plates copy that pattern | FND-DDR-003 |
 | 7 | The FieldNode panel's frame has a flat back lip at least 12 mm wide | FieldNode's panel clips bolt through it | FND-DDR-003 |
+| 8 | The pull-out strength of the M5 heat-set inserts in printed ASA (at least 200 N assumed in the STEM check) | The pod hangs on two of them | AST-STM-001 S26 |
+| 9 | The insect mesh aperture against the smallest local insects | Insects and spiders in the pod | AST-STM-001 S31 |
 
 ## Value engineering
 
@@ -73,6 +87,11 @@ These follow from decisions already made; none is an open decision.
 
 | Date | Decision | Decided by | Record |
 | --- | --- | --- | --- |
+| 2026-10-24 | F1: NO2 noise per sample taken from the NO2-B43F data sheet (7.5 ppb, 1 sigma), averaged over the 12 independent records of an hour, with a 5 % slope term (the last two after the independent review); hourly total 5.45 ppb, MAE about 4.3 ppb | Decided under Amish's standing instruction of 2026-10-23 ("propose and implement the best fix ... and record it in DEC as decided under that instruction"); reversible by Amish | AST-DDR-005 F1 |
+| 2026-10-24 | F2: rated-range flags in every record (shield air above 35 degC, RH above 80 % for PM or 85 % for NO2 and below 20 % or 15 %, below 10 degC for PM); flagged hours published with the flag | Decided under the standing instruction of 2026-10-23 | AST-DDR-005 F2 |
+| 2026-10-24 | F3: the NO2 cell is replaced every 12 months at the pod exchange, or at 18 or 24 months where the site's ozone record keeps its filter under 500 ppm h | Decided under the standing instruction of 2026-10-23 | AST-DDR-005 F3 |
+| 2026-10-24 | F4: band drawn 12.7 x 0.6 mm and read by the calculation | Decided under the standing instruction of 2026-10-23 | AST-DDR-005 F4 |
+| 2026-10-24 | F5: D3 model fit details (pod boss webs, M3 insert holes in the back wall bosses, hollow shield spacers, probe lead route, M5 x 14 arm screws with washers) | Made under Amish's 2026-09-30 instruction to make the design physically buildable | AST-DDR-005 F5 |
 | 2026-09-25 | TRL 2 review items D1 to D9: budget covers the sensor head only; pitch wording; NO2 collocation plan; NO2-B43F class sensor; ISB class front end bought first; SPS30 class particle sensor; 3.0 m inlets; 5 min records with raw signals; open data | Amish: "i accept all your recommendations, go with them across all repos." | AST-DDR-001, AST-DDR-002 |
 | 2026-09-25 | `budget_usd` $285 for the sensor head; FieldNode back plate left off with the enclosure and bracket on the AirStreet rail; frontal area limit 0.15 m²; R3 (WHO guideline) withdrawn and kept as research; 60 s particle run; 5 min records on a private gateway and 15 min on The Things Network; FieldNode sun shield at sites above 45 °C; pre-collocated pod exchange for service | Amish, same instruction: go with recommendation | AST-DDR-002, N1 to N7 |
 | 2026-10-02 | Design for construction accepted as a whole: the changes P1 to P10 (adapter plates, 140° V-saddles, bands in saddle grooves, cross arm, two-part pod, cable entries, shield spacers and probe tube) and their knock-on changes, as made | Amish: "i approve your recommendations for all 555 open decisions." | AST-DDR-003, Table 1 |

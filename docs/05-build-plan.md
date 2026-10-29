@@ -3,9 +3,9 @@ doc_id: AST-BLD-001
 title: AirStreet prototype build plan
 project: AirStreet
 doc_type: Build plan
-version: "0.3"
+version: "0.4"
 status: Draft
-date: '2026-10-02'
+date: '2026-10-24'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -21,6 +21,10 @@ revisions:
     date: '2026-10-02'
     author: Amish Chadha
     change: "Lightening steps of AST-DDR-003 A1 carried in: 40 x 4 mm rail, windows in the adapter plates, 1.5 mm shield plates and longer spacers, saddles at 40 % infill; mass and cost figures updated; pictures regenerated"
+  - version: "0.4"
+    date: '2026-10-24'
+    author: Amish Chadha
+    change: "Kit 1.9.1 upgrade: fit details of the D3 model (AST-DDR-005 F5): webs on the pod's corner bosses, 8 mm back wall bosses for M3 inserts, screw lengths and washers, the probe lead route; the NO2 cell's replacement rule and the band thickness (F3, F4); pictures regenerated from the D3 model"
 ---
 
 # AirStreet prototype build plan
@@ -54,7 +58,8 @@ The concept showed what the node does; some of its parts could not be made or fi
 | Cable entries | Cables ending on the drip lid | Two glands in the pod roof under FieldNode's ports, and a plug-in socket for the probe lead (Figure 18) | The pod unplugs for exchange |
 | Radiation shield | Plates on rods with nothing between them; no fixing for the cap or the probe | Spacers between the plates, rods through the cap, the cap screwed under the arm, and the probe on a tube through the cap (Figures 15 and 16) | The 13 mm plate spacing holds and the probe hangs in the middle |
 | Rail | 565 mm | 451 mm, ending at the cross arm | Nothing fixed to the part below the arm |
-| Weight | 3.84 kg on the pole, 4.00 kg with FieldNode's sun shield | A 40 x 4 mm rail (was 40 x 5), windows in both adapter plates, 1.5 mm shield plates (was 2 mm) and saddles printed at 40 % infill: 3.62 kg, 3.78 kg with the sun shield (Figures 2, 4, 5 and 14) | The node must stay at or under 4.0 kg on the pole with the sun shield, with some margin |
+| Weight | 3.84 kg on the pole, 4.00 kg with FieldNode's sun shield | A 40 x 4 mm rail (was 40 x 5), windows in both adapter plates, 1.5 mm shield plates (was 2 mm) and saddles printed at 40 % infill: 3.61 kg, 3.77 kg with the sun shield (Figures 2, 4, 5 and 14) | The node must stay at or under 4.0 kg on the pole with the sun shield, with some margin |
+| Fit details (2026-10-24) | Pod corner bosses touching the walls on a line; 7 mm back wall bosses too small for M3 inserts; shield spacers drawn solid; the probe lead over a cap screw; screws 2 mm too short or too long, no washers | Webs from each corner boss to the walls; 8 mm back wall bosses with 4.0 mm insert holes; spacers with a 5.5 mm bore; the lead along the arm's upright leg; M5 x 14 screws for the saddles, plates and arm, washers under every nut and pan head (Figures 11, 15 and 18) | Every part is one printable piece and every fixing fits its hole (AST-DDR-005 F5) |
 
 ## 3. Making the components
 
@@ -106,7 +111,7 @@ Make and check each component before the assembly step that needs it. Sizes are 
 
 *Figure 3a. Seen from above. The pole bears on both faces of the V; the band runs round the pole and through the groove between saddle and rail.*
 
-The back face sits flat on the back of the rail, held by two M5 x 16 countersunk screws from the front of the rail into the inserts. A 140 mm pole touches the V faces 24 mm each side of centre; a 200 mm pole 34 mm out, an 80 mm pole 14 mm out. The pole never touches the bottom of the V or its outer edges.
+The back face sits flat on the back of the rail, held by two M5 x 14 countersunk screws from the front of the rail into the inserts. A 140 mm pole touches the V faces 24 mm each side of centre; a 200 mm pole 34 mm out, an 80 mm pole 14 mm out. The pole never touches the bottom of the V or its outer edges.
 
 **Check before moving on.** Held against a pole or a tube, the saddle must not rock; you should see light at the bottom of the V.
 
@@ -165,7 +170,7 @@ Each plate's back face sits flat on the rail's front face, centred, held by two 
 
 *Figure 9. The upright leg bolts flat to the rail's front; the pod's roof sits flat under the flat leg on two screws put in from above.*
 
-The upright leg sits flat on the front of the rail, its underside flush with the rail's bottom end, held by two M5 x 12 button-head screws from behind the rail with nyloc nuts inside the angle. The flat leg points to the street. The pod's drip lid and the shield cap sit flat against its underside.
+The upright leg sits flat on the front of the rail, its underside flush with the rail's bottom end, held by two M5 x 14 button-head screws from behind the rail with washers and nyloc nuts inside the angle. The flat leg points to the street. The pod's drip lid and the shield cap sit flat against its underside.
 
 **Check before moving on.** With the rail upright, the flat leg is level.
 
@@ -196,9 +201,9 @@ The upright leg sits flat on the front of the rail, its underside flush with the
 **How to make it.**
 
 1. Print it upside down, the drip lid on the bed: outside 170 wide, 110 deep and 92 tall with 3 mm walls and roof, and a drip lid 200 x 140 x 3 that overhangs by 15 all round. The printer bed must take 200 x 140.
-2. Corner bosses: four, 8 mm across and 20 tall, inside the corners at the open edge, 7 in from the sides and ends. Press in M3 heat-set inserts for the floor screws.
+2. Corner bosses: four, 8 mm across and 20 tall, inside the corners at the open edge, 7 in from the sides and ends, each joined to the two walls beside it by a 3 mm web so the shell prints as one piece. Press in M3 heat-set inserts for the floor screws.
 3. Hanging bosses: two, 12 mm across, inside the roof, 50 each side of centre and 15 from the back face. Press M5 heat-set inserts in from the top of the drip lid.
-4. Back wall: four bosses 7 mm across and 4 tall, 76 apart across and 43 apart up, with M3 heat-set inserts, for the front end's standoffs.
+4. Back wall: four bosses 8 mm across and 4 tall, 76 apart across and 43 apart up, with 4.0 mm holes for M3 heat-set inserts, for the front end's standoffs.
 5. Roof gland holes: two 16.2 mm holes, 58 from the back face, 36 and 68 right of the pod's centre, so each sits under one of FieldNode's ports.
 6. Probe socket hole: one 8.2 mm hole in the right wall, 45 from the back face and 46 above the open edge.
 
@@ -229,7 +234,7 @@ The upright leg sits flat on the front of the rail, its underside flush with the
 
 *Figure 13. The pod cut open from front to back. The floor carries both sensors; the front end stays on the back wall.*
 
-The floor sits on the shell's open edge and the corner bosses; the mesh lies under it; four M3 x 8 screws with washers go up through mesh and floor into the corner inserts. The particle sensor clears the front end by 1.5 mm and the NO2 sensor by 4.5 mm.
+The floor sits on the shell's open edge and the corner bosses; the mesh lies under it; four M3 x 8 pan-head screws with washers go up through mesh and floor into the corner inserts. The particle sensor clears the front end by 1.5 mm and the NO2 sensor by 4.5 mm.
 
 **Check before moving on.** Both sensors drop into the floor without force and sit square; the floor lies flat.
 
@@ -273,7 +278,7 @@ The floor sits on the shell's open edge and the corner bosses; the mesh lies und
 
 *Figure 16. The stack cut open: plates on three rods with spacers between them, the cap on top, and the probe hanging in the middle on its tube.*
 
-The rods go up through the plates, spacers and cap, with an acorn nut under the bottom plate and a nyloc nut on top of the cap. The cap screws up under the cross arm with two M5 x 10 pan-head screws from above. The tube goes up through the cap's centre hole and the arm's grommet; a bead of silicone holds it in the cap. The probe board then hangs 57 mm below the cap, 19 mm clear of every plate.
+The rods go up through the plates, spacers and cap, with a washer and nut (an acorn nut is neater) under the bottom plate and a washer and nyloc nut on top of the cap. The cap screws up under the cross arm with two M5 x 10 pan-head screws and washers from above. The tube goes up through the cap's centre hole and the arm's grommet; a bead of silicone holds it in the cap. The probe board then hangs 57 mm below the cap, 19 mm clear of every plate.
 
 **Check before moving on.** Plates parallel and 13 mm apart; the probe board does not touch any plate.
 
@@ -303,15 +308,15 @@ Before step 8, take the shorting spring off the NO2 sensor's pins only when you 
 
 Buy to specification, not brand. Line numbers are those of the bill of materials.
 
-- **Band clamps (line 3).** 12.7 mm (half inch) stainless worm-drive band from a roll, with two separate worm-drive housings. Each band is about 0.6 m including its tail for poles up to 200 mm; 487 mm goes round a 140 mm pole and saddle.
+- **Band clamps (line 3).** 12.7 x 0.6 mm (half inch) stainless worm-drive band from a roll, with two separate worm-drive housings; ask the maker for the band's rated tension and the screw torque that gives about 1,000 N. Each band is about 0.6 m including its tail for poles up to 200 mm; 487 mm goes round a 140 mm pole and saddle.
 - **Aluminium (line 3).** Flat bar 40 x 4 mm, 451 mm; sheet 3 mm, 180 x 185 mm; equal angle 30 x 30 x 3 mm, 415 mm.
 - **Particle sensor (line 5).** Sensirion SPS30 class, 41 x 41 x 12 mm, 5 V, two-wire (I2C) interface, with its interface cable.
-- **NO2 sensor (line 6).** Four-electrode B4 class with an ozone filter (Alphasense NO2-B43F class), with its shorting spring.
+- **NO2 sensor (line 6).** Four-electrode B4 class with an ozone filter (Alphasense NO2-B43F class), with its shorting spring. Mark the date it is fitted on the pod: it is changed on the bench at the pod exchange every 12 months, or after 18 or 24 months where the site's ozone record keeps its filter under 500 ppm h.
 - **NO2 front end (line 7).** Four-electrode potentiostat board for B4 sensors (Alphasense ISB class) with a 16-bit ADC on a two-wire bus; the model assumes it is 86 x 55 mm with mounting holes 76 x 43 mm apart.
 - **Temperature and humidity probe (line 9).** Sensirion SHT45 on a small breakout board, two-wire bus, 3.3 to 5 V.
 - **Sensor cables (line 10).** Two 0.5 m shielded cables with an M12 5-pin A-coded plug; 0.5 m of 4-core shielded probe lead with an M8 4-pin plug.
 - **Pod parts (lines 4 and 11).** Stainless insect mesh; two M16 cable glands for 4 to 8 mm cable; an M8 4-pin panel socket; a small 4-way terminal block; a desiccant sachet.
-- **Fixings (line 11).** Stainless: 4 x M5 x 16 countersunk screws (saddles); 4 x M5 x 16 countersunk screws with nyloc nuts (adapter plates); 2 x M5 x 12 button-head screws with nyloc nuts (cross arm); 4 x M5 x 10 pan-head screws (pod and cap); 3 x M5 x 125 rods with 3 acorn and 3 nyloc nuts; 8 x M5 and 8 x M3 brass heat-set inserts; 4 x M3 x 8 screws with washers; 4 x M3 x 6 standoffs; an 8 mm grommet; cable ties.
+- **Fixings (line 11).** Stainless: 4 x M5 x 14 countersunk screws (saddles); 4 x M5 x 14 countersunk screws with nyloc nuts (adapter plates); 2 x M5 x 14 button-head screws with washers and nyloc nuts (cross arm); 2 x M5 x 12 and 2 x M5 x 10 pan-head screws with washers (pod and cap); 3 x M5 x 125 rods with 6 nuts (acorn nuts below are neater) and 6 washers; 8 x M5 and 8 x M3 brass heat-set inserts; 4 x M3 x 8 pan-head screws with washers; 4 x M3 x 6 male-female standoffs with 4 x M3 x 5 screws; an 8 mm grommet; cable ties.
 - **FieldNode core (lines 1 and 2).** As FieldNode's bill of materials, without its pole mounting kit.
 
 ## 4. Putting it together
@@ -322,7 +327,7 @@ In each picture the parts already fitted are grey and the parts being fitted are
 
 ![Step 1](05-build-plan/step-01.png)
 
-Seen from behind. Each saddle's flat back on the back of the rail, its band groove across the rail; two M5 x 16 countersunk screws from the front of the rail into its inserts, snug. Do not overtighten: the inserts are in plastic.
+Seen from behind. Each saddle's flat back on the back of the rail, its band groove across the rail; two M5 x 14 countersunk screws from the front of the rail into its inserts, snug. Do not overtighten: the inserts are in plastic.
 
 ### Step 2: adapter plates onto the rail
 
@@ -334,7 +339,7 @@ Each plate centred on the rail's front face; two M5 x 16 countersunk screws from
 
 ![Step 3](05-build-plan/step-03.png)
 
-Upright leg flat on the rail's front face, its underside flush with the rail's bottom end, flat leg pointing to the street. Two M5 x 12 button-head screws from behind the rail, nyloc nuts inside the angle, tight.
+Upright leg flat on the rail's front face, its underside flush with the rail's bottom end, flat leg pointing to the street. Two M5 x 14 button-head screws from behind the rail, washers and nyloc nuts inside the angle, tight.
 
 ### Step 4: FieldNode enclosure onto the adapter plates
 
@@ -382,7 +387,7 @@ Wire the sensors to the front end and the terminal block as section 3.10, steps 
 
 ![Step 11](05-build-plan/step-11.png)
 
-Lift the pod under the arm's left end, its back face against the rail, and fit two M5 x 10 pan-head screws down through the arm into the inserts in its roof, snug.
+Lift the pod under the arm's left end, its back face against the rail, and fit two M5 x 12 pan-head screws with washers down through the arm into the inserts in its roof, snug.
 
 ### Step 12: build the radiation shield
 
@@ -394,7 +399,7 @@ Work with the cap upside down (the picture shows it upright). Push the three rod
 
 ![Step 13](05-build-plan/step-13.png)
 
-Feed the probe lead and tube up through the arm's grommet, lift the cap flat under the arm's right end, and fit two M5 x 10 pan-head screws down through the arm into the cap's inserts. Seal the tube in the cap with a bead of silicone.
+Feed the probe lead and tube up through the arm's grommet, lift the cap flat under the arm's right end, and fit two M5 x 10 pan-head screws with washers down through the arm into the cap's inserts. Seal the tube in the cap with a bead of silicone.
 
 ### Step 14: cables
 
@@ -431,7 +436,7 @@ These are the checks a TRL 4 test report would record; this plan only lists them
 | Pole range | R11 | Seat the mount on 80, 140 and 200 mm tubes | Both saddles touch the tube on both V faces; each band closes with adjustment to spare |
 | Band torque | R11, R13 | Torque screwdriver on each band housing | The maker's torque is reached with no band slip; value recorded |
 | Inlet height | R11 | Measure from the mesh to the pole's ground mark on the stub | The mesh is level and the inlet plane can be set 3.0 m above the sidewalk |
-| Mass | R13 | Weigh the node off the pole, with and without FieldNode's sun shield | Recorded; the estimate is 3.62 kg without the shield and 3.78 kg with it, against 4.0 kg with it |
+| Mass | R13 | Weigh the node off the pole, with and without FieldNode's sun shield | Recorded; the estimate is 3.61 kg without the shield and 3.77 kg with it, against 4.0 kg with it |
 | Port supplies | R9 | Bench supply in place of the cell as FieldNode's plan; measure 5 V at each M12 plug with the pod unplugged | Port A switches on and off from the controller; port B stays on |
 | Sensor current | R9 | Pod plugged in; measure each port's current over a particle run | Port A about 55 mA while the particle sensor runs; port B a few milliamps, continuously |
 | Readings arrive | R7, R8 | Read every sensor over its bus from the controller | Particle, NO2 working and auxiliary, temperature and humidity values all arrive |
@@ -449,11 +454,11 @@ Stop at each point. Carry on only when everything listed is true.
 - **S3. Before the NO2 sensor's shorting spring comes off.** The front end is wired and ready to power; the sensor is undamaged with no electrolyte on its pins. Wash hands after handling a damaged sensor and dispose of it as its maker directs.
 - **S4. Before the radio transmits.** The antenna is connected and matches the pilot region's band.
 - **S5. Before the node goes on the pole stub.** Every bolt tight with nyloc nuts where shown, the panel glass whole, sharp edges and band tails deburred. The stub is clamped to a bench or stand that cannot tip under about 4 kg.
-- **S6. Before any installation on a street pole (outside this plan).** The pole owner's written permission; a trained crew with a mobile elevating work platform or a secured ladder and a second person; traffic management as local rules require; the pole owner has confirmed the pole can carry about 125 N of wind load 3.3 m up, and a load on the pole of 4.0 kg. Never open the pole's access door or touch its wiring: street light poles carry mains voltage.
+- **S6. Before any installation on a street pole (outside this plan).** The pole owner's written permission; a trained crew with a mobile elevating work platform or a secured ladder and a second person; traffic management as local rules require; the pole owner has confirmed the pole can carry about 125 N of wind load 3.3 m up, and a load on the pole of 4.0 kg. Never open the pole's access door or touch its wiring: street light poles carry mains voltage. These are the conditions of PR-018.
 
 ## 7. Tools, skills and workspace
 
-**Tools.** Hacksaw with a 24 teeth per inch blade (or a bandsaw); bench vice with soft jaws; bench drill or a drill in a stand; drills 2.5 to 16.2 mm and a step drill; countersink; M4 tap and tap drill; flat and half-round files; deburring tool; scriber, engineer's square, steel rule and calipers; 3D printer with an enclosure that prints ASA on a bed of at least 200 x 140 mm; soldering iron with a heat-set insert tip; band cutter or tin snips; screwdrivers and hex keys; torque screwdriver covering about 1 to 6 N·m; digital angle finder; ferrule crimper and wire strippers; multimeter; bench power supply with an adjustable current limit; scale to 5 kg; stopwatch. FieldNode's build plan lists the tools for the core.
+**Tools.** Hacksaw with a 24 teeth per inch blade (or a bandsaw); bench vice with soft jaws; bench drill or a drill in a stand; drills 2.5 to 16.2 mm and a step drill; countersink; M4 tap and tap drill; flat and half-round files; deburring tool; scriber, engineer's square, steel rule and calipers; 3D printer with an enclosure that prints ASA on a bed of at least 200 x 140 mm; soldering iron with a heat-set insert tip; band cutter or tin snips; screwdrivers and hex keys; torque screwdriver covering about 1 to 6 N·m; digital angle finder; ferrule crimper and wire strippers; multimeter; bench power supply with an adjustable current limit; scale to 5 kg; stopwatch. FieldNode's build plan lists the tools for the core. Every made part is printed, sawn, drilled or tapped with these tools, and every bought part is specified by class, not brand (PR-017).
 
 **Skills.** No certified trade is needed. Basic metalwork (marking out, sawing, drilling, countersinking, tapping), 3D printing in ASA, setting heat-set inserts, through-hole soldering and crimping, and care with lithium cells and gas sensors. All circuits are extra-low voltage: 5 V at the sensors and under about 15 V anywhere in the core.
 
@@ -463,11 +468,11 @@ Stop at each point. Carry on only when everything listed is true.
 
 ## 8. Where the numbers come from
 
-- Model and constructability checks: `cad/src/model.py` (`python cad/src/model.py --check`, 77 checks), using FieldNode's model vendored as `cad/src/fieldnode_core.py`; STEP and STL exports in `cad/step/` and `cad/stl/`.
+- Model and constructability checks: `cad/src/model.py` (`python cad/src/model.py --check`, 77 checks), using FieldNode's model vendored as `cad/src/fieldnode_core.py`; the detailed parts in `cad/src/ast_detail.py` and `cad/src/ast_parts.py`, checked by `python .kit/cad_check.py --export` (`cad/fidelity.json`); STEP files in `cad/step/A/` (one per made or bought part) and `cad/step/A-assembly.step`; STL in `cad/stl/`.
 - Pictures: `cad/src/build_plan_media.py`, using `.kit/build_views.py`; written to `docs/05-build-plan/` and `cad/drawings/AST-DWG-101` to `AST-DWG-109`.
 - General arrangement: `cad/drawings/AST-DWG-001.pdf`, Rev P5.
-- Calculations: `docs/04-calcs/01-sizing.md` (AST-CAL-001 v0.6) and `docs/04-calcs/sizing.py`: mass [F4], [F5], [F8], band lengths [F7], mounting loads [G2] to [G7], service time [H1].
+- Calculations: `docs/04-calcs/01-sizing.md` (AST-CAL-001 v0.7) and `docs/04-calcs/sizing.py`: mass [F4], [F5], [F8], band lengths [F7], mounting loads [G2] to [G8], service time [H1], NO2 cell replacement [C7]; STEM check `docs/01b-stem-check.md` (AST-STM-001).
 - Bill of materials: `bom/bom.csv`.
-- Decisions: `docs/decisions/0003-design-for-construction.md` (AST-DDR-003), with AST-DDR-001 and AST-DDR-002; the design decisions register `docs/06-design-decisions.md` (AST-DEC-001).
-- Requirements: `docs/03-requirements.md` (AST-REQ-001 v0.8).
+- Decisions: `docs/decisions/0003-design-for-construction.md` (AST-DDR-003) and `docs/decisions/0005-stem-check-fixes.md` (AST-DDR-005), with AST-DDR-001 and AST-DDR-002; the design decisions register `docs/06-design-decisions.md` (AST-DEC-001).
+- Requirements: `docs/03-requirements.md` (AST-PRS-001 v0.9, which replaced AST-REQ-001; the R numbers used in this plan are its "Was" column).
 - FieldNode core: FieldNode's build plan FND-BLD-001 and calculation note FND-CAL-001 v0.3, in the fieldnode repository.

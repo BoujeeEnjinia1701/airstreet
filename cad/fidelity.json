@@ -1,0 +1,47 @@
+{
+ "level": "D3",
+ "stage": "P3",
+ "hash": "6c8c3fd9602d8dcd",
+ "options": {
+  "A": {
+   "title": "Electrochemical and optical node on FieldNode",
+   "parts": 195,
+   "made_or_bought": 92,
+   "fasteners": 103,
+   "welds": 0,
+   "bare": [],
+   "bare_share": 0.0,
+   "interference": [],
+   "mass_kg": 3.3,
+   "step_files": 92
+  },
+  "B": {
+   "title": "Aspirated, heated-inlet sampling node",
+   "parts": 148,
+   "made_or_bought": 44,
+   "fasteners": 104,
+   "welds": 0,
+   "bare": [],
+   "bare_share": 0.0,
+   "interference": [],
+   "mass_kg": 5.9,
+   "step_files": 0
+  },
+  "C": {
+   "title": "Passive diffusion tubes with a battery PM logger",
+   "parts": 78,
+   "made_or_bought": 29,
+   "fasteners": 49,
+   "welds": 0,
+   "bare": [],
+   "bare_share": 0.0,
+   "interference": [],
+   "mass_kg": 1.5,
+   "step_files": 0
+  }
+ },
+ "failures": [],
+ "warnings": [],
+ "passed": true,
+ "seconds": 42.9
+}

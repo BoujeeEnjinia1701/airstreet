@@ -1,4 +1,5 @@
-"""AirStreet sizing calculations, AST-CAL-001 v0.6 (TRL 3, constructable design of AST-DDR-003, lightened).
+"""AirStreet sizing calculations, AST-CAL-001 v0.7 (TRL 3, constructable design of AST-DDR-003, lightened;
+STEM check fixes of AST-DDR-005, 2026-10-24).
 
 Run from the repo root:  python docs/04-calcs/sizing.py
 Prints every number quoted in docs/04-calcs/01-sizing.md. Each line carries a tag such as
@@ -27,7 +28,7 @@ def tag(t, text):
     print(f"[{t}] {text}")
 
 
-print("AirStreet sizing, AST-CAL-001 v0.6")
+print("AirStreet sizing, AST-CAL-001 v0.7")
 
 # ------------------------------------------------------------------ assumptions
 # Sensors (SPS30 values from the Sensirion SPS30 datasheet, 07/2023; others assumed)
@@ -86,7 +87,7 @@ e_day = p_design / 1e3 * 24 / ETA_RAIL + e_core
 tag("A4", f"Core at a 5 min interval: {e_rep * 1e3:.1f} mJ per uplink at SF9, {e_core * 1e3:.1f} mWh/day with sensor wake-ups and sleep (FieldNode alone at 15 min: 4.0 mWh/day)")
 tag("A5", f"Daily draw from the cell at the design load: {e_day:.2f} Wh/day ({e_day / 24 * 1e3:.1f} mW average)")
 aut = E_USABLE / e_day
-tag("A6", f"Autonomy without sun: {aut:.1f} days; {aut * COLD:.1f} days at -20 degC; {aut * EOL:.1f} days at end of cell life (R9 context; FND R6 asks 5 days)")
+tag("A6", f"Autonomy without sun: {aut:.1f} days; {aut * COLD:.1f} days at -20 degC; {aut * EOL:.1f} days at end of cell life; {aut * COLD * EOL:.1f} days cold at end of life (R9 context; FND R6 asks 5 days)")
 tag("A7", f"Worst month: {E_STORED_WORST:.2f} Wh stored against {e_day:.2f} Wh drawn, ratio {E_STORED_WORST / e_day:.1f}")
 deficit = e_day - E_STORED_HOT
 tag("A8", f"Hot clear day without the FieldNode sun shield: {E_STORED_HOT:.1f} Wh stored, deficit {deficit:.2f} Wh/day; a full cell covers {E_USABLE / deficit:.0f} such days in a row")
@@ -110,6 +111,10 @@ tag("B5", f"US915 400 ms dwell limit: SF9 {t_air[9] * 1e3:.0f} ms passes, SF10 {
 store = payload * recs * 7 / 1e3
 tag("B6", f"7 days of store and forward: {store:.1f} kB against 16 MB FieldNode flash")
 tag("B7", "Hourly mean ready when the last record of the hour arrives: within one record interval (5 min) plus server time")
+backlog = 7 * recs
+t_flush = backlog * t_air[9] / 0.01 / 3600
+tag("B9", f"Backlog: 7 days are {backlog:.0f} records; sending them at SF9 within the 1 % EU868 duty cycle (alongside live records) takes about {t_flush:.0f} h through a private gateway; "
+          f"on The Things Network a backlog cannot be flushed inside 30 s a day, so store and forward relies on the private gateway; each 15 min TTN uplink carries the mean of its three 5 min records")
 OUT["R8"] = (f"5 min records (15 min on TTN, fair use met up to SF{max(ttn_ok)}); hourly mean within one interval; 7 days = {store:.1f} kB of 16 MB",
              "5 min on a private gateway, 15 min on TTN; hourly within 15 min; 7 days", "Met on paper")
 OUT["R10"] = (f"{t_air[9] / T_REC * 100:.3f} % at SF9, {t_air[12] / T_REC * 100:.2f} % at SF12", "Below 1 % per EU868 sub-band", "Met on paper")
@@ -119,27 +124,49 @@ UG = 46.0055 / 24.465                 # ug/m3 per ppb at 25 degC, 101.325 kPa
 GAIN = 0.25                           # mV per ppb, sensor about 300 nA/ppm and 0.8 mV/nA front end (assumed)
 LSB = 2048.0 / 32768                  # mV, ADS1115 at +/-2.048 V
 tag("C1", f"1 ppb = {UG:.3f} ug/m3; ADC step {LSB * 1e3:.1f} uV = {LSB / GAIN:.2f} ppb at an assumed {GAIN} mV/ppb")
-s_noise1 = 5.0                        # ppb 1-sigma per 1 s sample (assumed)
-n_hour = 10 * 12                      # 10 samples per record, 12 records per hour
+s_noise1 = 7.5                        # ppb 1-sigma per 1 s sample: NO2-B43F datasheet noise 15 ppb at 2 sigma (AST-DDR-005 F1; was 5.0 assumed)
+# The 10 samples of one record fall within the cell's response time (T90 under 80 s, datasheet), so they are
+# not independent: only the 12 records of an hour average the noise (independent review, 2026-10-24). On The
+# Things Network each 15 min uplink carries the mean of its three 5 min records, so the hourly count is the same.
+n_hour = 12                           # independent values per hour (was 10 x 12 = 120 before the review)
 s_noise = s_noise1 / math.sqrt(n_hour)
+NO2_STREET = 20.0                     # ppb, typical street annual mean for the slope term (assumed)
+SLOPE_ERR = 0.05                      # 5 % span (slope) error left after a 14-day collocation (assumed; review)
 s_cal = 3.5 / 0.798                   # ppb: MAE 3.5 ppb (Zimmerman et al., 2018) as a normal sigma
 drift_rate, anchor = 0.5, 0.5         # ppb per month zero drift (assumed); anchor node removes half (assumed)
 drift_res = drift_rate * 6 * (1 - anchor)
 s_drift = drift_res / math.sqrt(3)    # uniform ramp over the 6-month collocation interval
 s_transfer = 2.0                      # ppb bias moving from the reference site to a street (assumed)
-s_hour = math.sqrt(s_noise ** 2 + s_cal ** 2 + s_drift ** 2 + s_transfer ** 2)
+s_slope = SLOPE_ERR * NO2_STREET
+s_hour = math.sqrt(s_noise ** 2 + s_cal ** 2 + s_drift ** 2 + s_transfer ** 2 + s_slope ** 2)
 mae = 0.798 * s_hour
-tag("C2", f"Hourly terms (1 sigma, ppb): noise {s_noise:.2f}, calibration residual {s_cal:.2f}, drift {s_drift:.2f}, transfer {s_transfer:.2f}; total {s_hour:.2f} ppb")
+tag("C2", f"Hourly terms (1 sigma, ppb): noise {s_noise:.2f} ({s_noise1:g} ppb over {n_hour} independent records), calibration residual {s_cal:.2f}, drift {s_drift:.2f}, "
+          f"transfer {s_transfer:.2f}, slope {s_slope:.2f} ({SLOPE_ERR * 100:.0f} % at {NO2_STREET:.0f} ppb); total {s_hour:.2f} ppb")
 tag("C3", f"Hourly mean absolute error {mae:.1f} ppb ({mae * UG:.1f} ug/m3) against 5 ppb (R2)")
 n_eff_col = 14 * 24 / 6               # effective independent hours in a 14-day collocation (6 h correlation, assumed)
 s_int = s_cal / math.sqrt(n_eff_col)
 s_rand_yr = s_cal / math.sqrt(8760 / 6)
-s_year = math.sqrt(s_transfer ** 2 + s_drift ** 2 + s_int ** 2 + s_rand_yr ** 2)
-tag("C4", f"Annual mean (1 sigma): transfer {s_transfer:.2f}, drift {s_drift:.2f}, intercept {s_int:.2f}, random {s_rand_yr:.2f}; total {s_year:.2f} ppb = {s_year * UG:.2f} ug/m3 against 2 ug/m3 (R3)")
-band = 1.2816 * s_year * UG
-tag("C5", f"90 % one-sided classification against 40 ug/m3: decisive below {40 - band:.1f} or above {40 + band:.1f} ug/m3; streets in between cannot be classified (R4)")
-tag("C6", f"Transfer bias needed for R3 at 2 ug/m3 with the other terms unchanged: {math.sqrt(max((2 / UG) ** 2 - s_drift ** 2 - s_int ** 2 - s_rand_yr ** 2, 0)):.2f} ppb")
-OUT["R2"] = (f"Hourly MAE about {mae:.1f} ppb (budget of assumed terms)", "5 ppb or less hourly MAE, 0 to 200 ppb", "At risk")
+s_year = math.sqrt(s_transfer ** 2 + s_drift ** 2 + s_int ** 2 + s_rand_yr ** 2 + s_slope ** 2)
+tag("C4", f"Annual mean (1 sigma): transfer {s_transfer:.2f}, drift {s_drift:.2f}, intercept {s_int:.2f}, random {s_rand_yr:.2f}, slope {s_slope:.2f}; "
+          f"total {s_year:.2f} ppb = {s_year * UG:.2f} ug/m3 against 2 ug/m3 (R3)")
+UG20 = 46.0055 / 24.055               # ug/m3 per ppb at 20 degC, 101.3 kPa: the EU directive's reference for gases (review)
+band = 1.2816 * s_year * UG20
+tag("C5", f"90 % one-sided classification against 40 ug/m3 (EU reference 20 degC, 1 ppb = {UG20:.3f} ug/m3): decisive below {40 - band:.1f} or above {40 + band:.1f} ug/m3; "
+          f"against the 2030 limit of 20 ug/m3: below {20 - band:.1f} or above {20 + band:.1f}; streets in between cannot be classified (R4)")
+_c6 = (2 / UG) ** 2 - s_drift ** 2 - s_int ** 2 - s_rand_yr ** 2 - s_slope ** 2
+tag("C6", "Transfer bias needed for R3 at 2 ug/m3 with the other terms unchanged: "
+          + (f"{math.sqrt(_c6):.2f} ppb" if _c6 > 0 else "none would do: the drift, intercept and slope terms alone exceed 2 ug/m3"))
+s_year3 = math.sqrt(3.0 ** 2 + s_drift ** 2 + s_int ** 2 + s_rand_yr ** 2 + s_slope ** 2)
+tag("C8", f"Sensitivity: with a 3 ppb street transfer bias (a 5 to 10 % height gradient from 1.5 to 3 m, review) the annual total is {s_year3:.2f} ppb and "
+          f"the 40 ug/m3 band {40 - 1.2816 * s_year3 * UG20:.1f} to {40 + 1.2816 * s_year3 * UG20:.1f} ug/m3")
+# Ozone filter (NO2-B43F datasheet: capacity more than 500 ppm h at 0.5 ppm O3) against the street ozone dose (AST-DDR-005 F3)
+O3_CAP = 500.0                        # ppm h, datasheet minimum
+O3_MEAN = (0.030, 0.040, 0.050, 0.060)  # ppm, annual mean ozone: typical city, high, and hot sunny sites (estimates; review)
+o3_life = [O3_CAP / (c * 8760) * 12 for c in O3_MEAN]   # months
+tag("C7", "Ozone filter: " + f"{O3_CAP:.0f} ppm h lasts " + ", ".join(f"{m:.0f} months at {c * 1e3:.0f} ppb" for m, c in zip(o3_life, O3_MEAN))
+    + " mean ozone, against the 24-month sensor life (datasheet, to 50 % signal); replace the sensor every 12 months at the pod exchange, "
+      "or at 18 or 24 months where the collocated station's ozone record shows the dose since fitting stays under 500 ppm h by then")
+OUT["R2"] = (f"Hourly MAE about {mae:.1f} ppb (budget of literature and assumed terms)", "5 ppb or less hourly MAE, 0 to 200 ppb", "At risk")
 OUT["R3"] = (f"Annual uncertainty {s_year * UG:.1f} ug/m3 (1 sigma); kept as a research question", "Withdrawn as a requirement (DDR-002)", "Withdrawn")
 OUT["R4"] = (f"Decisive outside {40 - band:.1f} to {40 + band:.1f} ug/m3", "Classify vs 40 ug/m3 with 90 % confidence", "At risk")
 
@@ -171,6 +198,20 @@ for frac in (0.3, 0.1):
     tag("D1", f"Inner air speed {frac * 100:.0f} % of 1 m/s wind: probe h {h_c:.0f} W/m2K, radiant error {e_rad:.2f} K, air heating {e_air:.2f} K, total {e_rad + e_air:.2f} K")
 tag("D2", f"Cap {dT_cap:.1f} K and bottom plate {dT_bot:.1f} K above ambient in 1000 W/m2 sun; mean radiant excess seen by the probe {dT_rad:.2f} K")
 err_hi = shield_res[0.1][3]
+
+
+def shield_err(frac):
+    v = 1.0 * frac
+    h_c = 0.683 * (v * d_probe / nu) ** 0.466 * pr ** (1 / 3) * k_air / d_probe
+    return h_r / (h_r + h_c) * dT_rad + (ALPHA * G * a_cap / 2 + 0.3) / (1.2 * 1005 * gap_area * v)
+
+
+lo_f, hi_f = 0.01, 0.3
+for _ in range(60):
+    mid = (lo_f + hi_f) / 2
+    lo_f, hi_f = (mid, hi_f) if shield_err(mid) > 1.0 else (lo_f, mid)
+tag("D4", f"The shield keeps within 1 K at 1 m/s only while the air inside moves at {hi_f * 100:.1f} % of the wind or more; in calm sun (below about "
+          f"{hi_f * 1.0 / 0.3:.2f} m/s wind at the 30 % case) the error passes 1 K, so the result is fragile and is checked against an aspirated reference at TRL 4")
 
 
 def rh_after_warming(rh, t, dt):
@@ -247,7 +288,7 @@ RHO = {"asa": 1.07e-6, "al": 2.70e-6, "ss": 7.90e-6}   # kg/mm3
 C = build_components(P)
 vol = lambda *ks: sum(C[k].shape.volume for k in ks)  # noqa: E731
 W, Dp, H = P["pod"]
-band_m = 2 * (D["band_len"] * P["band"][0] * 0.6 * RHO["ss"] + 0.020)     # 0.6 mm band, about 20 g housing each
+band_m = 2 * (D["band_len"] * P["band"][0] * P["band"][1] * RHO["ss"] + 0.020)     # band thickness from the model (0.6 mm, AST-DDR-005 F4), about 20 g housing each
 # saddles printed with a 6-wall perimeter shell and 40 % infill (AST-DDR-003 A1): shell volume from the surface area
 sh_t, infill = P["saddle_fill"]
 sad_v = vol("saddle_low", "saddle_up")
@@ -302,7 +343,8 @@ V_W, RHO_AIR, CD = 35.0, 1.225, 1.2
 q = 0.5 * RHO_AIR * V_W ** 2
 f_wind = q * CD * max(a_front, a_side)
 z_c = (D["overall_h"] / 2 + P["inlet_z"] - 20.0) / 1e3
-tag("G1", f"35 m/s gust: q {q:.0f} Pa; wind force {f_wind:.0f} N at about {z_c:.2f} m; moment at the pole base {f_wind * z_c:.0f} N m (pole check is the owner's)")
+tag("G1", f"35 m/s gust: q {q:.0f} Pa; wind force {f_wind:.0f} N at about {z_c:.2f} m; moment at the pole base {f_wind * z_c:.0f} N m (pole check is the owner's); "
+          f"at 45 m/s, for windier codes, {f_wind * (45 / 35) ** 2:.0f} N and {f_wind * (45 / 35) ** 2 * z_c:.0f} N m")
 T_BAND, MU = 1000.0, 0.3              # N preload per band (as FND-CAL-001), friction on painted steel (assumed)
 slip_cap = 2 * MU * math.pi * T_BAND
 f_down = m_tot * 9.81 + q * CD * P["panel"][0] * P["panel"][1] / 1e6 * math.cos(math.radians(P["tilt"]))
@@ -319,7 +361,7 @@ mh = f_sh * lev_sh
 sig = mv * 1e3 / Zv + mh * 1e3 / Zh
 tag("G3", f"Cross arm (30 x 30 x 3 angle): shield {m_sh_kg:.2f} kg and {f_sh:.1f} N wind at {lev_sh * 1e3:.0f} mm, pod {m_pod_kg:.2f} kg at {lev_pod * 1e3:.0f} mm; "
           f"{mv:.2f} N m vertical and {mh:.2f} N m horizontal at the rail; combined stress {sig:.1f} MPa (6063 yield about 150 MPa)")
-f_bolt = mh / (abs(P["arm_bolt_x"][1] - P["arm_bolt_x"][0]) / 1e3) / 2 + f_sh / 2
+f_bolt = mh / (abs(P["arm_bolt_x"][1] - P["arm_bolt_x"][0]) / 1e3) + f_sh / 2     # couple M / s on one bolt (the review corrected a halved term)
 tag("G4", f"Cross arm bolts: wind on the shield pulls each M5 bolt about {f_bolt:.0f} N (two bolts {abs(P['arm_bolt_x'][1] - P['arm_bolt_x'][0]):.0f} mm apart); "
           f"M5 A2-70 proof load about 7,000 N")
 t_twist = f_sh * P["shield_x"] / 1e3
@@ -329,6 +371,10 @@ f_low = q * CD * (W * H + a_sh * 1e6) / 1e6
 m_rail = f_low * (P["clamp_z"][0] - (P["inlet_z"] + H / 2)) / 1e3
 z_rail = P["rail"][0] * P["rail"][1] ** 2 / 6
 tag("G6", f"Rail at the lower clamp: {f_low:.1f} N on pod and shield, {m_rail:.2f} N m, stress {m_rail * 1e3 / z_rail:.1f} MPa in the {P['rail'][0]:.0f} x {P['rail'][1]:.0f} mm bar")
+tau_rail = mh * 1e3 / (0.31 * P["rail"][0] * P["rail"][1] ** 2)       # torsion of a flat bar, alpha about 0.31 for b/t = 10
+sig_vm = math.sqrt((m_rail * 1e3 / z_rail) ** 2 + 3 * tau_rail ** 2)
+tag("G8", f"Rail combined: the cross arm's {mh:.2f} N m twist gives {tau_rail:.1f} MPa of torsion; von Mises {sig_vm:.1f} MPa against 73 MPa "
+          f"(minimum yield of 6063-T5 about 110 MPa over 1.5)")
 f_pod_w = q * CD * W * H / 1e6
 tag("G7", f"Pod hanging screws: pod weight {m_pod_kg * 9.81:.1f} N and {f_pod_w:.1f} N wind on two M5 screws in heat-set inserts in printed ASA; "
           f"worst pull-out per screw about {(m_pod_kg * 9.81 + f_pod_w * (H / 2 + 3) / 40) / 2:.0f} N (insert pull-out in ASA several hundred N, to be checked at TRL 4)")
@@ -342,6 +388,14 @@ tag("H1", "Service steps (min): " + "; ".join(f"{k} {v:g}" for k, v in steps.ite
 tag("H2", "The exchange pod arrives with its NO2 collocation and CalRig record, so no recollocation is needed at the pole; the returned pod is serviced and collocated at the reference site")
 tag("H3", "FieldNode is rated for -20 to +45 degC ambient (FND-REQ-001 R2) and reaches 58.7 to 73.3 degC inside at 45 degC; AirStreet R12 asks -10 to 50 degC")
 tag("H4", "SPS30 datasheet: recommended 10 to 40 degC and 20 to 80 % RH; absolute -10 to 60 degC and 0 to 95 % RH")
+RANGE_NO2 = (-30.0, 40.0, 15.0, 85.0)  # degC, degC, % RH, % RH continuous: NO2-B43F datasheet operating range
+RANGE_SPS = (10.0, 40.0, 20.0, 80.0)   # SPS30 recommended range (datasheet)
+POD_EXCESS = 5.0                       # K: pod air above shield air in sun (estimate, to measure at TRL 4; the shield cap runs 8.3 K warm, the open-bottomed pod is ventilated; 3 K before the review)
+t_flag = min(RANGE_NO2[1], RANGE_SPS[1]) - POD_EXCESS
+tag("H5", f"Rated ranges: NO2-B43F {RANGE_NO2[0]:.0f} to {RANGE_NO2[1]:.0f} degC and {RANGE_NO2[2]:.0f} to {RANGE_NO2[3]:.0f} % RH continuous; SPS30 recommended "
+          f"{RANGE_SPS[0]:.0f} to {RANGE_SPS[1]:.0f} degC and {RANGE_SPS[2]:.0f} to {RANGE_SPS[3]:.0f} % RH. R12 asks survival to 50 degC, so each record carries flags "
+          f"(AST-DDR-005 F2): shield air above {t_flag:.0f} degC ({RANGE_NO2[1]:.0f} degC less {POD_EXCESS:.0f} K pod excess), RH above {RANGE_SPS[3]:.0f} % (PM) and {RANGE_NO2[3]:.0f} % (NO2), "
+          f"RH below {RANGE_SPS[2]:.0f} % (PM) and {RANGE_NO2[2]:.0f} % (NO2), below {RANGE_SPS[0]:.0f} degC (PM); flagged hours are kept and published with the flag, not dropped")
 OUT["R12"] = ("FieldNode sun shield required above 45 degC ambient (designed in FND-DDR-003, fixes to the AirStreet adapter plates); SPS30 recommended range 20 to 80 % RH; condensation and insects unverified",
               "Outdoors, -10 to 50 degC; FieldNode sun shield above 45 degC; mesh, drip lid, IP65 core", "At risk")
 OUT["R16"] = (f"About {t_serv:.0f} min for a pod exchange; no recollocation at the pole", "Pre-collocated pod exchanged in 15 min at the pole with hand tools", "Met on paper" if t_serv <= 15 else "At risk")
@@ -355,13 +409,13 @@ budget = float(yaml.safe_load((ROOT / "project.yaml").read_text())["budget_usd"]
 tag("I1", f"BOM {len(rows)} lines, all priced: ${tot:.2f} per node; FieldNode core ${fnd_cost:.2f} (costed in FND); sensor head ${head:.2f}")
 tag("I2", f"Value-engineering target: USD {budget:.0f}. Estimated cost of the constructable design: USD {head:.2f} "
           f"(USD {abs(head - budget):.2f} {'over' if head > budget else 'under'} the target)")
-tag("I3", "Replacement NO2 sensor about every 2 years (estimate) and collocation time are running costs, not in the BOM")
+tag("I3", "Replacement NO2 sensor every 12 months (18 or 24 where the site's ozone record allows) [C7], and collocation time, are running costs, not in the BOM")
 OUT["R15"] = (f"Sensor head ${head:.2f}; ${tot:.2f} with the FieldNode core", f"Sensor head ${budget:.0f} value-engineering target (budget_usd)",
               f"Over the value-engineering target by ${head - budget:.2f}" if head > budget else "Met on paper")
 
 # ------------------------------------------------------------------ by design
 OUT["R6"] = ("CalRig for T, RH and PM; 14-day NO2 collocation and every 6 months (DDR-001 D3)", "Stated method per node", "Met by design")
-OUT["R7"] = ("Raw WE, AE, PM, T, RH and a calibration version tag", "Raw signals kept", "Met by design")
+OUT["R7"] = ("Raw WE, AE, PM, T, RH, a calibration version tag and rated-range flags [H5]", "Raw signals kept", "Met by design")
 OUT["R14"] = ("Levels, T and RH only", "No images, audio or identifiers", "Met by design")
 
 order = [f"R{i}" for i in range(1, 17)]
