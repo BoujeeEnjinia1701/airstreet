@@ -13,7 +13,7 @@ APPEARANCE MODEL ONLY. CONCEPT, NOT FOR FABRICATION.
 
 Groups: "mount" (rail, saddles, bands, plates, arm and their fixings), "fieldnode" (enclosure, lid, lugs, glands,
 ports, vent, antenna), "internal" (FieldNode's plate, cell and boards), "panel" (bracket and 6 W panel), "pod",
-"shield" (plates, cap, spacers, rods, probe), "cables" and "context" (site and mannequin).
+"shield" (plates, cap, spacers, rods, probe), "hood" (diffusion tube hood and clips, anchor nodes), "cables" and "context" (site and mannequin).
 
     from product_model import product_parts
     for p in product_parts(): print(p["name"], p["group"], p["material"])
@@ -31,7 +31,7 @@ from cad_parts import part, round_tube, break_edges  # noqa: E402
 TITLE = "AirStreet: street-level air quality node for PM2.5 and NO2"
 
 _SITE = ["--scene=outdoor", "--ground=concrete", "--ground-z=0", "--sun=40,-35", "--lens=45"]
-_ALL = ["mount", "fieldnode", "internal", "panel", "pod", "shield", "cables"]
+_ALL = ["mount", "fieldnode", "internal", "panel", "pod", "shield", "hood", "cables"]
 RENDER_VIEWS = [
     {"name": "hero", "groups": _ALL + ["context"], "explode": False, "el": 10, "az": -56, "args": _SITE,
      "note": "Site render from the sidewalk, front right and a little above eye level (about 10 deg elevation): the node on a "
@@ -41,7 +41,7 @@ RENDER_VIEWS = [
      "note": "Studio render from the front right and above (about 20 deg elevation): rail with two printed V-saddles and "
              "stainless bands, windowed adapter plates carrying the FieldNode enclosure and panel bracket, cross arm with the "
              "pod and the shield hanging from it, sensor cables to the M12 ports"},
-    {"name": "detail", "groups": ["pod", "shield", "cables", "mount"], "explode": False, "el": 12, "az": -64,
+    {"name": "detail", "groups": ["pod", "shield", "hood", "cables", "mount"], "explode": False, "el": 12, "az": -64,
      "note": "Detail from the front right, slightly above (about 12 deg elevation): the pod with its drip lid, roof glands "
              "and probe socket, the shield's eight plates on three rods under its cap, and the probe lead along the arm"},
 ]

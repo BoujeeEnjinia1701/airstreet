@@ -1,4 +1,4 @@
-"""AirStreet sizing calculations, AST-CAL-001 v0.7 (TRL 3, constructable design of AST-DDR-003, lightened;
+"""AirStreet sizing calculations, AST-CAL-001 v0.8 (TRL 3, constructable design of AST-DDR-003, lightened;
 STEM check fixes of AST-DDR-005, 2026-10-24).
 
 Run from the repo root:  python docs/04-calcs/sizing.py
@@ -28,7 +28,7 @@ def tag(t, text):
     print(f"[{t}] {text}")
 
 
-print("AirStreet sizing, AST-CAL-001 v0.7")
+print("AirStreet sizing, AST-CAL-001 v0.8")
 
 # ------------------------------------------------------------------ assumptions
 # Sensors (SPS30 values from the Sensirion SPS30 datasheet, 07/2023; others assumed)
@@ -168,7 +168,10 @@ tag("C7", "Ozone filter: " + f"{O3_CAP:.0f} ppm h lasts " + ", ".join(f"{m:.0f} 
       "or at 18 or 24 months where the collocated station's ozone record shows the dose since fitting stays under 500 ppm h by then")
 OUT["R2"] = (f"Hourly MAE about {mae:.1f} ppb (budget of literature and assumed terms)", "5 ppb or less hourly MAE, 0 to 200 ppb", "At risk")
 OUT["R3"] = (f"Annual uncertainty {s_year * UG:.1f} ug/m3 (1 sigma); kept as a research question", "Withdrawn as a requirement (DDR-002)", "Withdrawn")
-OUT["R4"] = (f"Decisive outside {40 - band:.1f} to {40 + band:.1f} ug/m3", "Classify vs 40 ug/m3 with 90 % confidence", "At risk")
+tag("C9", f"Both limits (decision 4, 2026-10-30): the same annual uncertainty gives a band of {40 - band:.1f} to {40 + band:.1f} ug/m3 round the 40 ug/m3 limit of Directive 2008/50/EC "
+          f"and {20 - band:.1f} to {20 + band:.1f} ug/m3 round the 20 ug/m3 limit of Directive (EU) 2024/2881 from 2030")
+OUT["R4"] = (f"Decisive outside {40 - band:.1f} to {40 + band:.1f} ug/m3 (40) and {20 - band:.1f} to {20 + band:.1f} ug/m3 (20 from 2030)",
+             "Classify vs 40 and vs 20 ug/m3 with 90 % confidence", "At risk")
 
 # ------------------------------------------------------------------ D. Radiation shield (R5)
 G, ALB, ALPHA = 1000.0, 0.2, 0.25     # W/m2 global, ground albedo, absorptance of aged white ASA (assumed)
@@ -298,10 +301,12 @@ sad_eff = sad_shell + infill * (sad_v - sad_shell)
 made = {"rail (Al)": vol("rail") * RHO["al"], "adapter plates (Al)": vol("lplate", "uplate") * RHO["al"],
         "cross arm (Al)": vol("arm") * RHO["al"], "V-saddles (ASA, 40 % infill)": sad_eff * RHO["asa"],
         "pod shell and floor (ASA)": vol("pod_shell", "pod_floor") * RHO["asa"],
-        "shield plates, cap and spacers (ASA)": vol("shield_plates", "shield_cap", "spacers") * RHO["asa"]}
+        "shield plates, cap and spacers (ASA)": vol("shield_plates", "shield_cap", "spacers") * RHO["asa"],
+        "diffusion tube hood and clips (ASA, solid)": vol("hood", "hood_clips") * RHO["asa"]}
 bought = {"bands": band_m, "shield rods and nuts": vol("rods") * RHO["ss"], "SPS30": 0.0263, "NO2 sensor": 0.015,
           "front end and ADC": 0.025, "T and RH probe and tube": 0.015, "cables, plugs and probe lead": 2 * 0.040 + 0.020,
-          "mesh, glands, inserts, terminal block": 0.045, "fixings (AST-DDR-003)": 0.060}
+          "mesh, glands, inserts, terminal block": 0.045, "fixings (AST-DDR-003)": 0.060,
+          "hood screws, washers and inserts (decision 2, 2026-10-30; estimate)": 0.006}
 fnd_m = FND_MASS - FND_MOUNT
 mass = {"FieldNode core as used": fnd_m, **made, **bought}
 m_head = sum(made.values()) + sum(bought.values())
@@ -356,15 +361,18 @@ m_pod_kg = made["pod shell and floor (ASA)"] + sum(bought[k] for k in ("SPS30", 
 A_arm, Zv, Zh = angle_section(*P["arm"])
 lev_sh = P["shield_x"] / 1e3
 lev_pod = -P["pod_x"] / 1e3
-mv = max(m_sh_kg * 9.81 * lev_sh, m_pod_kg * 9.81 * lev_pod)
-mh = f_sh * lev_sh
+m_hood_kg = made["diffusion tube hood and clips (ASA, solid)"] + bought["hood screws, washers and inserts (decision 2, 2026-10-30; estimate)"]
+lev_hood = P["hood_x"] / 1e3
+f_hood = q * CD * (2 * P["hood_r"]) * (P["hood_top"] + P["hood_skirt"][0]) / 1e6          # wind on the hood seen from the street
+mv = max(m_sh_kg * 9.81 * lev_sh + m_hood_kg * 9.81 * lev_hood, m_pod_kg * 9.81 * lev_pod)     # the hood hangs on the shield side
+mh = f_sh * lev_sh + f_hood * lev_hood
 sig = mv * 1e3 / Zv + mh * 1e3 / Zh
-tag("G3", f"Cross arm (30 x 30 x 3 angle): shield {m_sh_kg:.2f} kg and {f_sh:.1f} N wind at {lev_sh * 1e3:.0f} mm, pod {m_pod_kg:.2f} kg at {lev_pod * 1e3:.0f} mm; "
+tag("G3", f"Cross arm (30 x 30 x 3 angle): shield {m_sh_kg:.2f} kg and {f_sh:.1f} N wind at {lev_sh * 1e3:.0f} mm, tube hood {m_hood_kg:.2f} kg and {f_hood:.1f} N wind at {lev_hood * 1e3:.0f} mm, pod {m_pod_kg:.2f} kg at {lev_pod * 1e3:.0f} mm; "
           f"{mv:.2f} N m vertical and {mh:.2f} N m horizontal at the rail; combined stress {sig:.1f} MPa (6063 yield about 150 MPa)")
-f_bolt = mh / (abs(P["arm_bolt_x"][1] - P["arm_bolt_x"][0]) / 1e3) + f_sh / 2     # couple M / s on one bolt (the review corrected a halved term)
+f_bolt = mh / (abs(P["arm_bolt_x"][1] - P["arm_bolt_x"][0]) / 1e3) + (f_sh + f_hood) / 2     # couple M / s on one bolt (the review corrected a halved term)
 tag("G4", f"Cross arm bolts: wind on the shield pulls each M5 bolt about {f_bolt:.0f} N (two bolts {abs(P['arm_bolt_x'][1] - P['arm_bolt_x'][0]):.0f} mm apart); "
           f"M5 A2-70 proof load about 7,000 N")
-t_twist = f_sh * P["shield_x"] / 1e3
+t_twist = f_sh * P["shield_x"] / 1e3 + f_hood * lev_hood
 t_cap = slip_cap * D["R"] / 1e3
 tag("G5", f"Twist about the pole: {t_twist:.2f} N m against {t_cap:.0f} N m friction")
 f_low = q * CD * (W * H + a_sh * 1e6) / 1e6

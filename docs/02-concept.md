@@ -3,9 +3,9 @@ doc_id: AST-PRC-001
 title: AirStreet design precis
 project: AirStreet
 doc_type: Design precis
-version: "0.9"
+version: "0.10"
 status: Draft
-date: '2026-10-24'
+date: '2026-10-30'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -45,6 +45,10 @@ revisions:
   date: '2026-10-24'
   author: Amish Chadha
   change: "Kit 1.9.1 upgrade: concept options (AST-OPT-001) and STEM check (AST-STM-001) summarised; STEM fixes of AST-DDR-005 (rated-range flags, NO2 cell replacement rule, datasheet noise, band thickness) and the independent review's NO2 budget (4.3 ppb hourly MAE); 3.77 kg with the hollow shield spacers of the D3 model; requirements now AST-PRS-001"
+- version: "0.10"
+  date: '2026-10-30'
+  author: Amish Chadha
+  change: "Amish's decisions of 2026-10-30 (AST-DDR-006): option A chosen; tube hood added; mass, area, cost and wind restated"
 ---
 
 
@@ -54,9 +58,9 @@ revisions:
 
 AirStreet is a pole-mounted node that measures PM2.5 and NO2 at street level for neighborhood-scale pollution maps. A small sensor pod and a radiation shield hang below a FieldNode core on a street light pole, with the inlet plane 3.0 m above the sidewalk. Temperature, humidity and particle readings are checked on CalRig. CalRig does not cover NO2, so each NO2 sensor is calibrated by field collocation with a reference station before deployment and at intervals afterward. The node sends raw signals, so calibrations can be improved and reapplied later. Amish accepted the recommended design choices on 2026-09-25 ([AST-DDR-001](decisions/0001-trl2-review-decisions.md), [AST-DDR-002](decisions/0002-recommendations-accepted.md)).
 
-The TRL 3 calculations ([AST-CAL-001](04-calcs/01-sizing.md) v0.7) confirm the power and radio budget: an 87.0 mW design sensor load with a 60 s particle run, inside FieldNode's 100 mW design allowance, 6.6 days without sun, and 0.60 % duty cycle even at SF12. On 2026-09-30 the design was made constructable ([AST-DDR-003](decisions/0003-design-for-construction.md)) and an illustrated prototype build plan was written ([AST-BLD-001](05-build-plan.md)). With the four lightening steps accepted on 2026-10-02 (a 40 x 4 mm rail, windows in the adapter plates, 1.5 mm shield plates and saddles printed at 40 % infill), the buildable node weighs 3.61 kg and presents 0.139 m² to the street, which meets its 0.15 m² area limit; with FieldNode's sun shield it weighs 3.77 kg, 0.23 kg under the 4.0 kg limit that Amish set for R13 on 2026-10-02 (it was 3.5 kg), so R13 is met on paper; the pole owner is still to confirm the load. Value-engineering target: USD 285. Estimated cost of the constructable design: USD 302.50 (USD 17.50 over the target) for the sensor head (R15). Decisions are recorded in the design decisions register ([AST-DEC-001](06-design-decisions.md)). The node costs $433.50 with the FieldNode core. Resolving NO2 at the WHO guideline of 10 µg/m³ is no longer a requirement: an annual mean carries about 4.65 µg/m³ of uncertainty, so AirStreet ranks streets and checks the EU limit, and the WHO question stays open as research.
+The TRL 3 calculations ([AST-CAL-001](04-calcs/01-sizing.md) v0.8) confirm the power and radio budget: an 87.0 mW design sensor load with a 60 s particle run, inside FieldNode's 100 mW design allowance, 6.6 days without sun, and 0.60 % duty cycle even at SF12. On 2026-09-30 the design was made constructable ([AST-DDR-003](decisions/0003-design-for-construction.md)) and an illustrated prototype build plan was written ([AST-BLD-001](05-build-plan.md)). With the four lightening steps accepted on 2026-10-02 (a 40 x 4 mm rail, windows in the adapter plates, 1.5 mm shield plates and saddles printed at 40 % infill), the buildable node weighs 3.61 kg and presents 0.139 m² to the street, which meets its 0.15 m² area limit; with FieldNode's sun shield it weighs 3.77 kg, 0.23 kg under the 4.0 kg limit that Amish set for R13 on 2026-10-02 (it was 3.5 kg), so R13 is met on paper; the pole owner is still to confirm the load. Value-engineering target: USD 285. Estimated cost of the constructable design: USD 302.50 (USD 17.50 over the target) for the sensor head (R15). Decisions are recorded in the design decisions register ([AST-DEC-001](06-design-decisions.md)). The node costs $433.50 with the FieldNode core. Resolving NO2 at the WHO guideline of 10 µg/m³ is no longer a requirement: an annual mean carries about 4.65 µg/m³ of uncertainty, so AirStreet ranks streets and checks the EU limit, and the WHO question stays open as research.
 
-Kit 1.9.1 (2026-10-24): the design was compared with two other working principles, an aspirated heated-inlet node and passive diffusion tubes with a battery PM logger, and remains the recommended option, proposed, awaiting Amish ([AST-OPT-001](02a-concept-options.md), [AST-DDR-004](decisions/0004-concept-selection.md)). Its first STEM check ([AST-STM-001](01b-stem-check.md)) found four details to fix, which were fixed under Amish's standing instruction of 2026-10-23 ([AST-DDR-005](decisions/0005-stem-check-fixes.md)): every record now carries flags for readings outside the sensors' rated ranges (the NO2 cell is rated to 40 °C and 85 % RH), the NO2 cell is replaced every 12 months unless the site's ozone record allows longer, the NO2 noise follows the sensor data sheet, and the bands are drawn 0.6 mm thick as calculated. An independent review then raised the NO2 hourly error to about 4.3 ppb. Every part of the node is now modelled at detail level D3, with every screw, nut, washer and insert.
+Kit 1.9.1 (2026-10-24): the design was compared with two other working principles, an aspirated heated-inlet node and passive diffusion tubes with a battery PM logger, and remains the design of record, chosen by Amish on 2026-10-30 ([AST-OPT-001](02a-concept-options.md), [AST-DDR-004](decisions/0004-concept-selection.md)). On the same day he chose the runner-up's best idea as an addition: a printed hood with three tube clips on the cross arm of the anchor node and one node in five, for NO2 diffusion tubes changed by the partner every two to four weeks ([AST-DDR-006](decisions/0006-decisions-2026-10-30.md)). Its first STEM check ([AST-STM-001](01b-stem-check.md)) found four details to fix, which were fixed under Amish's standing instruction of 2026-10-23 ([AST-DDR-005](decisions/0005-stem-check-fixes.md)): every record now carries flags for readings outside the sensors' rated ranges (the NO2 cell is rated to 40 °C and 85 % RH), the NO2 cell is replaced every 12 months unless the site's ozone record allows longer, the NO2 noise follows the sensor data sheet, and the bands are drawn 0.6 mm thick as calculated. An independent review then raised the NO2 hourly error to about 4.3 ppb. Every part of the node is now modelled at detail level D3, with every screw, nut, washer and insert.
 
 ![Figure 1. AirStreet on a street light pole, with a 1.75 m person for scale.](../media/hero.png)
 
@@ -136,10 +140,10 @@ Table 2. Key numbers.
 | EU limit classification | Decisive below 33.9 or above 46.1 µg/m³ | 90 % confidence against 40 µg/m³ at the directive's 20 °C (PR-004 at risk); 13.9 to 26.1 µg/m³ against the 2030 limit of 20 µg/m³ |
 | PM2.5 hourly error | Within ±5 µg/m³ or ±30 % up to 80 % RH | Outside the bound at 85 % RH and above (R1 at risk) |
 | Shield radiation error | 0.42 to 0.87 K at 1 m/s | Reads up to 4.1 % RH low at 85 % RH (R5 at risk) |
-| Mass on the pole | 3.61 kg | FieldNode 1.89 kg as used (no back plate), sensor head and mount 1.72 kg, with the four lightening steps and the hollow shield spacers of the D3 model (3.77 kg with the sun shield against the 4.0 kg R13 limit set on 2026-10-02; met on paper, 0.23 kg margin) |
-| Frontal area | 0.139 m² | Rasterized from the model; limit 0.15 m² (met on paper) |
-| Wind at 35 m/s | 125 N, 416 N·m at the pole base | Clamp slip factor 25; the pole check is the owner's |
-| Parts cost | Sensor head $302.50; $433.50 with the FieldNode core | $17.50 over the $285 value-engineering target (`budget_usd`; R15 over the target) |
+| Mass on the pole | 3.70 kg | FieldNode 1.89 kg as used (no back plate), sensor head and mount 1.81 kg, with the four lightening steps, the hollow shield spacers and the 0.09 kg tube hood of the D3 model (3.86 kg with the sun shield against the 4.0 kg R13 limit set on 2026-10-02; met on paper, 0.14 kg margin) |
+| Frontal area | 0.144 m² | Rasterized from the model; limit 0.15 m² (met on paper) |
+| Wind at 35 m/s | 129 N, 431 N·m at the pole base | Clamp slip factor 25; the pole check is the owner's |
+| Parts cost | Sensor head $306.00; $437.00 with the FieldNode core | $21.00 over the $285 value-engineering target (`budget_usd`; R15 over the target; the tube hood adds $3.50) |
 | Service | About 14 min for a pod exchange | Against 15 min (R16 met on paper) |
 
 ![Figure 4. Measurement and data flow.](../media/flow.png)

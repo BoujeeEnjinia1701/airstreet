@@ -72,11 +72,11 @@ c.cited("S15", "Every reading taken outside the sensors' rated temperature and h
         law="NO2-B43F rated -30 to 40 degC and 15 to 85 % RH continuous; SPS30 recommended 10 to 40 degC and 20 to 80 % RH (datasheets)",
         detail=f"Rated-range flags in every record: shield air above {S['t_flag']:.0f} degC (a 5 K pod allowance, to measure at TRL 4), RH above 80 % or 85 % and below 20 % or 15 %, below 10 degC for PM; flagged hours are published with the flag (CAL [H5])",
         verdict=WITHIN, closed_by="AST-DDR-005 F2")
-c.cited("S33", "The NO2 cell and the particle sensor measure validly across the whole climate the node is built for (-10 to 50 degC, 10 to 100 % RH)",
+c.cited("S33", "The NO2 cell and the particle sensor measure validly inside their rated ranges; hours beyond them (the node is built for -10 to 50 degC, 10 to 100 % RH) are flagged and published as indicative",
         "Engineering and technology", "Sensing resolution",
         law="NO2-B43F rated -30 to 40 degC and 15 to 85 % RH continuous; SPS30 recommended 10 to 40 degC and 20 to 80 % RH (datasheets)",
-        detail="Above 40 degC and 85 % RH the cell runs outside its rating; the flags (S15) mark those hours but do not make them valid. Fixes that change the user-facing scope (a wider-range cell, or a narrower PR-012) go to Amish (AST-DEC-001, open decision 3)",
-        verdict=FIX)
+        detail="Above 40 degC and 85 % RH the cell runs outside its rating; the flags (S15) mark those hours but do not make them valid. Failed on first check (Fails, fix proposed); Amish decided option (a) on 2026-10-30: accept the flagged hours now and seek a cell rated above 40 degC with the partner when one is agreed (AST-DEC-001 decision 3). The flag threshold and the pod allowance are measured at TRL 4",
+        verdict=PLAUSIBLE, closed_by="AST-DDR-006 decision 3")
 c.cited("S16", "After humidity correction the hourly PM2.5 error stays within 5 ug/m3 or 30 % up to 80 % RH",
         "Physics", "Optics and radiation", law="Laser scattering counts particles; kappa-Koehler water uptake 1 + kappa aw / (1 - aw), kappa 0.3 +/- 0.1 assumed (CAL E)",
         detail="Within the bound to 80 % RH, outside it at 85 % RH and above at 25 and 50 ug/m3 (CAL [E2]); the comparison is at 1 sigma (about 68 % of hours), the base error and kappa are assumed and the RH is the shield's, not the pod's, so collocation at TRL 4 confirms it", verdict=PLAUSIBLE)
@@ -86,14 +86,14 @@ c.claim("S17", "The passive eight-plate shield keeps the radiation error of the 
 c.order_of_magnitude("S18", "A 0.87 K warm error reads about 4.1 % RH low at 85 % RH and 30 degC", "Physics", "Thermodynamics",
                      claimed=4.1, estimate=85 - 85 * math.exp(17.62 * 30 / (243.12 + 30)) / math.exp(17.62 * 30.87 / (243.12 + 30.87)), unit="% RH",
                      law="Magnus saturation vapour pressure (Sonntag constants) (CAL [D3])", closed_by=CAL)
-c.order_of_magnitude("S19", "A 35 m/s gust puts about 125 N on the node", "Physics", "Fluid mechanics",
-                     claimed=125.0, estimate=0.5 * 1.225 * 35 ** 2 * 1.2 * 0.139, unit="N", law="F = 0.5 rho v^2 Cd A, Cd 1.2 on the 0.139 m2 model silhouette; 35 m/s is a screening speed, 206 N at 45 m/s for windier codes (CAL [G1])", closed_by=CAL)
+c.order_of_magnitude("S19", "A 35 m/s gust puts about 129 N on the node", "Physics", "Fluid mechanics",
+                     claimed=129.0, estimate=0.5 * 1.225 * 35 ** 2 * 1.2 * 0.144, unit="N", law="F = 0.5 rho v^2 Cd A, Cd 1.2 on the 0.144 m2 model silhouette (with the tube hood); 35 m/s is a screening speed, 214 N at 45 m/s for windier codes (CAL [G1])", closed_by=CAL)
 c.claim("S20", "Two bands hold the node against slipping down the pole", "Physics", "Mechanics and statics",
         law="Belt friction F = mu T theta per band, 1,000 N preload and mu 0.3 assumed; load is weight and wind on the tilted panel (CAL [G2])",
         value=round(S["f_down"]), limit=round(S["slip_cap"]), unit="N", rule="below", closed_by=CAL)
 c.claim("S21", "The 40 x 4 mm rail at the lower clamp stays below the yield of 6063 aluminium with a factor of 1.5, in bending and twist together", "Physics", "Strength of materials",
         law="Bending M / Z and flat-bar torsion T / (0.31 b t^2), von Mises; 6063-T5 minimum yield about 110 MPa (CAL [G6], [G8])", value=round(S["sig_vm"], 1), limit=73.0, unit="MPa", rule="below", closed_by=CAL)
-c.claim("S22", "The cross arm carries the pod and the shield far below yield (with a factor of 1.5)", "Physics", "Strength of materials",
+c.claim("S22", "The cross arm carries the pod, the shield and the tube hood far below yield (with a factor of 1.5)", "Physics", "Strength of materials",
         law="Combined bending of a 30 x 30 x 3 angle (CAL [G3])", value=round(S["sig"], 1), limit=100.0, unit="MPa", rule="below", closed_by=CAL)
 c.cited("S23", "The 12.7 x 0.6 mm stainless band carries its 1,000 N preload below yield (with a factor of 1.5)", "Physics", "Strength of materials",
         law="Tension stress T / (w t); 304 stainless, minimum yield 205 MPa annealed (ASTM A240); worm-drive bands are cold rolled and stronger, but slotted",

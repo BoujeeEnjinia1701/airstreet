@@ -3,9 +3,9 @@ doc_id: AST-MKT-001
 title: AirStreet market and viability
 project: AirStreet
 doc_type: Market and viability
-version: "0.1"
+version: "0.2"
 status: Draft
-date: '2026-10-24'
+date: '2026-10-30'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -13,6 +13,10 @@ revisions:
   date: '2026-10-24'
   author: Amish Chadha
   change: First market and viability note with cited benchmarks (kit 1.9.1 upgrade)
+- version: "0.2"
+  date: '2026-10-30'
+  author: Amish Chadha
+  change: "Node cost USD 437.00; cross-check chosen on 2026-10-30"
 ---
 
 # AirStreet market and viability
@@ -25,8 +29,8 @@ Table 1. Market segments.
 | --- | --- | --- | --- | --- |
 | District networks run by a city or air agency | Environment and transport teams; first candidate the Dallas-Fort Worth area (AST-DEC-001); 10 to 100 nodes beside a reference station | AQMesh v5.1 with five gas pods, PM and a heated inlet: about USD 7,800 per unit as tested in 2021 [1]; Clarity Node-S: data licence USD 1,200 per node per year in a 2021 estimate, hardware included [2]; regulatory monitors "USD 10,000 and up" [3] | 433.50 per node with the FieldNode core (302.50 for the sensor head; BOM) | NO2 and PM2.5 at a fraction of the commercial price, with raw signals and an open calibration method; no licence fee |
 | Community groups and residents | Neighbourhood groups near busy roads, schools and clinics | PurpleAir sensor about USD 260, PM only [3] | 433.50 per node | Adds NO2, the traffic gas, and a calibration route tied to a reference station |
-| Schools and universities | Teaching and exposure research | The same commercial nodes; diffusion tubes at about £8 per tube including analysis, monthly NO2 only (2015 price) [4] | 433.50 per node, plus spare pods for exchange | A buildable, documented node whose data and method students can reprocess |
-| Annual NO2 surveys | Local authorities that use diffusion tubes today | About £8 per tube with analysis [4]; triplicate tubes every month, about £290 a year per site at that price | About 130 for option C's hardware (estimate, AST-OPT-001) | Not AirStreet's market; option C and the proposed cross-check (open decision 2) show how the two methods can work together |
+| Schools and universities | Teaching and exposure research | The same commercial nodes; diffusion tubes at about £8 per tube including analysis, monthly NO2 only (2015 price) [4] | 437.00 per node, plus spare pods for exchange | A buildable, documented node whose data and method students can reprocess |
+| Annual NO2 surveys | Local authorities that use diffusion tubes today | About £8 per tube with analysis [4]; triplicate tubes every month, about £290 a year per site at that price | About 130 for option C's hardware (estimate, AST-OPT-001) | Not AirStreet's market; option C and the cross-check chosen on 2026-10-30 (decision 2) show how the two methods can work together |
 
 Cost notes. The SPS30 is USD 60.50 at quantity 1 at SparkFun (USD 57.48 at 25 or more), checked 2026-10-24 [5]. The NO2 cell (USD 90) and its front end (USD 60) are estimates that are not quoted; they are about half the sensor-head cost and are to assess with a distributor. Running costs per node are a replacement NO2 cell every 12 months, or 18 to 24 where the site's ozone record allows (AST-CAL-001 [C7]), collocation time and CalRig time; none is in the BOM.
 

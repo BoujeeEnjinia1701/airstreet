@@ -50,7 +50,7 @@ COL = {"rail": "#64748B", "saddle": "#57534E", "band": "#9CA3AF", "plate": "#A8A
        "body": "#D1D5DB", "lid": "#E5E7EB", "fnd": "#94A3B8", "clip": "#0E7490", "post": "#0891B2", "strut": "#B45309",
        "panel": "#1E3A8A", "pod": "#E7E5E4", "floor": "#A3A3A3", "mesh": "#78716C", "pm": "#0F766E", "no2": "#C2410C",
        "afe": "#16A34A", "tb": "#7C3AED", "splate": "#F5F5F4", "cap": "#D6D3D1", "rod": "#6B7280", "th": "#7C3AED",
-       "cable": "#111827", "bolt": "#111827", "pole": "#9CA3AF", "fshield": "#F5F5F4", "gland": "#374151"}
+       "cable": "#111827", "bolt": "#111827", "pole": "#9CA3AF", "fshield": "#F5F5F4", "gland": "#374151", "hood": "#0D9488"}
 
 FND_CORE = ("fnd_body", "fnd_lid", "fnd_lugs", "fnd_lug_screws", "fnd_vent", "fnd_glands", "fnd_ports", "fnd_antenna",
             "fnd_mplate", "fnd_mplate_screws", "fnd_cell", "fnd_power", "fnd_ctrl", "fnd_connectors")
@@ -93,11 +93,12 @@ def made():
         "cables": part("Sensor cables and probe lead", C["cables"].shape, COL["cable"]),
         "bands": part("Band clamps (2)", C["bands"].shape, COL["band"]),
         "fshield": part("Sun shield (hot sites), FieldNode", S("fnd_shield", "fnd_shield_screws"), COL["fshield"]),
+        "hood": part("Diffusion tube hood with three clips (anchor nodes)", S("hood", "hood_clips"), COL["hood"]),
     }
 
 
 ORDER = ["rail", "saddles", "plates", "arm", "core", "clips", "posts", "panel", "shell", "afe", "floor", "mesh",
-         "splates", "cap", "th", "cables", "bands", "fshield"]
+         "splates", "cap", "th", "cables", "bands", "fshield", "hood"]
 
 
 # ----------------------------------------------------------------- overview
@@ -107,14 +108,14 @@ def overview():
            "core": (0, -230, 30), "clips": (0, -150, 150), "posts": (0, -230, 260), "panel": (0, -300, 430),
            "shell": (-260, -160, -150), "afe": (-260, -160, -280), "floor": (-260, -160, -420), "mesh": (-260, -160, -520),
            "splates": (220, -160, -330), "cap": (220, -160, -140), "th": (220, -160, -500), "cables": (-140, -330, 60),
-           "bands": (0, 320, 0), "fshield": (-380, -150, 300)}
+           "bands": (0, 320, 0), "fshield": (-380, -150, 300), "hood": (420, -150, -140)}
     parts = []
     for k in ORDER:
         p = M[k]
         p.explode = off[k]
         parts.append(p)
     return bv.overview(parts, OUT / "overview.png", "AirStreet prototype: every component, pulled apart",
-                       subtitle="Numbered in build order; 18 is fitted only at hot sites. Seen from the street side, right and above",
+                       subtitle="Numbered in build order; 18 is fitted only at hot sites and 19 only at the anchor node and one node in five. Seen from the street side, right and above",
                        elev=16, azim=-58, size=(11, 9), dpi=150, key=True)
 
 
@@ -211,11 +212,12 @@ def sheets(only=None):
                "  16.5 mm up from the underside of the flat leg.",
                "Flat leg (points to the street): 15 mm in front of the back face:",
                "  pod screws 5.5 mm at 25 and 125; probe tube 8 mm at 365;",
-               "  cap screws 5.5 mm at 335 and 395.",
+               "  cap screws 5.5 mm at 335 and 395; tube hood screws (anchor nodes)",
+               "  5.5 mm at 213 and 273, 8 mm further forward, 23 in front.",
                "Fit: upright leg flat on the rail front, its underside 451 mm below",
                "  the rail's top end (flush with the rail's bottom end); two M5",
                "  bolts, heads behind the rail, nyloc nuts inside the angle.",
-               "The pod and the shield cap hang under the flat leg on M5 screws",
+               "The pod, the shield cap and the tube hood hang under the flat leg on M5 screws",
                "  put in from above.",
                "Check: the flat leg is level when the rail is upright."], **base)
 
@@ -303,6 +305,23 @@ def sheets(only=None):
                "  board then hangs 57 mm below the cap, in the middle of the stack.",
                "  A bead of silicone holds the tube in the cap.",
                "Check: the board does not touch any plate (19 mm clear)."], **base)
+
+    hood_shape = C["hood"].shape
+    jobs["110"] = lambda: bv.component_sheet(
+        part("Tube hood", hood_shape, COL["hood"]), [M["arm"], M["splates"], M["shell"]],
+        dwg_no="AST-DWG-110", title="AirStreet diffusion tube hood and clips: making sketch", material="White ASA, 3D printed, 3 walls; three clips in the same",
+        view_shape=b.Pos(-P["hood_x"], -(D["arm_y"] + P["hood_dy"]), -D["arm_z"]) * (C["hood"].shape + C["hood_clips"].shape), inset_view=(25, -55),
+        notes=[f"Hood: top disc {2 * P['hood_r']:.0f} OD x {P['hood_top']:g}, skirt {P['hood_skirt'][0]:g} deep with {P['hood_skirt'][1]:g} walls,",
+               "  printed upright; six 8 mm drain slots at the foot of the skirt.",
+               "Three sockets on a 50 mm circle (90, 210 and 330 deg), 19 OD with a",
+               "  15 mm bore, open at the bottom, to hold a 13 mm Palmes tube each.",
+               "Two M5 heat-set inserts in the top face, 30 each side of centre: 6.8 mm",
+               "  holes, 8 deep. Three clips (18 OD, 12.8 bore, 8 high, 3 mm slit).",
+               "Fit: tubes pushed up into the sockets, open end down; a clip on each",
+               "  tube just under its socket. Two M5 x 10 screws down through the arm.",
+               "Tubes come from the laboratory (not in the BOM); the partner changes",
+               "  them every two to four weeks. Fitted at the anchor node and one in five.",
+               "Check: the hood clears the pod by 22 mm and the shield cap by 14 mm."], **base)
 
     for k, f in jobs.items():
         if only and k not in only:
@@ -580,6 +599,11 @@ def steps(only=None):
     st(16, full, [mv(M["fshield"], (0, -170, 0))], "FieldNode sun shield (hot sites only)",
        "Slide it over the enclosure from the street side; flanges flat on both plates; four M4 thumb screws",
        elev=18, azim=-40, label_done=False)
+    st(17, full, [mv(part("Tube hood and clips (anchor nodes)", S("hood", "hood_clips"), COL["hood"]), (0, 0, -130)),
+                mv(part("M5 screws (2), from above", C["hood_screws"].shape, COL["bolt"]), (0, 0, 80))],
+       "tube hood onto the cross arm (anchor nodes only)",
+       "Palmes tubes into the sockets with a clip on each; two M5 screws down through the arm into the hood's inserts",
+       elev=18, azim=-50, label_done=False)
     for k, f in jobs.items():
         if only and k not in only:
             continue

@@ -285,6 +285,20 @@ def option_a(P=None):
                "stainless", "fastener", 11, "shield"))
         add(_p("M5 washer, shield cap screw", b.Pos(scx + dx, scy, D["arm_z"] + at) * ap.washer_small(5), "stainless", "fastener", 11, "shield"))
 
+    # ------------------------------------------------------------------ 12 diffusion tube hood (AST-DDR-006)
+    exp_hd = (160, -200, -330)
+    hxs, hys = P["hood_x"], D["arm_y"] + P["hood_dy"]
+    add(_p("Diffusion tube hood, printed ASA", C["hood"].shape, "pe_tank_white", "made", 12, "hood", "#CCFBF1", exp_hd))
+    for j, s in enumerate(_solids(C["hood_clips"].shape), 1):
+        add(_p(f"Tube clip {j}, printed ASA", s, "pe_tank_white", "made", 12, "hood", "#99F6E4", exp_hd))
+    hz0, ht0 = D["arm_z"], P["hood_top"]
+    for dx in P["hood_dx"]:
+        add(_p("M5 brass heat-set insert, tube hood", ap.place(ap.insert(5, 6.0), (hxs + dx, hys, hz0 - 1.0), "z", -1),
+               "brass", "fastener", 11, "hood"))
+        add(_p("M5 x 10 pan head screw, tube hood to cross arm", ap.place(ap.pan_screw(5, 10), (hxs + dx, hys, D["arm_z"] + at + 1.0), "z", -1),
+               "stainless", "fastener", 11, "hood"))
+        add(_p("M5 washer, tube hood screw", b.Pos(hxs + dx, hys, D["arm_z"] + at) * ap.washer_small(5), "stainless", "fastener", 11, "hood"))
+
     # ------------------------------------------------------------------ 9 T and RH probe on its tube
     thz = D["th_z"]
     tube_top = D["arm_z"] + at + 8

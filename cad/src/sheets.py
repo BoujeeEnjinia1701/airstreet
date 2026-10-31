@@ -1,4 +1,4 @@
-"""AirStreet general arrangement sheet AST-DWG-001, Rev P5 (TRL 3, constructable design AST-DDR-003, lightened).
+"""AirStreet general arrangement sheet AST-DWG-001, Rev P6 (TRL 3, constructable design AST-DDR-003, lightened, with the tube hood of AST-DDR-006).
 
 Run from the repo root:  python cad/src/sheets.py
 Writes cad/drawings/AST-DWG-001.svg, .pdf and .png from the parametric model in
@@ -96,14 +96,15 @@ def main():
     asm = assembly(with_pole=True)
     views = safe_project_views(asm, work)
     bb = asm.bounding_box()
-    s = Sheet(project="AirStreet", title="General arrangement", dwg_no="AST-DWG-001", rev="P5",
-              author="Amish Chadha", date=DATE, scale=None, theme="technical",
-              material="FieldNode core per FND-BLD-001; parts per bom/bom.csv; making sketches AST-DWG-101 to 109. PRELIMINARY",
+    s = Sheet(project="AirStreet", title="General arrangement", dwg_no="AST-DWG-001", rev="P6",
+              author="Amish Chadha", date="2026-10-30", scale=None, theme="technical",
+              material="FieldNode core per FND-BLD-001; parts per bom/bom.csv; making sketches AST-DWG-101 to 110. PRELIMINARY",
               revisions=[("P1", "Preliminary GA for TRL 3 (from cad/src/model.py)", DATE_P1, "AC"),
                          ("P2", "DDR-002: FieldNode back plate left off, adapter bars; notes", DATE_P1, "AC"),
                          ("P3", "Layout and labels tidied", DATE_P1, "AC"),
                          ("P4", "DDR-003: design for construction; saddles, plates, cross arm, pod", DATE_P4, "AC"),
-                         ("P5", "DDR-003 A1 lightening: 40 x 4 rail, plate windows, 1.5 shield plates", DATE, "AC")])
+                         ("P5", "DDR-003 A1 lightening: 40 x 4 rail, plate windows, 1.5 shield plates", DATE, "AC"),
+                         ("P6", "AST-DDR-006: diffusion tube hood and three clips on the cross arm; mass, area and cost restated", "2026-10-30", "AC")])
     s.add_ortho(views)
     k = s.scale
     c = ortho_cells(s, views)
@@ -164,13 +165,13 @@ def main():
     s.add_notes("Main dimensions and interfaces (mm)", [
         f"Pole {P['pole_range'][0]:.0f} to {P['pole_range'][1]:.0f} OD (design {P['pole_od']:.0f}); two 12.7 stainless bands {D['clamp_span']:.0f} apart, 140 deg V-saddles",
         f"Rail {P['rail'][0]:.0f} x {P['rail'][1]:.0f} x {D['rail_len']:.0f}; two 3 mm adapter plates with lightening windows carry the FieldNode lugs and bracket",
-        f"Cross arm 30 x 30 x 3 angle, {D['arm_len']:.0f} long; pod and shield hang under it on screws",
+        f"Cross arm 30 x 30 x 3 angle, {D['arm_len']:.0f} long; pod, shield and tube hood hang under it on screws",
         f"FieldNode core {ew:.0f} x {ed:.0f} x {eh:.0f}, underside {z0:,.0f}; 6 W panel at {P['tilt']:.0f} deg",
         f"Pod {W:.0f} x {Dp:.0f} x {H:.0f} behind mesh, drip lid +{P['lid'][0]:.0f}; FieldNode whip {D['whip_clear']:.0f} clear of the lid",
         f"Inlet plane {P['inlet_z']:,.0f} above sidewalk, chain line in front view (EU 1,500 to 4,000)",
         f"Shield {n} plates {so:.0f} OD x {stk:g} at {pitch:.0f} pitch, {P['shield_x']:.0f} from pole axis, {D['offset_front']:.0f} from pole face; T and RH probe at {D['th_z']:,.0f}",
         "M12 port A (switched 5 V): SPS30 and SHT45; port B (5 V held on): NO2 front end",
-        "Mass 3.62 kg, 3.78 kg with sun shield (R13 limit 4.0 kg); frontal area 0.139 m² (AST-CAL-001 v0.6)",
+        "Mass 3.69 kg, 3.85 kg with sun shield (R13 limit 4.0 kg); frontal area 0.143 m² (AST-CAL-001 v0.8)",
         "Third-angle; front view from the street (-Y); pole on the Z axis",
     ], x=276, y=158, width=146)
     out = s.save(ROOT / "cad" / "drawings" / "AST-DWG-001")

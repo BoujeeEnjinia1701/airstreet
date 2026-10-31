@@ -3,9 +3,9 @@ doc_id: AST-PLN-001
 title: AirStreet project plan
 project: AirStreet
 doc_type: Project plan
-version: "0.1"
+version: "0.2"
 status: Draft
-date: '2026-10-24'
+date: '2026-10-30'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -13,11 +13,15 @@ revisions:
   date: '2026-10-24'
   author: Amish Chadha
   change: First project plan with stage gates and the reference list (kit 1.9.1 upgrade)
+- version: "0.2"
+  date: '2026-10-30'
+  author: Amish Chadha
+  change: "Decisions 1 to 5 done on 2026-10-30; node cost USD 437.00"
 ---
 
 # AirStreet project plan
 
-AirStreet is at stage P3 (design outputs, TRL 3): the constructable design, drawings, priced BOM, build plan, decisions register and first-pass design FMEA exist, and every concept option is modelled to D3. The next gate is P4 (verification, TRL 4), on hold while the portfolio is capped at TRL 3; the decisions requested now are the five open decisions in AST-DEC-001, starting with the concept selection. Method: STANDARDS sections 19 and 23.
+AirStreet is at stage P3 (design outputs, TRL 3): the constructable design, drawings, priced BOM, build plan, decisions register and first-pass design FMEA exist, and every concept option is modelled to D3. The next gate is P4 (verification, TRL 4), on hold while the portfolio is capped at TRL 3; Amish decided the five open decisions of AST-DEC-001 on 2026-10-30 (AST-DDR-006), so none is open now; the pole owner's load confirmation and the approach to the first partner are his actions. Method: STANDARDS sections 19 and 23.
 
 ## Workstreams
 
@@ -26,7 +30,7 @@ Table 1. Workstreams.
 | Workstream | Owner (role) | Deliverable | Status |
 | --- | --- | --- | --- |
 | Design and CAD | Design lead | D3 model of every option, STEP files, drawings AST-DWG-001 and 101 to 109 | Done at P3 (kit 1.9.1) |
-| Calculations and STEM check | Design lead | AST-CAL-001 v0.7, AST-STM-001 | Done; seven plausible rows of option A to close at TRL 4 or in FieldNode |
+| Calculations and STEM check | Design lead | AST-CAL-001 v0.8, AST-STM-001 | Done; twelve plausible rows of option A to close at TRL 4 or in FieldNode |
 | Requirements and traceability | Design lead | AST-URS-001, AST-PRS-001, AST-RTM-001 | Done; targets to review with the partner |
 | Build plan | Design lead | AST-BLD-001 | Done (plan, not yet built) |
 | Partner and collocation site | Project lead | Agreement with a city or agency that runs a street-level NO2 reference station | Not started; first candidate named (AST-DEC-001) |
@@ -39,7 +43,7 @@ Table 2. Resources (TRL 4 work, on hold).
 
 | Resource | Deliverable | Effort | Estimated cost (USD) |
 | --- | --- | --- | --- |
-| Parts for two prototype nodes and one spare pod | Built nodes for collocation | Purchase | About 1,000 (two nodes at 433.50 plus a pod at about 130; estimate) |
+| Parts for two prototype nodes and one spare pod | Built nodes for collocation | Purchase | About 1,000 (two nodes at 437.00 plus a pod at about 130; estimate) |
 | 3D printer time and a maker | Printed saddles, pods, shields | About 3 days | Material only (in the BOM) |
 | CalRig time | T, RH and PM checks per pod | About 2 days | Lab time |
 | Reference station collocation | 14 days before deployment, then every 6 months | Partner time | To agree with the partner |
@@ -53,7 +57,7 @@ Table 3. Stages (P4 to P6 on hold while the stage cap is P3).
 | --- | --- | --- |
 | P0 Proposal | PRB, STM, OPT, REG, FEA, PLN | Done |
 | P1 Definition | URS, PRS draft, RSK with hazard analysis, MKT | Done |
-| P2 Design inputs | PRS with targets and verification, CAL, RTM, concept selection DDR, STEM check closed | Done except the STEM check (open: seven plausible rows of option A) and the concept selection (proposed, awaiting Amish) |
+| P2 Design inputs | PRS with targets and verification, CAL, RTM, concept selection DDR, STEM check closed | Done except the STEM check (open: seven plausible rows of option A) and the concept selection (decided by Amish on 2026-10-30) |
 | P3 Design outputs | Model, STEP, drawings, priced BOM, build plan, DEC, design FMEA, traceability | Done (kit 1.9.1, 2026-10-24) |
 | P4 Verification | Lab and collocation tests (TST), verification report | On hold (TRL cap 3) |
 | P5 Validation | Field trial with the partner | On hold |
@@ -61,7 +65,7 @@ Table 3. Stages (P4 to P6 on hold while the stage cap is P3).
 
 ## Next steps and decision requested
 
-1. Amish decides the five open decisions in AST-DEC-001: the concept selection (A recommended), the diffusion tube cross-check, flagged hot hours, the 2030 EU limit for PR-004, and the text of PR-017 and PR-018.
+1. Done on 2026-10-30: Amish decided the five decisions of AST-DEC-001 (AST-DDR-006): option A, the diffusion tube cross-check at the anchor node and one node in five, flagged hot hours now, both EU limits for PR-004, and the text of PR-017 and PR-018.
 2. Render the options picture and the product renders on Amish's Mac (`python .kit/options.py`; `.kit/export_views.py`, `.kit/photoreal.py`, `.kit/cards.py`).
 3. Approach the first partner candidate; when agreed, fix the radio band and FieldNode antenna in the BOM.
 4. When the TRL cap is lifted: build two nodes to AST-BLD-001 and collocate them (P4).

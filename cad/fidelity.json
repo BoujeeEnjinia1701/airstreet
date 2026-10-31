@@ -1,19 +1,19 @@
 {
  "level": "D3",
  "stage": "P3",
- "hash": "6c8c3fd9602d8dcd",
+ "hash": "56a32e8938d41e8c",
  "options": {
   "A": {
    "title": "Electrochemical and optical node on FieldNode",
-   "parts": 195,
-   "made_or_bought": 92,
-   "fasteners": 103,
+   "parts": 205,
+   "made_or_bought": 96,
+   "fasteners": 109,
    "welds": 0,
    "bare": [],
    "bare_share": 0.0,
    "interference": [],
-   "mass_kg": 3.3,
-   "step_files": 92
+   "mass_kg": 3.4,
+   "step_files": 96
   },
   "B": {
    "title": "Aspirated, heated-inlet sampling node",
@@ -43,5 +43,5 @@
  "failures": [],
  "warnings": [],
  "passed": true,
- "seconds": 42.9
+ "seconds": 49.4
 }

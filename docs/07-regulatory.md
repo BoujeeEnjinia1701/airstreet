@@ -3,9 +3,9 @@ doc_id: AST-REG-001
 title: AirStreet regulatory and standards register
 project: AirStreet
 doc_type: Regulatory register
-version: "0.1"
+version: "0.2"
 status: Draft
-date: '2026-10-24'
+date: '2026-10-30'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -13,6 +13,10 @@ revisions:
   date: '2026-10-24'
   author: Amish Chadha
   change: "First register (kit 1.9.1 upgrade); the first Smart Cities register, with air quality rows A1 to A6 for other Smart Cities repos to cite"
+- version: "0.2"
+  date: '2026-10-30'
+  author: Amish Chadha
+  change: "A2 and A6 follow the decisions of 2026-10-30 (both EU limits; diffusion tube cross-check)"
 ---
 
 # AirStreet regulatory and standards register
@@ -24,11 +28,11 @@ Table 1. Regulatory and standards register.
 | # | Standard or regulation | Jurisdiction | What it covers | Applicability to this design | Owner (role) | Status |
 | --- | --- | --- | --- | --- | --- | --- |
 | A1 | Directive 2008/50/EC on ambient air quality and cleaner air for Europe [1] | European Union | Limit values (NO2 annual 40 ug/m3) and the siting of sampling points (inlets in general 1.5 to 4 m above ground) | AirStreet's 3.0 m inlet is inside the range (PR-011); PR-004 classifies streets against 40 ug/m3 at the directive's 20 degC reference. The annex's other siting rules (distance from the kerb and from junctions) are to check per site. AirStreet data are indicative and do not replace the directive's fixed measurements | Project lead | Met by design for the inlet; does not apply as a compliance claim |
-| A2 | Directive (EU) 2024/2881 on ambient air quality and cleaner air for Europe (recast), published 20 November 2024 [2] | European Union | Recast of A1; annual limit values from 2030 of 20 ug/m3 for NO2 and 10 ug/m3 for PM2.5 [3] | Sets a lower NO2 limit than PR-004 uses; at AirStreet's uncertainty a street could be classified against 20 ug/m3 only outside 13.9 to 26.1 ug/m3 (AST-CAL-001 [C5]) | Project lead | To assess (AST-DEC-001, open decision 4) |
+| A2 | Directive (EU) 2024/2881 on ambient air quality and cleaner air for Europe (recast), published 20 November 2024 [2] | European Union | Recast of A1; annual limit values from 2030 of 20 ug/m3 for NO2 and 10 ug/m3 for PM2.5 [3] | Sets a lower NO2 limit than PR-004 used before 2026-10-30; PR-004 now classifies against both limits (AST-DDR-006). At AirStreet's uncertainty a street could be classified against 20 ug/m3 only outside 13.9 to 26.1 ug/m3 (AST-CAL-001 [C5]) | Project lead | To assess (decision 4 of 2026-10-30 is made: both limits, AST-DEC-001) |
 | A3 | US National Ambient Air Quality Standards: NO2 annual 53 ppb and 1-hour 100 ppb; PM2.5 annual 9.0 ug/m3 and 24-hour 35 ug/m3 [4] | United States | Ambient standards met by regulatory (federal reference or equivalent) monitors | The first partner candidate is in Texas (AST-DEC-001); AirStreet's data can be compared with these levels as indicative values only | Partner organization | Does not apply as a compliance claim; context for a US partner |
 | A4 | US EPA air sensor performance testing protocols and targets: PM2.5 and ozone (February 2021); NO2, CO and SO2 (February 2024) [5] | United States (voluntary) | Base and enhanced testing of sensors beside reference monitors, with performance targets | The route for the TRL 4 collocation and for reporting AirStreet's NO2 and PM2.5 performance in a recognised form | Design lead | Applies as practice at TRL 4; to assess against the protocol text |
 | A5 | CEN/TS 17660-1:2021, performance evaluation of air quality sensor systems, part 1: gaseous pollutants in ambient air [6] | European Union (technical specification) | Laboratory and field tests and classes for sensor systems used for indicative measurement | Applies to the NO2 channel if a European partner wants a classed result; the particulate part of the series is to assess | Design lead | To assess (the text has not been read; it must be bought) |
-| A6 | Defra, diffusion tubes for ambient NO2 monitoring, practical guidance [7] | United Kingdom (guidance, widely used) | Exposure of 2 to 4 weeks, 2 to 4 m height, triplicate tubes, bias adjustment by collocation, about 25 % uncertainty | Option C of AST-OPT-001 and the proposed cross-check of open decision 2 | Design lead | Applies if option C or the cross-check is chosen |
+| A6 | Defra, diffusion tubes for ambient NO2 monitoring, practical guidance [7] | United Kingdom (guidance, widely used) | Exposure of 2 to 4 weeks, 2 to 4 m height, triplicate tubes, bias adjustment by collocation, about 25 % uncertainty | Option C of AST-OPT-001 and the cross-check chosen on 2026-10-30 (PR-019) | Design lead | Applies to the anchor node and one node in five; exposure 2 to 4 weeks |
 | R1 | ETSI EN 300 220 and the LoRaWAN EU868 regional parameters (1 % duty cycle per sub-band) [8] | European Union and countries using EU868 | Duty cycle and power in 863 to 870 MHz | 0.60 % at SF12 (PR-010) | Design lead | Met by design on paper (AST-CAL-001 [B3]) |
 | R2 | FCC 47 CFR Part 15 and the LoRaWAN US915 regional parameters (400 ms dwell time; DR0 at SF10 carries 11 bytes) [9] | United States and countries using US915 | Dwell time and payload per data rate | The 20-byte record goes at SF9 or faster, 247 ms (PR-010) | Design lead | Met by design on paper (AST-CAL-001 [B5]); certified radio module in FieldNode |
 | R3 | The Things Network fair use policy (30 s of uplink airtime a day per node; 10 downlinks) [10] | Network operator | Airtime per device | 15 min records on TTN, 23.7 s a day at SF9 (PR-008) | Design lead | Met by design on paper (AST-CAL-001 [B8]) |

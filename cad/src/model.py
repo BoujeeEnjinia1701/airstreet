@@ -100,6 +100,11 @@ PARAMS = {
     "rod_r": 42.0, "spacer_od": 8.0, "spacer_id": 5.5, "cap_screw_dx": (-30.0, 30.0),
     # 9 temperature and humidity probe: board (x, y, z), tube (dia)
     "th_board": (14.0, 10.0, 4.0), "th_tube": 6.0,
+    # 12 diffusion tube hood (AST-DEC-001 decision 2, 2026-10-30): centre x on the cross arm and its offset in y from the arm's centre line, outer radius, top disc
+    #   thickness, skirt height and wall, hang screws (x offsets), tube socket circle radius, socket outer and bore
+    #   radius, tube outer diameter (Palmes tube, 71 mm long), clip (outer radius, bore radius, height, slit)
+    "hood_x": 78.0, "hood_dy": -8.0, "hood_r": 46.0, "hood_top": 8.0, "hood_skirt": (50.0, 1.2), "hood_dx": (-30.0, 30.0),
+    "tube_circle": 25.0, "socket": (9.5, 7.5), "tube_d": 13.0, "clip": (9.0, 6.4, 8.0, 3.0),
     # 10 cables: diameter, M12 plug (dia x length); probe cable diameter
     "cable_d": 6.0, "plug": (16.0, 45.0), "probe_cable_d": 4.5,
 }
@@ -114,6 +119,7 @@ BOM = {  # build_parts key: (BOM line, name)
     "afe": (7, "NO2 front end and 16-bit ADC"),
     "shield": (8, "Multi-plate radiation shield"),
     "th": (9, "Temperature and humidity sensor"),
+    "hood": (12, "Diffusion tube hood and clips"),
     "cables": (10, "Sensor cables, M12, and probe lead"),
 }
 
@@ -391,7 +397,8 @@ def build_components(p=PARAMS, shield=False):
     for x in p["arm_bolt_x"]:
         arm -= ycyl(x, yrf - at / 2, arm_bz, 2.75, at + 2)
     ay = D["arm_y"]
-    hang = [(p["pod_x"] + dx, ay) for dx in p["pod_hang_dx"]] + [(p["shield_x"] + dx, ay) for dx in p["cap_screw_dx"]]
+    hang = ([(p["pod_x"] + dx, ay) for dx in p["pod_hang_dx"]] + [(p["shield_x"] + dx, ay) for dx in p["cap_screw_dx"]]
+            + [(p["hood_x"] + dx, ay + p["hood_dy"]) for dx in p["hood_dx"]])
     for x, y in hang:
         arm -= zcyl(x, y, zA + at / 2, 2.75, at + 2)
     arm -= zcyl(p["shield_x"], ay, zA + at / 2, 4.0, at + 2)                          # probe tube and lead
@@ -494,6 +501,35 @@ def build_components(p=PARAMS, shield=False):
     add("afe_standoffs", "M3 standoffs, front end (4)", F * fuse(so_), 11, "fixing", None)
     # terminal block on the back wall, left of the board
     add("tblock", "Pod terminal block", F * bx(-W / 2 + wt + 6, -W / 2 + wt + 28, yb_in - 12, yb_in, 62, 76), 11, "bought", "afe")
+
+    # diffusion tube hood (AST-DEC-001 decision 2): a printed hood on two M5 screws under the arm's outer part, three
+    #   sockets that hold Palmes tubes open end down, and a printed clip on each tube; the tubes are not in the model
+    hx, hr, ht = p["hood_x"], p["hood_r"], p["hood_top"]
+    hy = ay + p["hood_dy"]
+    skh, skw = p["hood_skirt"]
+    so_, sb_ = p["socket"]
+    hood = zcyl(hx, hy, zA - ht / 2, hr, ht)
+    hood += zcyl(hx, hy, zA - ht - skh / 2 + 1.0, hr, skh + 2.0) - zcyl(hx, hy, zA - ht - skh / 2 - 1.0, hr - skw, skh + 2.0)
+    socks = [(hx + p["tube_circle"] * math.cos(math.radians(a)), hy + p["tube_circle"] * math.sin(math.radians(a))) for a in (90, 210, 330)]
+    for sx_, sy_ in socks:
+        hood += zcyl(sx_, sy_, zA - ht - 6.0, so_, 12.0)
+        hood -= zcyl(sx_, sy_, zA - ht - 7.0, sb_, 12.0)
+    for dx in p["hood_dx"]:
+        hood -= zcyl(hx + dx, hy, zA - 4.5, 3.4, 9.1)                                   # M5 insert from above
+    for k in range(6):
+        a_ = math.radians(30 + 60 * k)
+        hood -= b.Pos(hx + (hr - 1.0) * math.cos(a_), hy + (hr - 1.0) * math.sin(a_), zA - ht - skh + 6.0) * b.Box(8, 8, 12)   # drain slots
+    add("hood", "Diffusion tube hood (printed ASA)", hood, 12, "made", "hood")
+    co_, cb_, ch_, cs_ = p["clip"]
+    clips = None
+    for sx_, sy_ in socks:
+        cz = zA - ht - 12.0 - ch_ / 2                                                    # under the socket mouth
+        c_ = zcyl(sx_, sy_, cz, co_, ch_) - zcyl(sx_, sy_, cz, cb_, ch_ + 1.0)
+        c_ = c_ - b.Pos(sx_, sy_ - co_ / 2, cz) * b.Box(cs_, co_ + 1.0, ch_ + 1.0)      # the slit that lets the clip spring open
+        clips = c_ if clips is None else clips + c_
+    add("hood_clips", "Tube clips (3, printed ASA)", clips, 12, "made", "hood")
+    fx = [screw_z_down(hx + dx, hy, zA + at, at + 7.0) for dx in p["hood_dx"]]
+    add("hood_screws", "M5 screws, hood to arm (2)", fuse(fx), 11, "fixing", None)
 
     # pod hanging screws from above the arm
     fx = [screw_z_down(p["pod_x"] + dx, D["arm_y"], D["arm_z"] + at, at + 10.0) for dx in p["pod_hang_dx"]]
@@ -736,6 +772,12 @@ def checks(p=PARAMS):
     chk("Shield clear of the pod", S("shield_plates") + S("shield_cap"), S("pod_shell"), 50.0)
     chk("Rod nuts clear of the arm", S("rods"), S("arm"), 0.5)
     chk("Sensor cables clear of the arm", S("cables"), S("arm"), 0.0)
+    chk("Tube hood hangs on the cross arm", S("hood"), S("arm"), "touch")
+    chk("Hood screws through the arm into the hood", S("hood_screws"), S("arm") + S("hood"), "touch")
+    chk("Tube clips against the sockets", S("hood_clips"), S("hood"), "touch")
+    chk("Tube hood clear of the pod and shield", S("hood") + S("hood_clips"), S("pod_shell") + S("shield_plates") + S("shield_cap"), 5.0)
+    chk("Hood screw heads clear of the probe lead", S("hood_screws"), S("cables"), 3.0)
+    chk("Tube hood clear of the pole, antenna whip and enclosure", S("hood") + S("hood_clips"), pole + S("fnd_antenna") + box_, 5.0)
     return rows
 
 

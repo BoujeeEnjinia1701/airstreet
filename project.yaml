@@ -6,9 +6,9 @@ area: Smart Cities
 trl: 3                   # Technology Readiness Level, see .kit/STANDARDS.md section 9
 trl_target: 3
 stage: P3                # pipeline stage, STANDARDS section 19; set at the kit 1.9.1 upgrade 2026-10-24
-stem_check: open         # AST-STM-001: four fixes made under the standing instruction (AST-DDR-005); S33 fix proposed to Amish; twelve rows plausible, to confirm at TRL 4 or in FieldNode
+stem_check: open         # AST-STM-001: four fixes made under the standing instruction (AST-DDR-005); S33 restated after Amish's decision 3 of 2026-10-30; thirteen rows plausible (AST-STM-001 v0.2), to confirm at TRL 4 or in FieldNode
 concept_options: [A, B, C]   # AST-OPT-001; A is the current design
-concept_chosen: A (proposed)  # proposed, awaiting Amish (AST-DDR-004); A stays the design of record
+concept_chosen: A  # chosen by Amish on 2026-10-30 (AST-DDR-004, AST-DDR-006)
 design_state: constructable   # concept or constructable, see .kit/STANDARDS.md section 18
 trl_evidence:
   - docs/01-problem.md
@@ -42,6 +42,7 @@ trl_evidence:
   - docs/11-plan.md
   - docs/decisions/0004-concept-selection.md
   - docs/decisions/0005-stem-check-fixes.md
+  - docs/decisions/0006-decisions-2026-10-30.md
   - docs/05-build-plan/overview.png
   - cad/src/ast_detail.py
   - cad/src/ast_options.py

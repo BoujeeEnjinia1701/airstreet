@@ -3,9 +3,9 @@ doc_id: AST-FEA-001
 title: AirStreet feasibility assessment
 project: AirStreet
 doc_type: Feasibility assessment
-version: "0.1"
+version: "0.2"
 status: Draft
-date: '2026-10-24'
+date: '2026-10-30'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -13,6 +13,10 @@ revisions:
   date: '2026-10-24'
   author: Amish Chadha
   change: First feasibility assessment (kit 1.9.1 upgrade)
+- version: "0.2"
+  date: '2026-10-30'
+  author: Amish Chadha
+  change: "PR-004 wording follows decision 4 of 2026-10-30"
 ---
 
 # AirStreet feasibility assessment
@@ -30,6 +34,6 @@ Table 1. Feasibility by aspect.
 | Data and radio | 20-byte records every 5 min on a private gateway or 15 min on The Things Network; within EU868 and US915 rules | High | The radio band follows the partner (AST-DEC-001); range at SF9 in US915 to check in the field | AST-CAL-001 B, AST-REG-001 R1 to R3 |
 | Calibration route | CalRig for T, RH and PM; 14-day collocation and every 6 months for NO2 | Medium | Needs a partner with a street-level reference station (AST-DEC-001); the street transfer bias is assumed (2 ppb) | AST-CAL-001 C, AST-PRC-001 |
 | Supply of parts | SPS30 and SHT45 priced at retail (2026-09-25); NO2-B43F class cell and its front end estimated, not quoted | Medium | The NO2 cell and front end are single-source in practice; prices are indicative until quoted by a distributor | BOM, AST-MKT-001 |
-| Regulatory | Indicative data only; radio rules met on paper; pole owner's permission needed per site | Medium | The 2030 EU NO2 limit of 20 ug/m3 changes what PR-004 should classify against (open decision 4) | AST-REG-001 |
+| Regulatory | Indicative data only; radio rules met on paper; pole owner's permission needed per site | Medium | The 2030 EU NO2 limit of 20 ug/m3 changes what PR-004 classifies against (decided on 2026-10-30: both 40 and 20 ug/m3) | AST-REG-001 |
 
 Ratings: High, Medium, Low.

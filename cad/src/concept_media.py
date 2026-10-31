@@ -57,7 +57,7 @@ def _key(q):
         return "panel"
     if g in ("fieldnode", "internal"):
         return "fieldnode"
-    if g in ("mount", "cables"):
+    if g in ("mount", "cables", "hood"):
         return g
     if n in (5, 6, 7, 9):
         return {5: "pm", 6: "no2", 7: "afe", 9: "th"}[n]
@@ -80,6 +80,7 @@ style = {  # key: (color, exploded-view offset in mm)
     "shield": ("#F8FAFC", (260, -60, 60)),
     "th": ("#7C3AED", (420, -60, -300)),
     "cables": ("#111827", (-340, -60, 120)),
+    "hood": ("#0D9488", (160, -200, -330)),
 }
 parts = [Part(BOM[k][1], shapes[k], style[k][0], BOM[k][0], style[k][1]) for k in style]
 
@@ -111,13 +112,13 @@ context = [Part(p.name, SHIFT * p.shape, p.color, p.bom, p.explode, p.alpha) for
 
 render_all(
     parts, project="AirStreet", title="Street air quality node concept", dwg_no="AST-DWG-010",
-    date="2026-10-24",
+    date="2026-10-30",
     key_figures=["PM2.5 (SPS30) and NO2 (B43F class), shielded T and RH",
                  "Inlets 3.0 m above the sidewalk; poles 80 to 200 mm",
                  "PM, T, RH checked on CalRig; NO2 by field collocation",
                  "87 mW design sensor load; 5 min records (15 min on TTN)",
-                 "3.61 kg (3.77 kg with sun shield) and 0.139 m² on the pole",
-                 "Sensor head $302.50; $433.50 with FieldNode core"],
+                 "3.69 kg (3.85 kg with sun shield) and 0.143 m² on the pole",
+                 "Sensor head $305.50; $436.50 with FieldNode core"],
     scale_figure=False, context=context,
     cut_exclude=(BOM["fieldnode"][1], BOM["panel"][1], BOM["mount"][1], BOM["cables"][1]),
     flow={"title": "measurement and data flow (AST-CAL-001)", "unit": "",

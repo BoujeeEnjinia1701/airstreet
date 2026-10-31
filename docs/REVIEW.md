@@ -481,3 +481,38 @@ Run in this order at the end of the session: `python3 docs/04-calcs/sizing.py` (
 Final model counts: option A 195 parts with 103 fasteners (an earlier draft of this note and AST-OPT-001 said 191 and 99).
 
 Additional kit bug: `.kit/drawing.py` `project_views` stops with `AssertionError: assert start != end` (svgpathtools) on a full-circle ellipse edge in the D3 hidden-line projection, so `render_all` fails at the blueprint sheet; `cad/src/concept_media.py` replaces `drawing.project_views` with an edge-by-edge version that skips such edges (centre lines are not drawn on the blueprint).
+
+## Session 2026-10-30: decisions
+
+### What is now decided
+
+Amish, 2026-10-30: "on the calls - i go with your recommendations". All five open decisions of AST-DEC-001 carried a stated recommendation, so all five are decided. Recorded in `docs/decisions/0006-decisions-2026-10-30.md` (AST-DDR-006), `docs/decisions/0004-concept-selection.md` (accepted) and `docs/06-design-decisions.md` (AST-DEC-001 v0.6).
+
+1. Concept selection: option A, the current design (221 of 260; C 198, B 188; no option within 10 %). `concept_chosen: A` in `project.yaml`.
+2. Diffusion tube cross-check: option (a), triplicate NO2 tubes at the anchor node and one node in five: a printed hood and three tube clips on the cross arm.
+3. Validity above the rated range: option (a) now, accept flagged hours; (b), seeking a NO2 cell rated above 40 degC, follows when the partner is agreed (DEC action 7).
+4. PR-004 target: option (b), classify against both 40 and 20 ug/m3.
+5. Text of PR-017 and PR-018: option (a), as written.
+
+### What changed
+
+- Model (decision 2): `cad/src/model.py` (new `PARAMS` for the hood; parts `hood`, `hood_clips`, `hood_screws`; five new constructability checks, 82 of 82 pass), `cad/src/ast_detail.py` (hood, three clips, two inserts, two screws, two washers). The cross arm keeps its 415 mm length; two more 5.5 mm holes at 213 and 273 mm. Option A in `cad/fidelity.json`: 205 parts, 109 fasteners, 3.4 kg (was 195, 103, 3.3 kg); PASS at D3 for A, B and C.
+- Calculation: `docs/04-calcs/sizing.py` and AST-CAL-001 v0.8. Mass 3.70 kg on the pole, 3.86 kg with the sun shield (was 3.61 and 3.77; margin to 4.0 kg 0.14 kg). Frontal area 0.144 m2 (was 0.139; limit 0.15). Wind at 35 m/s 129 N and 431 N m (was 125 N, 416 N m). Cross arm 5.1 MPa, bolt force 148 N, rail 35.4 MPa von Mises, all well inside their limits. New line [C9]: bands 33.9 to 46.1 ug/m3 round 40 and 13.9 to 26.1 ug/m3 round 20.
+- BOM `bom/bom.csv`: new line 12, tube hood and clips, USD 2.50 (0.081 kg of ASA at about USD 30/kg, an estimate); line 11 up USD 1.00 (two inserts, two screws, two washers; an estimate). Sensor head USD 306.00 (was 302.50), USD 21.00 over the USD 285 target (was 17.50); whole node USD 437.00. `budget_usd` is not raised. The diffusion tubes themselves are not priced in the BOM: about GBP 8 each with analysis (2015 price, Defra practical guidance), a running cost.
+- Requirements `docs/03-requirements.md` v0.10: PR-004 against 40 and 20 ug/m3 (still at risk); PR-013 met on paper at 3.86 kg and 0.144 m2; PR-015 over by USD 21.00; PR-017 and PR-018 accepted; new PR-019 (tube cross-check, met by design). RTM regenerated (0 gaps).
+- STEM check `docs/04-calcs/stem_check.py`, `docs/01b-stem-check.md` v0.2: S19, S20 to S22 and S30 re-run; S33 (validity above 40 degC) restated as the flagging claim after decision 3 and now Plausible. Counts: 29 within, 13 plausible, 0 fail (was 29, 12, 1 with a fix proposed).
+- Risks `docs/09-risk.md` v0.2: new hazard H9 (frequent tube changes mean more climbs) and FMEA F11 (hood insert or clip); P2, P4, P6 and P9 restated.
+- Drawings and build plan: `cad/src/build_plan_media.py` (overview with a 19th component, making sketch AST-DWG-110, cross arm sketch AST-DWG-105 notes, step 17), `cad/src/sheets.py` (GA AST-DWG-001 Rev P6), `cad/src/concept_media.py` (exploded view and blueprint figures), `cad/src/product_model.py` (hood group in the render views). `docs/05-build-plan.md` v0.5: section 3.12, step 17, safety stop S7, mass and cost.
+- Other documents with the changed numbers: README, 02-concept, 02a-concept-options, 07-regulatory, 08-feasibility, 10-market, 11-plan, `bom/bom-notes.md`.
+
+### Still open
+
+Nothing is left as a decision. Two actions follow for Amish, listed in AST-DEC-001: action 7 (seek a NO2 cell rated above 40 degC when the partner is agreed) and action 8 (agree with the partner who buys, analyses and changes the tubes, and which nodes carry the hood). The pole owner's confirmation of the 4.0 kg load and the approach to the first partner are unchanged actions.
+
+### Pictures to re-render
+
+Option A's model changed. `media/options.png`, the photoreal renders and the cards show the model without the hood and need re-rendering by the coordinator; I did not run `.kit/options.py`, `.kit/photoreal.py`, `.kit/export_views.py` or `.kit/cards.py`. The drawings, build plan pictures and concept media (`media/hero.png`, `cutaway.png`, `exploded.png`, blueprint) were regenerated from the new model.
+
+### Safety concerns
+
+Tubes are changed every two to four weeks at the anchor node and one node in five, which is 13 to 26 climbs a year to a node on a street pole (hazard H9); the visits are for the partner to plan and combine with other service work. Mass margin is 0.14 kg and frontal area margin 0.006 m2, so any further addition to the node needs a trade. The hood is a new part that could fall to the footway (FMEA F11); insert pull-out is to be tested at TRL 4 with the pod's inserts.
